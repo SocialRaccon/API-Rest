@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity(name = "image_post")
-public class ImagePost {
+public class ImagePostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idImagePost;
@@ -14,10 +14,10 @@ public class ImagePost {
     private String thumbnail;
     private Integer idPost;
 
-    public ImagePost() {
+    public ImagePostModel() {
     }
 
-    public ImagePost(Integer idImagePost, String url, String thumbnail, Integer idPost) {
+    public ImagePostModel(Integer idImagePost, String url, String thumbnail, Integer idPost) {
         this.idImagePost = idImagePost;
         this.url = url;
         this.thumbnail = thumbnail;

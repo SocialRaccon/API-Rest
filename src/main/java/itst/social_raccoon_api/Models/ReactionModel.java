@@ -9,36 +9,36 @@ public class ReactionModel {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer IdReaction;
-    private Date ReactionDate;
+    private Integer idReaction;
+    private Date reactionDate;
 
     public ReactionModel(Integer IdReaction, Date ReactionDate) {
-        this.IdReaction = IdReaction;
-        this.ReactionDate = ReactionDate;
+        this.idReaction = IdReaction;
+        this.reactionDate = ReactionDate;
     }
 
     public ReactionModel() {
     }
 
     public Integer getIdReaction() {
-        return IdReaction;
+        return idReaction;
     }
     public void setIdReaction(Integer idReaction) {
-        IdReaction = idReaction;
+        this.idReaction = idReaction;
     }
     public Date getReactionDate() {
-        return ReactionDate;
+        return reactionDate;
     }
     public void setReactionDate(Date reactionDate) {
-        ReactionDate = reactionDate;
+        this.reactionDate = reactionDate;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ReactionModel{");
-        sb.append("IdReaction=").append(IdReaction);
-        sb.append(", ReactionDate=").append(ReactionDate);
+        sb.append("IdReaction=").append(idReaction);
+        sb.append(", ReactionDate=").append(reactionDate);
         sb.append('}');
         return sb.toString();
     }
