@@ -5,15 +5,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity(name = "reaction_types")
+@Entity(name = "reaction_type")
 public class ReactionTypeModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idReactionType;
+    private Integer idReactionType;
     private String reactionType;
 
     public ReactionTypeModel() {
+    }
+
+    public ReactionTypeModel(Integer idReactionType, String reactionType) {
+        this.idReactionType = idReactionType;
+        this.reactionType = reactionType;
     }
 
     public ReactionTypeModel(String reactionType) {

@@ -10,14 +10,14 @@ public class FollowerModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idFollower;
-    private int idUser;
-    private int idFollowerUser;
+    private Integer idFollower;
+    private Integer idUser;
+    private Integer idFollowerUser;
 
     public FollowerModel() {
     }
 
-    public FollowerModel(int idUser, int idFollowerUser) {
+    public FollowerModel(Integer idUser, Integer idFollowerUser) {
         this.idUser = idUser;
         this.idFollowerUser = idFollowerUser;
     }

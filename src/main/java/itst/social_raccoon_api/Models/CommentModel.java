@@ -11,11 +11,11 @@ import java.sql.Timestamp;
 public class CommentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idComment;
+    private Integer idComment;
     private String comment;
-    private int idUser;
+    private Integer idUser;
     private Timestamp date;
-    private int idPost;
+    private Integer idPost;
 
     public CommentModel() {
     }

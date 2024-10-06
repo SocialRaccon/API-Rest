@@ -5,20 +5,29 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity(name = "imagepost")
+@Entity(name = "image_post")
 public class ImagePost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idImagePost;
+    private Integer idImagePost;
     private String url;
     private String thumbnail;
-    private int idPost;
+    private Integer idPost;
 
-    public int getIdImagePost() {
+    public ImagePost() {
+    }
+
+    public ImagePost(Integer idImagePost, String url, String thumbnail, Integer idPost) {
+        this.idImagePost = idImagePost;
+        this.url = url;
+        this.thumbnail = thumbnail;
+        this.idPost = idPost;
+    }
+    public Integer getIdImagePost() {
         return idImagePost;
     }
 
-    public void setIdImagePost(int idImagePost) {
+    public void setIdImagePost(Integer idImagePost) {
         this.idImagePost = idImagePost;
     }
 
@@ -38,21 +47,21 @@ public class ImagePost {
         this.thumbnail = thumbnail;
     }
 
-    public int getIdPost() {
+    public Integer getIdPost() {
         return idPost;
     }
 
-    public void setIdPost(int idPost) {
+    public void setIdPost(Integer idPost) {
         this.idPost = idPost;
     }
 
     @Override
     public String toString() {
         return "ImagePost{" +
-               "idImagePost=" + idImagePost +
-               ", url='" + url + '\'' +
-               ", thumbnail='" + thumbnail + '\'' +
-               ", idPost=" + idPost +
-               '}';
+                "idImagePost=" + idImagePost +
+                ", url='" + url + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", idPost=" + idPost +
+                '}';
     }
 }

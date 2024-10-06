@@ -4,15 +4,15 @@ import java.sql.Date;
 
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "reaction")
 public class ReactionModel {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int IdReaction;
+    private Integer IdReaction;
     private Date ReactionDate;
 
-    public ReactionModel(int IdReaction, Date ReactionDate) {
+    public ReactionModel(Integer IdReaction, Date ReactionDate) {
         this.IdReaction = IdReaction;
         this.ReactionDate = ReactionDate;
     }
@@ -20,10 +20,10 @@ public class ReactionModel {
     public ReactionModel() {
     }
 
-    public int getIdReaction() {
+    public Integer getIdReaction() {
         return IdReaction;
     }
-    public void setIdReaction(int idReaction) {
+    public void setIdReaction(Integer idReaction) {
         IdReaction = idReaction;
     }
     public Date getReactionDate() {
