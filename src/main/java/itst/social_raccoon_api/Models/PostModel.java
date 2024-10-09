@@ -1,36 +1,47 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
-@Entity(name = "post")
+import java.sql.Timestamp;
+import java.util.List;
+
+@Entity
+@Table(name = "post")
 public class PostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idPost;
+    private Integer idPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUser")
+    @JsonBackReference(value = "user-post")
+
+    private UserModel user;
+    private Timestamp dateCreated;
     private String description;
     private String imageUrl;
-    private int idUser;
-    private Timestamp dateCreated;
+
+    @JsonManagedReference(value = "post-comment")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentModel> comments;
 
     public PostModel() {
     }
 
-    public PostModel(String description, String imageUrl, Integer idUser, Timestamp dateCreated) {
+    public PostModel(String description, String imageUrl, UserModel user, Timestamp dateCreated) {
         this.description = description;
         this.imageUrl = imageUrl;
-        this.idUser = idUser;
+        this.user = user;
         this.dateCreated = dateCreated;
     }
 
-    public Integer getIdPost() {
+    public Integer getPost() {
         return idPost;
     }
 
-    public void setIdPost(Integer idPost) {
+    public void setPost(Integer idPost) {
         this.idPost = idPost;
     }
 
@@ -50,12 +61,12 @@ public class PostModel {
         this.imageUrl = imageUrl;
     }
 
-    public Integer getIdUser() {
-        return idUser;
+    public UserModel getUser() {
+        return user;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setUser(UserModel idUser) {
+        this.user = idUser;
     }
 
     public Timestamp getDateCreated() {
@@ -72,7 +83,7 @@ public class PostModel {
                 "idPost=" + idPost +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", idUser=" + idUser +
+                ", idUser=" + user +
                 ", dateCreated=" + dateCreated +
                 '}';
     }

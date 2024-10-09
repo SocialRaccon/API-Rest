@@ -1,38 +1,42 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import itst.social_raccoon_api.Models.CompositeKeys.CommentPK;
+import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 
-@Entity(name = "comment")
+@Entity
+@Table(name = "comment")
+@IdClass(CommentPK.class)
 public class CommentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idComment;
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUser")
+    @JsonBackReference(value = "user-comment")
+    private UserModel user;
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPost")
+    @JsonBackReference(value = "post-comment")
+    private PostModel post;
+
     private String comment;
-    private Integer idUser;
     private Timestamp date;
-    private Integer idPost;
+
+    public CommentModel(String comment, UserModel user, Timestamp date, PostModel post) {
+        this.comment = comment;
+        this.user = user;
+        this.date = date;
+        this.post = post;
+    }
 
     public CommentModel() {
-    }
 
-    public CommentModel(String comment, Integer idUser, Timestamp date, Integer idPost) {
-        this.comment = comment;
-        this.idUser = idUser;
-        this.date = date;
-        this.idPost = idPost;
-    }
-
-    public Integer getIdComment() {
-        return idComment;
-    }
-
-    public void setIdComment(Integer idComment) {
-        this.idComment = idComment;
     }
 
     public String getComment() {
@@ -43,12 +47,12 @@ public class CommentModel {
         this.comment = comment;
     }
 
-    public Integer getIdUser() {
-        return idUser;
+    public UserModel getUser() {
+        return user;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setUser(UserModel idUser) {
+        this.user = idUser;
     }
 
     public Timestamp getDate() {
@@ -59,16 +63,11 @@ public class CommentModel {
         this.date = date;
     }
 
-    public Integer getIdPost() {
-        return idPost;
+    public PostModel getPost() {
+        return post;
     }
 
-    public void setIdPost(Integer idPost) {
-        this.idPost = idPost;
-    }
-
-    @Override
-    public String toString() {
-        return "CommentModel{" + "idComment=" + idComment + ", comment='" + comment + '\'' + ", idUser=" + idUser + ", date=" + date + ", idPost=" + idPost + '}';
+    public void setPost(PostModel idPost) {
+        this.post = idPost;
     }
 }
