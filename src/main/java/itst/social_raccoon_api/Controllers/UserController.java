@@ -5,7 +5,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.social_raccoon_api.Dto.FollowerDTO;
 import itst.social_raccoon_api.Models.UserModel;
+import itst.social_raccoon_api.Services.FollowerService;
+import itst.social_raccoon_api.Services.MappingService;
 import itst.social_raccoon_api.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FollowerService followerService;
 
     @GetMapping()
     @Operation(summary = "Get all users", description = "Get all users from the database")
@@ -92,5 +98,37 @@ public class UserController {
         userService.deleteById(id);
         Map<String, Boolean> response = Map.of("deleted", Boolean.TRUE);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Follow a user
+    @PostMapping("/{userId}/follow/{followerId}")
+    @Operation(summary = "Follow a user", description = "Follow a user")
+    public ResponseEntity<Void> followUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
+        followerService.followUser(userId, followerId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // Unfollow a user
+    @DeleteMapping("/{userId}/unfollow/{followerId}")
+    @Operation(summary = "Unfollow a user", description = "Unfollow a user")
+    public ResponseEntity<Void> unfollowUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
+        followerService.unfollowUser(userId, followerId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // Get followers of a user (returning FollowerDTO)
+    @GetMapping("/{userId}/followers")
+    @Operation(summary = "Get followers of a user", description = "Get followers of a user")
+    public ResponseEntity<List<FollowerDTO>> getFollowers(@PathVariable Integer userId) {
+        List<FollowerDTO> followers = followerService.getFollowers(userId);
+        return new ResponseEntity<>(followers, HttpStatus.OK);
+    }
+
+    // Get users followed by the user (returning FollowerDTO)
+    @GetMapping("/{userId}/following")
+    @Operation(summary = "Get users followed by the user", description = "Get users followed by the user")
+    public ResponseEntity<List<FollowerDTO>> getFollowing(@PathVariable Integer userId) {
+        List<FollowerDTO> following = followerService.getFollowing(userId);
+        return new ResponseEntity<>(following, HttpStatus.OK);
     }
 }

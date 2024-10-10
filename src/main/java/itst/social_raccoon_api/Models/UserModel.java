@@ -15,9 +15,19 @@ public class UserModel {
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idUser;
+
     @JsonManagedReference(value = "user-post")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostModel> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference(value = "user-follower")
+    private List<FollowerModel> followers;
+
+    @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference(value = "user-following")
+    private List<FollowerModel> following;
+
     @JsonManagedReference(value = "user-comment")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
@@ -51,22 +61,6 @@ public class UserModel {
 
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
-    }
-
-    public List<PostModel> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<PostModel> posts) {
-        this.posts = posts;
-    }
-
-    public List<CommentModel> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentModel> comments) {
-        this.comments = comments;
     }
 
     public String getName() {
