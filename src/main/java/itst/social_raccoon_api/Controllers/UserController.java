@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("user")
@@ -41,6 +42,9 @@ public class UserController {
     @Operation(summary = "Get user by id", description = "Get a user by its id")
     public ResponseEntity<UserModel> findById(@PathVariable Integer id) {
         UserModel user = userService.findById(id);
+        if (user == null) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -103,17 +107,17 @@ public class UserController {
     // Follow a user
     @PostMapping("/{userId}/follow/{followerId}")
     @Operation(summary = "Follow a user", description = "Follow a user")
-    public ResponseEntity<Void> followUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
+    public ResponseEntity<String> followUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
         followerService.followUser(userId, followerId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("User followed", HttpStatus.OK);
     }
 
     // Unfollow a user
     @DeleteMapping("/{userId}/unfollow/{followerId}")
     @Operation(summary = "Unfollow a user", description = "Unfollow a user")
-    public ResponseEntity<Void> unfollowUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
+    public ResponseEntity<String> unfollowUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
         followerService.unfollowUser(userId, followerId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("User unfollowed", HttpStatus.OK);
     }
 
     // Get followers of a user (returning FollowerDTO)
@@ -121,6 +125,9 @@ public class UserController {
     @Operation(summary = "Get followers of a user", description = "Get followers of a user")
     public ResponseEntity<List<FollowerDTO>> getFollowers(@PathVariable Integer userId) {
         List<FollowerDTO> followers = followerService.getFollowers(userId);
+        if (followers.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(followers, HttpStatus.OK);
     }
 
@@ -129,6 +136,10 @@ public class UserController {
     @Operation(summary = "Get users followed by the user", description = "Get users followed by the user")
     public ResponseEntity<List<FollowerDTO>> getFollowing(@PathVariable Integer userId) {
         List<FollowerDTO> following = followerService.getFollowing(userId);
+        System.out.println("Following: " + following);
+        if (following.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(following, HttpStatus.OK);
     }
 }

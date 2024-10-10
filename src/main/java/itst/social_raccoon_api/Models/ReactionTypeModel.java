@@ -1,16 +1,26 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
 
-@Entity(name = "reaction_type")
+@Entity
+@Table(name = "reaction_type")
+@Schema(description = "Model representing a reaction type")
 public class ReactionTypeModel {
 
+    @Schema(description = "Unique identifier of the reaction type", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idReactionType;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "reactionIcon", referencedColumnName = "idReactionIcon")
+    private ReactionIconModel reactionIcon;
+
+    @Schema(description = "Type of reaction", example = "Like")
+    @Column(name = "reactionType")
+    @JsonProperty("reactionType")
     private String reactionType;
 
     public ReactionTypeModel() {
