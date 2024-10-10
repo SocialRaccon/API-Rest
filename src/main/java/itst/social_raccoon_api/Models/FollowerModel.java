@@ -1,48 +1,49 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import itst.social_raccoon_api.Dto.UserDTO;
+import itst.social_raccoon_api.Models.CompositeKeys.FollowerPK;
+import itst.social_raccoon_api.Services.MappingService;
+import jakarta.persistence.*;
 
-@Entity(name = "follower")
+@Entity
+@Table(name = "follower")
+@IdClass(FollowerPK.class)
 public class FollowerModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idFollower;
-    private Integer idUser;
-    private Integer idFollowerUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUser", nullable = false)
+    //@JsonBackReference(value = "user-follower")
+    private UserModel user;
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idFollower", nullable = false)
+    //@JsonBackReference(value = "user-following")
+    private UserModel followerUser;
+
+    public FollowerModel(UserModel user, UserModel followerUser) {
+        this.user = user;
+        this.followerUser = followerUser;
+    }
 
     public FollowerModel() {
     }
 
-    public FollowerModel(Integer idUser, Integer idFollowerUser) {
-        this.idUser = idUser;
-        this.idFollowerUser = idFollowerUser;
+    public UserModel getUser() {
+        return user;
     }
 
-    public Integer getIdFollower() {
-        return idFollower;
+    public void setUser(UserModel user) {
+        this.user = user;
     }
 
-    public void setIdFollower(Integer idFollower) {
-        this.idFollower = idFollower;
+    public UserModel getFollowerUser() {
+        return followerUser;
     }
 
-    public Integer getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
-    }
-
-    public Integer getIdFollowerUser() {
-        return idFollowerUser;
-    }
-
-    public void setIdFollowerUser(Integer idFollowerUser) {
-        this.idFollowerUser = idFollowerUser;
+    public void setFollowerUser(UserModel followerUser) {
+        this.followerUser = followerUser;
     }
 }
