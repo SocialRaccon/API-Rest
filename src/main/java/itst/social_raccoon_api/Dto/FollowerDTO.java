@@ -1,5 +1,8 @@
 package itst.social_raccoon_api.Dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Data Transfer Object representing a follower relationship")
 public class FollowerDTO {
     private Integer idUser;
     private String userName;

@@ -54,17 +54,17 @@ public class ReactionController {
 
     @PostMapping()
     @Operation(
-            summary = "Create a new reaction",
+            summary = "Create a reaction",
             description = "Create a new reaction in the database",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            requestBody = @RequestBody(
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ReactionModel.class)
                     )
             )
     )
-    public ResponseEntity<ReactionModel> create(@RequestBody ReactionModel reaction) {
-        // Establece la fecha actual como fecha de creación
+    public ResponseEntity<ReactionModel> create() {
+        ReactionModel reaction = new ReactionModel();
         reaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
         
         // Guarda la nueva reacción
@@ -75,16 +75,11 @@ public class ReactionController {
     @PutMapping("{id}")
     @Operation(
             summary = "Update a reaction",
-            description = "Update a reaction in the database",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ReactionModel.class)
-                    )
-            )
+            description = "Update a reaction in the database"
     )
-    public ResponseEntity<ReactionModel> update(@PathVariable Integer id, @RequestBody ReactionModel reaction) {
+    public ResponseEntity<ReactionModel> update(@PathVariable Integer id) {
         ReactionModel existingReaction = reactionService.findById(id);
+        existingReaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
         if (existingReaction == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
