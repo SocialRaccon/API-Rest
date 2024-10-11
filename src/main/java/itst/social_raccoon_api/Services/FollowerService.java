@@ -24,9 +24,6 @@ public class FollowerService {
     @Autowired
     private FollowerRepository followerRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     // Follow a user
     public void followUser(Integer userId, Integer followerId) {
         UserModel user = userService.findById(userId);
