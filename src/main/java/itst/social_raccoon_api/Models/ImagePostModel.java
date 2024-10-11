@@ -1,19 +1,30 @@
 package itst.social_raccoon_api.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity(name = "image_post")
 public class ImagePostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idImagePost;
+    
+    @Id
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPost")
+    @JsonBackReference(value = "post-image_post")
+    private PostModel post;
+    
     private String url;
     private String thumbnail;
-    private Integer idPost;
-
+    
     public ImagePostModel() {
     }
 
@@ -21,7 +32,7 @@ public class ImagePostModel {
         this.idImagePost = idImagePost;
         this.url = url;
         this.thumbnail = thumbnail;
-        this.idPost = idPost;
+        this.post = post;
     }
     public Integer getIdImagePost() {
         return idImagePost;
@@ -47,21 +58,11 @@ public class ImagePostModel {
         this.thumbnail = thumbnail;
     }
 
-    public Integer getIdPost() {
-        return idPost;
+    public PostModel getPost() {
+        return post;
     }
 
-    public void setIdPost(Integer idPost) {
-        this.idPost = idPost;
-    }
-
-    @Override
-    public String toString() {
-        return "ImagePost{" +
-                "idImagePost=" + idImagePost +
-                ", url='" + url + '\'' +
-                ", thumbnail='" + thumbnail + '\'' +
-                ", idPost=" + idPost +
-                '}';
+    public void setPost(PostModel idPost) {
+        this.post = idPost;
     }
 }

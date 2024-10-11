@@ -1,24 +1,35 @@
 package itst.social_raccoon_api.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
-@Entity(name = "imageprofile")
+@Entity(name = "image_profile")
 public class ImageProfileModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idImageProfile;
+    private Integer idImageProfile;
+
+    @Id
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUser")
+    @JsonBackReference(value = "user-image_profile")
+    private UserModel user;
+
     private String url;
     private String thumbnail;
-    private int idProfile;
 
-    public int getIdImageProfile() {
+    public Integer getIdImageProfile() {
         return idImageProfile;
     }
 
-    public void setIdImageProfile(int idImageProfile) {
+    public void setIdImageProfile(Integer idImageProfile) {
         this.idImageProfile = idImageProfile;
     }
 
@@ -38,21 +49,11 @@ public class ImageProfileModel {
         this.thumbnail = thumbnail;
     }
 
-    public int getIdProfile() {
-        return idProfile;
+    public UserModel getIdProfile() {
+        return user;
     }
 
-    public void setIdProfile(int idProfile) {
-        this.idProfile = idProfile;
-    }
-
-    @Override
-    public String toString() {
-        return "ProfileImage{" +
-               "idImageProfile=" + idImageProfile +
-               ", url='" + url + '\'' +
-               ", thumbnail='" + thumbnail + '\'' +
-               ", idProfile=" + idProfile +
-               '}';
+    public void setIdProfile(UserModel idUser) {
+        this.user = idUser;
     }
 }
