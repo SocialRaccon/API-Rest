@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
-@Entity
+@Entity(name = "reaction")
 public class ReactionModel {
     
     @Id
@@ -17,10 +17,6 @@ public class ReactionModel {
     private int IdReaction;
     private Date ReactionDate;
 
-    @OneToOne
-    @JoinColumn(name = "idReactionType")
-    private ReactionTypeModel reactionTypeModel;
-    
     public ReactionModel(int IdReaction, Date ReactionDate) {
         this.IdReaction = IdReaction;
         this.ReactionDate = ReactionDate;
@@ -29,22 +25,27 @@ public class ReactionModel {
     public ReactionModel() {
     }
 
-    public int getIdReaction() {
-        return IdReaction;
+    public Integer getIdReaction() {
+        return idReaction;
     }
-    public void setIdReaction(int idReaction) {
-        IdReaction = idReaction;
+    public void setIdReaction(Integer idReaction) {
+        this.idReaction = idReaction;
     }
     public Date getReactionDate() {
-        return ReactionDate;
+        return reactionDate;
     }
     public void setReactionDate(Date reactionDate) {
-        ReactionDate = reactionDate;
+        this.reactionDate = reactionDate;
     }
 
     @Override
     public String toString() {
-        return "ReactionModel [IdReaction=" + IdReaction + ", ReactionDate=" + ReactionDate + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ReactionModel{");
+        sb.append("IdReaction=").append(IdReaction);
+        sb.append(", ReactionDate=").append(ReactionDate);
+        sb.append('}');
+        return sb.toString();
     }
 
 }

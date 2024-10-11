@@ -10,4 +10,9 @@ class SocialRaccoonApiApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void testMain() {
+		SocialRaccoonApiApplication.main(new String[] {});
+	}
+
 }
