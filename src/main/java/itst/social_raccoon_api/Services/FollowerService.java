@@ -1,5 +1,7 @@
 package itst.social_raccoon_api.Services;
 
+import java.util.stream.Collectors;
+
 import itst.social_raccoon_api.Dto.FollowerDTO;
 import itst.social_raccoon_api.Models.FollowerModel;
 import itst.social_raccoon_api.Models.UserModel;
@@ -15,9 +17,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class FollowerService {
-
-    @Autowired
-    private MappingService mappingService;
 
     @Autowired
     private UserService userService;
@@ -51,23 +50,11 @@ public class FollowerService {
     }
 
     // Get users followed by the user
-    public List<FollowerDTO> getFollowers(Integer userId) {
-        List<FollowerModel> followers = followerRepository.getFollowersByUserId(userId);
-
-        followers.forEach(follower -> {
-            System.out.println("Follower: " + follower.getUser().getName());
-        });
-
-        return followers.stream()
-                .map(follower -> mappingService.mapToDTO(follower, FollowerDTO.class))
-                .collect(Collectors.toList());
+    public List<FollowerModel> getFollowers(Integer userId) {
+        return followerRepository.getFollowersByUserId(userId);
     }
 
-    public List<FollowerDTO> getFollowing(Integer userId) {
-        return followerRepository.getFollowersByFollowerId(userId)
-                .stream()
-                .map(follower -> mappingService.mapToDTO(follower, FollowerDTO.class))
-                .collect(Collectors.toList());
+    public List<FollowerModel> getFollowing(Integer userId) {
+        return followerRepository.getFollowersByFollowerId(userId);
     }
-
 }

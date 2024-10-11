@@ -4,12 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.Dto.FollowerDTO;
+import itst.social_raccoon_api.Models.FollowerModel;
 import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Services.FollowerService;
-import itst.social_raccoon_api.Services.MappingService;
 import itst.social_raccoon_api.Services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("user")
@@ -30,6 +36,9 @@ public class UserController {
 
     @Autowired
     private FollowerService followerService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping()
     @Operation(summary = "Get all users", description = "Get all users from the database")
@@ -107,6 +116,10 @@ public class UserController {
     // Follow a user
     @PostMapping("/{userId}/follow/{followerId}")
     @Operation(summary = "Follow a user", description = "Follow a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User followed", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<String> followUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
         followerService.followUser(userId, followerId);
         return new ResponseEntity<>("User followed", HttpStatus.OK);
@@ -115,6 +128,10 @@ public class UserController {
     // Unfollow a user
     @DeleteMapping("/{userId}/unfollow/{followerId}")
     @Operation(summary = "Unfollow a user", description = "Unfollow a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User unfollowed", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<String> unfollowUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
         followerService.unfollowUser(userId, followerId);
         return new ResponseEntity<>("User unfollowed", HttpStatus.OK);
@@ -123,23 +140,45 @@ public class UserController {
     // Get followers of a user (returning FollowerDTO)
     @GetMapping("/{userId}/followers")
     @Operation(summary = "Get followers of a user", description = "Get followers of a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Followers of the user", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = FollowerDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "No followers of the user", content = @Content)
+    })
     public ResponseEntity<List<FollowerDTO>> getFollowers(@PathVariable Integer userId) {
-        List<FollowerDTO> followers = followerService.getFollowers(userId);
+        List<FollowerModel> followers = followerService.getFollowers(userId);
         if (followers.isEmpty()) {
             throw new NoSuchElementException();
         }
-        return new ResponseEntity<>(followers, HttpStatus.OK);
+        List<FollowerDTO> followersDTO = followers.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(followersDTO, HttpStatus.OK);
     }
 
     // Get users followed by the user (returning FollowerDTO)
     @GetMapping("/{userId}/following")
     @Operation(summary = "Get users followed by the user", description = "Get users followed by the user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users followed by the user", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = FollowerDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "No users followed by the user", content = @Content)
+    })
     public ResponseEntity<List<FollowerDTO>> getFollowing(@PathVariable Integer userId) {
-        List<FollowerDTO> following = followerService.getFollowing(userId);
-        System.out.println("Following: " + following);
+        List<FollowerModel> following = followerService.getFollowing(userId);
         if (following.isEmpty()) {
             throw new NoSuchElementException();
         }
-        return new ResponseEntity<>(following, HttpStatus.OK);
+        List<FollowerDTO> followingDTO = following.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(followingDTO, HttpStatus.OK);
     }
+
+    private FollowerDTO convertToDTO(FollowerModel follower) {
+        return modelMapper.map(follower, FollowerDTO.class);
+    }
+
 }
