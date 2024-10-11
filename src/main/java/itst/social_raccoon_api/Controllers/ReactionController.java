@@ -1,5 +1,6 @@
 package itst.social_raccoon_api.Controllers;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -34,9 +35,8 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
-
     @GetMapping()
-    @Operation(summary = "Get all reaction", description = "Get all reactions from the database")
+    @Operation(summary = "Get all reactions", description = "Get all reactions from the database")
     public ResponseEntity<List<ReactionModel>> findAll() {
         List<ReactionModel> reactions = reactionService.findAll();
         return new ResponseEntity<>(reactions, HttpStatus.OK);
@@ -60,11 +60,14 @@ public class ReactionController {
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ReactionModel.class)
-                            )
                     )
             )
-
+    )
     public ResponseEntity<ReactionModel> create(@RequestBody ReactionModel reaction) {
+        // Establece la fecha actual como fecha de creación
+        reaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
+        
+        // Guarda la nueva reacción
         ReactionModel newReaction = reactionService.save(reaction);
         return new ResponseEntity<>(newReaction, HttpStatus.CREATED);
     }
@@ -96,5 +99,4 @@ public class ReactionController {
         Map<String, Boolean> response = Map.of("deleted", Boolean.TRUE);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    
 }
