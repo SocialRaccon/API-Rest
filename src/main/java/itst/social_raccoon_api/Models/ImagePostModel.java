@@ -28,12 +28,13 @@ public class ImagePostModel {
     public ImagePostModel() {
     }
 
-    public ImagePostModel(Integer idImagePost, String url, String thumbnail, Integer idPost) {
+    public ImagePostModel(Integer idImagePost, String url, String thumbnail, PostModel post) {
         this.idImagePost = idImagePost;
         this.url = url;
         this.thumbnail = thumbnail;
         this.post = post;
     }
+    
     public Integer getIdImagePost() {
         return idImagePost;
     }
