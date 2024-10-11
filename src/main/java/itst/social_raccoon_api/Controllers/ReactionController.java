@@ -66,8 +66,6 @@ public class ReactionController {
     public ResponseEntity<ReactionModel> create() {
         ReactionModel reaction = new ReactionModel();
         reaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
-        
-        // Guarda la nueva reacción
         ReactionModel newReaction = reactionService.save(reaction);
         return new ResponseEntity<>(newReaction, HttpStatus.CREATED);
     }
@@ -81,7 +79,7 @@ public class ReactionController {
         ReactionModel existingReaction = reactionService.findById(id);
         existingReaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
         if (existingReaction == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NoSuchElementException();
         }
         ReactionModel updatedReaction = reactionService.save(existingReaction);
         return new ResponseEntity<>(updatedReaction, HttpStatus.OK);
