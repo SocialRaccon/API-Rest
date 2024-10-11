@@ -1,25 +1,19 @@
 package itst.social_raccoon_api.Models;
-
 import java.sql.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity(name = "reaction")
 public class ReactionModel {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int IdReaction;
-    private Date ReactionDate;
+    private Integer idReaction;
+    private Date reactionDate;
 
-    public ReactionModel(int IdReaction, Date ReactionDate) {
-        this.IdReaction = IdReaction;
-        this.ReactionDate = ReactionDate;
+    public ReactionModel(Integer IdReaction, Date ReactionDate) {
+        this.idReaction = IdReaction;
+        this.reactionDate = ReactionDate;
     }
 
     public ReactionModel() {
@@ -40,12 +34,7 @@ public class ReactionModel {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ReactionModel{");
-        sb.append("IdReaction=").append(IdReaction);
-        sb.append(", ReactionDate=").append(ReactionDate);
-        sb.append('}');
-        return sb.toString();
+        return "ReactionModel [idReaction=" + idReaction + ", reactionDate=" + reactionDate + "]";
     }
 
 }
