@@ -29,6 +29,7 @@ public class CommentModel {
     private PostModel post;
 
     @Schema(description = "Content of the comment", example = "This is a comment")
+    @Column(name = "comment", nullable = false)
     private String comment;
 
     @Schema(description = "Date when the comment was made", example = "2021-10-10 10:00:00")
@@ -52,6 +53,7 @@ public class CommentModel {
     public void setIdComment(Integer idComment) {
         this.idComment = idComment;
     }
+
     public String getComment() {
         return comment;
     }

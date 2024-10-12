@@ -17,14 +17,20 @@ public class ReactionIconModel {
     private Integer idReactionIcon;
 
     @Schema(description = "Thumbnail of the reaction icon", example = "https://www.example.com/icon.jpg")
-    @Column(name = "thumbnail")
+    @Column(name = "iconUrl")
     @Size(max = 255)
     @NotBlank(message = "This content must not be null and must not be empty")
-    private String thumbnail;
+    private String iconUrl;
+
+    @Schema(description = "Thumbnail of the reaction icon", example = "https://www.example.com/icon.jpg")
+    @Column(name = "iconThumbnailUrl")
+    @Size(max = 255)
+    @NotBlank(message = "This content must not be null and must not be empty")
+    private String iconThumbnailUrl;
 
     public ReactionIconModel(Integer IdReactionIcon, String thumbnail) {
         this.idReactionIcon = IdReactionIcon;
-        this.thumbnail = thumbnail;
+        this.iconUrl = thumbnail;
     }
 
     public ReactionIconModel() {
@@ -33,14 +39,25 @@ public class ReactionIconModel {
     public Integer getIdReactionIcon() {
         return idReactionIcon;
     }
+
     public void setIdReactionIcon(Integer idReactionIcon) {
         this.idReactionIcon = idReactionIcon;
     }
-    public String getThumbnail() {
-        return thumbnail;
+
+    public String getIconUrl() {
+        return iconUrl;
     }
-    public void setThumbnail(String icon) {
-        this.thumbnail = icon;
+
+    public void setIconUrl(String icon) {
+        this.iconUrl = icon;
+    }
+
+    public String getIconThumbnailUrl() {
+        return iconThumbnailUrl;
+    }
+
+    public void setIconThumbnailUrl(String iconThumbnailUrl) {
+        this.iconThumbnailUrl = iconThumbnailUrl;
     }
 
     @Override
@@ -48,7 +65,7 @@ public class ReactionIconModel {
         StringBuilder sb = new StringBuilder();
         sb.append("ReactionIconModel{");
         sb.append("IdReactionIcon=").append(idReactionIcon);
-        sb.append(", Icon=").append(thumbnail);
+        sb.append(", Icon=").append(iconUrl);
         sb.append('}');
         return sb.toString();
     }

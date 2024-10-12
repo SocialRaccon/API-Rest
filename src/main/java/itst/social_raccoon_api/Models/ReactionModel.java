@@ -1,47 +1,92 @@
 package itst.social_raccoon_api.Models;
 
 import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.swagger.v3.oas.annotations.media.Schema;
+import itst.social_raccoon_api.Models.CompositeKeys.ReactionPK;
 import jakarta.persistence.*;
 
-@Entity(name = "reaction")
+@Entity()
+@Table(name = "reaction")
+@IdClass(ReactionPK.class)
+@Schema(description = "Model representing a reaction")
 public class ReactionModel {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idReaction;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idReactionType")
+    @Schema(description = "Unique identifier of the reaction type", example = "1")
+    @JsonBackReference(value = "reactionType-reaction")
+    private ReactionTypeModel idReactionType;  // Campo para el identificador de la reacción
 
-    private Timestamp dateCreated;  // Campo para la fecha de creación
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPost")
+    @Schema(description = "Unique identifier of the post", example = "1")
+    @JsonBackReference(value = "post-reaction")
+    private PostModel idPost;  // Campo para el identificador del post
 
-    // Constructor con todos los campos
-    public ReactionModel(Integer idReaction, Timestamp dateCreated) {
-        this.idReaction = idReaction;
-        this.dateCreated = dateCreated;
-    }
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUser")
+    @Schema(description = "Unique identifier of the user", example = "1")
+    @JsonBackReference(value = "user-reaction")
+    private UserModel idUser;  // Campo para el identificador del usuario
 
-    // Constructor vacío
+    @Column(name = "date")
+    @Schema(description = "Date when the reaction was made", example = "2021-10-10 10:00:00")
+    private Timestamp date = new Timestamp(System.currentTimeMillis());  // Campo para la fecha de la reacción
+
     public ReactionModel() {
     }
 
-    // Getters y Setters
-    public Integer getIdReaction() {
-        return idReaction;
+    public ReactionModel(ReactionTypeModel idReaction, PostModel idPost, UserModel idUser, Timestamp date) {
+        this.idReactionType = idReaction;
+        this.idPost = idPost;
+        this.idUser = idUser;
+        this.date = date;
     }
 
-    public void setIdReaction(Integer idReaction) {
-        this.idReaction = idReaction;
+    public ReactionTypeModel getIdReactionType() {
+        return idReactionType;
     }
 
-    public Timestamp getDateCreated() {
-        return dateCreated;
+    public void setIdReactionType(ReactionTypeModel idReaction) {
+        this.idReactionType = idReaction;
     }
 
-    public void setDateCreated(Timestamp dateCreated) {
-        this.dateCreated = dateCreated;
+    public PostModel getIdPost() {
+        return idPost;
     }
 
-    // Método toString para depuración
+    public void setIdPost(PostModel idPost) {
+        this.idPost = idPost;
+    }
+
+    public UserModel getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(UserModel idUser) {
+        this.idUser = idUser;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
-        return "ReactionModel [idReaction=" + idReaction + ", dateCreated=" + dateCreated + "]";
+        return "ReactionModel{" +
+                "idReaction=" + idReactionType +
+                ", idPost=" + idPost +
+                ", idUser=" + idUser +
+                ", date=" + date +
+                '}';
     }
 }

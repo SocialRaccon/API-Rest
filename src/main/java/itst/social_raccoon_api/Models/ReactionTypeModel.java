@@ -15,7 +15,9 @@ public class ReactionTypeModel {
     private Integer idReactionType;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reactionIcon", referencedColumnName = "idReactionIcon")
+    @JoinColumn(name = "idReactionIcon", referencedColumnName = "idReactionIcon")
+    @JsonProperty("reactionIcon")
+    @Schema(description = "Icon of the reaction", example = "1")
     private ReactionIconModel reactionIcon;
 
     @Schema(description = "Type of reaction", example = "Like")
