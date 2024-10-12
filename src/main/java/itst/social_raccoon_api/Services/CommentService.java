@@ -23,8 +23,9 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public CommentModel findById(Integer id) {
-        return commentRepository.findById(id).orElse(null);
+    //update
+    public void update(CommentModel comment) {
+        commentRepository.save(comment);
     }
 
     public void delete(Integer id) {
@@ -60,6 +61,11 @@ public class CommentService {
     public List<CommentModel> getCommentsByPostIdAndUserId(Integer postId, Integer userId, int pageNumber, int pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
         return commentRepository.getCommentsByPostIdAndUserId(postId, userId, pageRequest);
+    }
+
+    //getCommentByPostIdAndUserIdAndCommentId
+    public CommentModel getCommentByPostIdAndUserIdAndCommentId(Integer postId, Integer userId, Integer commentId) {
+        return commentRepository.getComment(postId, userId, commentId);
     }
 
 }
