@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 
@@ -31,6 +33,10 @@ public class ReactionService {
 
     public void deleteById(Integer id) {
         reactionRepository.deleteById(id);
+    }
+
+    public List<ReactionModel> getReactionsByPostId(Integer postId) {
+        return reactionRepository.getReactionsByPostId(postId);
     }
 
 }
