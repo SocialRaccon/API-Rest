@@ -164,4 +164,62 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @PutMapping("/post/{postId}/user/{userId}/comment/{commentId}")
+    @Operation(
+            summary = "Update comment",
+            description = "Update a comment by its id",
+            requestBody = @RequestBody(
+                    description = "Comment to be updated",
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = CommentModel.class),
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "Comment",
+                                    value = "{\n" +
+                                            "  \"idComment\": 1,\n" +
+                                            "  \"comment\": \"This is a comment\",\n" +
+                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
+                                            "  \"user\": {\n" +
+                                            "    \"idUser\": 1\n" +
+                                            "  },\n" +
+                                            "  \"post\": {\n" +
+                                            "    \"idPost\": 1\n" +
+                                            "  }\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "Comment updated",
+                    content = @Content(
+                            schema = @Schema(implementation = CommentModel.class),
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "Comment",
+                                    value = "{\n" +
+                                            "  \"idComment\": 1,\n" +
+                                            "  \"comment\": \"This is a comment\",\n" +
+                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "Comment not found",
+                    content = @Content
+            )
+    })
+    public ResponseEntity<CommentModel> update(@PathVariable Integer postId, @PathVariable Integer userId, @PathVariable Integer commentId, @RequestBody CommentModel comment) {
+        CommentModel commentToUpdate = commentService.getCommentByPostIdAndUserIdAndCommentId(postId, userId, commentId);
+        if (commentToUpdate == null) {
+            throw new NoSuchElementException();
+        }
+        commentToUpdate.setComment(comment.getComment());
+        commentToUpdate.setDate(comment.getDate());
+        return new ResponseEntity<>(commentService.save(commentToUpdate), HttpStatus.OK);
+    }
+
 }
