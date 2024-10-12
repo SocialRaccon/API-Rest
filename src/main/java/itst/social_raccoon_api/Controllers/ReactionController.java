@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import itst.social_raccoon_api.Dto.ReactionDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,68 +37,80 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
-    @GetMapping()
-    @Operation(summary = "Get all reactions", description = "Get all reactions from the database")
-    public ResponseEntity<List<ReactionModel>> findAll() {
-        List<ReactionModel> reactions = reactionService.findAll();
-        return new ResponseEntity<>(reactions, HttpStatus.OK);
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Operation(summary = "Get all reactions")
+    @GetMapping
+    public List<ReactionDTO> getAll() {
+        List<ReactionModel> reactions = reactionService.getAll();
+        if (reactions.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return reactions.stream().map(this::convertToDTO).toList();
     }
 
-    @GetMapping("post/{postId}")
-    @Operation(summary = "Get reactions by post id", description = "Get all reactions by post id")
-    public ResponseEntity<List<ReactionModel>> findByPostId(@PathVariable Integer postId) {
-        List<ReactionModel> reactions = reactionService.getReactionsByPostId(postId);
-        return new ResponseEntity<>(reactions, HttpStatus.OK);
-    }
-
-    @GetMapping("{id}")
-    @Operation(summary = "Get reaction by id", description = "Get a reaction by id")
-    public ResponseEntity<ReactionModel> findById(@PathVariable Integer id) {
-        ReactionModel reaction = reactionService.findById(id);
+    @Operation(summary = "Get a reaction by its post id and user id")
+    @GetMapping("/post/{postId}/user/{userId}")
+    public ResponseEntity<ReactionDTO> getById(@PathVariable int postId, @PathVariable int userId) {
+        ReactionModel reaction = reactionService.getReactionByPostIdAndUserId(postId, userId);
         if (reaction == null) {
             throw new NoSuchElementException();
         }
-        return new ResponseEntity<>(reaction, HttpStatus.OK);
+        ReactionDTO reactionDTO = convertToDTO(reaction);
+        return new ResponseEntity<>(reactionDTO, HttpStatus.OK);
     }
 
-    @PostMapping()
-    @Operation(
-            summary = "Create a reaction",
-            description = "Create a new reaction in the database",
-            requestBody = @RequestBody(
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ReactionModel.class)
-                    )
-            )
-    )
-    public ResponseEntity<ReactionModel> create() {
-        ReactionModel reaction = new ReactionModel();
-        reaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
-        ReactionModel newReaction = reactionService.save(reaction);
-        return new ResponseEntity<>(newReaction, HttpStatus.CREATED);
-    }
-
-    @PutMapping("{id}")
-    @Operation(
-            summary = "Update a reaction",
-            description = "Update a reaction in the database"
-    )
-    public ResponseEntity<ReactionModel> update(@PathVariable Integer id) {
-        ReactionModel existingReaction = reactionService.findById(id);
-        existingReaction.setDateCreated(new Timestamp(System.currentTimeMillis()));
-        if (existingReaction == null) {
+    @Operation(summary = "Get all reactions by post id")
+    @GetMapping("/post/{postId}")
+    public List<ReactionDTO> getReactionsByPostId(@PathVariable int postId) {
+        List<ReactionModel> reactions = reactionService.getReactionsByPostId(postId);
+        if (reactions.isEmpty()) {
             throw new NoSuchElementException();
         }
-        ReactionModel updatedReaction = reactionService.save(existingReaction);
-        return new ResponseEntity<>(updatedReaction, HttpStatus.OK);
+        return reactions.stream().map(this::convertToDTO).toList();
     }
 
-    @DeleteMapping("{id}")
-    @Operation(summary = "Delete a reaction", description = "Delete a reaction from the database")
-    public ResponseEntity<Map<String, Boolean>> delete(@PathVariable Integer id) {
-        reactionService.deleteById(id);
-        Map<String, Boolean> response = Map.of("deleted", Boolean.TRUE);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @Operation(summary = "Get all reactions by user id")
+    @GetMapping("/user/{userId}")
+    public List<ReactionDTO> getReactionsByUserId(@PathVariable int userId) {
+        List<ReactionModel> reactions = reactionService.getReactionsByUserId(userId);
+        if (reactions.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return reactions.stream().map(this::convertToDTO).toList();
+    }
+
+    @Operation(summary = "Get reaction count by post id")
+    @GetMapping("/count/post/{postId}")
+    public Integer getReactionCountByPostId(@PathVariable int postId) {
+        return reactionService.getReactionCountByPostId(postId);
+    }
+
+    @Operation(summary = "Create a reaction")
+    @PostMapping
+    public ResponseEntity<ReactionDTO> save(@RequestBody ReactionModel reaction) {
+        reactionService.save(reaction);
+        ReactionDTO reactionDTO = convertToDTO(reaction);
+        return new ResponseEntity<>(reactionDTO, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update a reaction")
+    @PutMapping
+    public ResponseEntity<ReactionDTO> update(@RequestBody ReactionModel reaction) {
+        reactionService.update(reaction);
+        ReactionDTO reactionDTO = convertToDTO(reaction);
+        return new ResponseEntity<>(reactionDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Delete a reaction")
+    @DeleteMapping
+    public ResponseEntity<Map<String, Boolean>> delete(@RequestBody ReactionModel reaction) {
+        reactionService.delete(reaction);
+        return new ResponseEntity<>(Map.of("deleted", true), HttpStatus.OK);
+    }
+
+    private ReactionDTO convertToDTO(ReactionModel reaction) {
+        return modelMapper.map(reaction, ReactionDTO.class);
     }
 }
