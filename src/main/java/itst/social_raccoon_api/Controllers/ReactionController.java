@@ -42,6 +42,13 @@ public class ReactionController {
         return new ResponseEntity<>(reactions, HttpStatus.OK);
     }
 
+    @GetMapping("post/{postId}")
+    @Operation(summary = "Get reactions by post id", description = "Get all reactions by post id")
+    public ResponseEntity<List<ReactionModel>> findByPostId(@PathVariable Integer postId) {
+        List<ReactionModel> reactions = reactionService.getReactionsByPostId(postId);
+        return new ResponseEntity<>(reactions, HttpStatus.OK);
+    }
+
     @GetMapping("{id}")
     @Operation(summary = "Get reaction by id", description = "Get a reaction by id")
     public ResponseEntity<ReactionModel> findById(@PathVariable Integer id) {
