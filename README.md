@@ -40,7 +40,7 @@ CREATE TABLE user
 
 CREATE TABLE follower
 (
-    idUser INT NOT NULL,
+    idUser     INT NOT NULL,
     idFollower INT NOT NULL,
     PRIMARY KEY (idUser, idFollower),
     FOREIGN KEY (idUser) REFERENCES user (idUser),
@@ -104,13 +104,13 @@ CREATE TABLE reaction_icon
 (
     idReactionIcon INT AUTO_INCREMENT PRIMARY KEY,
     iconUrl        VARCHAR(255) NOT NULL,
-    iconThumbnail  VARCHAR(255) NOT NULL
+    iconThumbnailUrl  VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE reaction_type
 (
     idReactionType INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(65) NOT NULL,
+    reactionType VARCHAR(65) NOT NULL,
     idReactionIcon INT         NOT NULL,
     FOREIGN KEY (idReactionIcon) REFERENCES reaction_icon (idReactionIcon)
 );
@@ -126,7 +126,6 @@ CREATE TABLE reaction
     FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
 
-#INSERTS
 INSERT INTO career (name, acronym)
 VALUES ('Ingeniería en Sistemas Computacionales', 'ISC'),
        ('Ingeniería en Gestión Empresarial', 'IGE'),
@@ -175,13 +174,13 @@ VALUES ('Hola como esta eso?', '2021-10-01', 2, 1),
        ('Siempre lo mismo, otra vez a repite :(', '2021-10-02', 3, 2),
        ('Vivan los mapaches!!', '2021-10-03', 1, 3);
 
-INSERT INTO reaction_icon (iconUrl, iconThumbnail)
+INSERT INTO reaction_icon (iconUrl, iconThumbnailUrl)
 VALUES ('https://www.example.com/icon1.jpg', 'https://www.example.com/icon1_thumbnail.jpg'),
        ('https://www.example.com/icon2.jpg', 'https://www.example.com/icon2_thumbnail.jpg'),
        ('https://www.example.com/icon3.jpg', 'https://www.example.com/icon3_thumbnail.jpg'),
        ('https://www.example.com/icon4.jpg', 'https://www.example.com/icon4_thumbnail.jpg');
 
-INSERT INTO reaction_type (name, idReactionIcon)
+INSERT INTO reaction_type (reactionType, idReactionIcon)
 VALUES ('MeEnLike', 1),
        ('MeEnLove', 2),
        ('MeEnMapache', 3),
@@ -191,5 +190,4 @@ INSERT INTO reaction (idReactionType, idUser, idPost)
 VALUES (1, 2, 1),
        (4, 3, 2),
        (3, 1, 3);
-
 ````
