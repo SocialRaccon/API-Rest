@@ -1,15 +1,17 @@
 package itst.social_raccoon_api.Models;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 @Entity
 @Table(name = "user")
+@JsonIgnoreProperties({"posts", "followers", "following", "comments"})
 public class UserModel {
     @Id
     @Column
@@ -20,12 +22,12 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostModel> posts;
 
+    @JsonManagedReference(value = "user-follower")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference(value = "user-follower")
     private List<FollowerModel> followers;
 
+    @JsonManagedReference(value = "user-following")
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference(value = "user-following")
     private List<FollowerModel> following;
 
     @JsonManagedReference(value = "user-comment")
@@ -54,6 +56,19 @@ public class UserModel {
     @Column(nullable = false)
     @Schema(description = "Control number of the user", example = "21TE284")
     private String controlNumber;
+
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCareer", referencedColumnName = "idCareer")
+    private CareerModel career;
+
+    public CareerModel getCareer() {
+        return career;
+    }
+
+    public void setCareer(CareerModel career) {
+        this.career = career;
+    }
 
     public Integer getIdUser() {
         return idUser;
