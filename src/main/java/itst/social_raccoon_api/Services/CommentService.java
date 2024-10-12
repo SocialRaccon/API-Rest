@@ -5,6 +5,7 @@ import itst.social_raccoon_api.Models.FollowerModel;
 import itst.social_raccoon_api.Repositories.CommentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,11 +41,27 @@ public class CommentService {
         return commentRepository.getCommentsByPostId(postId);
     }
 
+    public List<CommentModel> getCommentsByPostId(Integer postId,  int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return commentRepository.getCommentsByPostId(postId, pageRequest);
+
+    }
+
     public List<CommentModel> getCommentsByUserId(Integer userId) {
         return commentRepository.getCommentsByUserId(userId);
     }
 
+    public List<CommentModel> getCommentsByUserId(Integer userId, int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return commentRepository.getCommentsByUserId(userId, pageRequest);
+    }
     public List<CommentModel> getCommentsByPostIdAndUserId(Integer postId, Integer userId) {
         return commentRepository.getCommentsByPostIdAndUserId(postId, userId);
     }
+
+    public List<CommentModel> getCommentsByPostIdAndUserId(Integer postId, Integer userId, int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return commentRepository.getCommentsByPostIdAndUserId(postId, userId, pageRequest);
+    }
+
 }
