@@ -54,10 +54,24 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/post/{postId}/pagination", params = {"page", "pageSize"})
+    @Operation(summary = "Get comments by post id with pagination", description = "Get all comments by post id with pagination")
+    public ResponseEntity<List<CommentModel>> findByPostIdPaginated(@PathVariable Integer postId, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        List<CommentModel> comments = commentService.getCommentsByPostId(postId, page, pageSize);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get comments by user id", description = "Get all comments by user id")
     public ResponseEntity<List<CommentModel>> findByUserId(@PathVariable Integer userId) {
         List<CommentModel> comments = commentService.getCommentsByUserId(userId);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/user/{userId}/pagination", params = {"page", "pageSize"})
+    @Operation(summary = "Get comments by user id with pagination", description = "Get all comments by user id with pagination")
+    public ResponseEntity<List<CommentModel>> findByUserIdPaginated(@PathVariable Integer userId, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        List<CommentModel> comments = commentService.getCommentsByUserId(userId, page, pageSize);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -68,5 +82,11 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @GetMapping("/post/{postId}/user/{userId}/pagination")
+    @Operation(summary = "Get comments by post id and user id with pagination", description = "Get all comments by post id and user id with pagination")
+    public ResponseEntity<List<CommentModel>> findByPostIdAndUserIdPaginated(@PathVariable Integer postId, @PathVariable Integer userId, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        List<CommentModel> comments = commentService.getCommentsByPostIdAndUserId(postId, userId, page, pageSize);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
 
 }
