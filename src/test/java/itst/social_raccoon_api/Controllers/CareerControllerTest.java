@@ -76,4 +76,13 @@ public class CareerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
+
+    @Test
+    public void testFindByName() throws Exception {
+        mockMvc.perform(get("/career/acronym/ISC"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.acronym", String.class).value("ISC"));
+    }
 }

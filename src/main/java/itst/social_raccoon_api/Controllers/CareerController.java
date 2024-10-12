@@ -30,6 +30,16 @@ public class CareerController {
         return new ResponseEntity<>(careers, HttpStatus.OK);
     }
 
+    @GetMapping("acronym/{acronym}")
+    @Operation(summary = "Get career by acronym", description = "Get a career by its acronym")
+    public ResponseEntity<CareerModel> findByAcronym(@PathVariable String acronym) {
+        CareerModel career = careerService.findByAcronym(acronym);
+        if (career == null) {
+            throw new NoSuchElementException();
+        }
+        return new ResponseEntity<>(career, HttpStatus.OK);
+    }
+
     @GetMapping("{id}")
     @Operation(summary = "Get career by id", description = "Get a career by its id")
     public ResponseEntity<CareerModel> findById(@PathVariable Integer id) {
