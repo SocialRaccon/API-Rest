@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,36 +19,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTest {
+public class FollowerControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private UserController controller;
+    private FollowerController controller;
 
     @Test
     void contextLoads() throws Exception {
         assertThat(controller).isNotNull();
     }
 
-    @Test // Test for the getAllUsers method
-    public void getAllUsersTest() throws Exception {
-        mvc.perform(get("/user").accept(MediaType.APPLICATION_JSON)).andDo(print())
+    @Test // Test for the followUser method
+    public void followUserTest() throws Exception {
+        mvc.perform(get("/follower/user/1/followers").accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
 
-    @Test // Test for the getUserById method
-    public void getUserByIdTest() throws Exception {
-        mvc.perform(get("/user/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.idUser", is(2)));
-    }
-
-    @Test // Test for the getUserById method when the user is not found
-    public void getUserByIdNotFoundTest() throws Exception {
-        mvc.perform(get("/user/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+    @Test // Test for the followUser method when the user is not found
+    public void followUserNotFoundTest() throws Exception {
+        mvc.perform(get("/follower/user/0/followers").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }

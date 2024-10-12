@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("comment")
@@ -107,6 +108,9 @@ public class CommentController {
     @Operation(summary = "Get comments by post id", description = "Get all comments by post id")
     public ResponseEntity<List<CommentModel>> findByPostId(@PathVariable Integer postId) {
         List<CommentModel> comments = commentService.getCommentsByPostId(postId);
+        if (comments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -114,6 +118,9 @@ public class CommentController {
     @Operation(summary = "Get comments by post id with pagination", description = "Get all comments by post id with pagination")
     public ResponseEntity<List<CommentModel>> findByPostIdPaginated(@PathVariable Integer postId, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments = commentService.getCommentsByPostId(postId, page, pageSize);
+        if (comments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -121,6 +128,9 @@ public class CommentController {
     @Operation(summary = "Get comments by user id", description = "Get all comments by user id")
     public ResponseEntity<List<CommentModel>> findByUserId(@PathVariable Integer userId) {
         List<CommentModel> comments = commentService.getCommentsByUserId(userId);
+        if (comments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -128,6 +138,9 @@ public class CommentController {
     @Operation(summary = "Get comments by user id with pagination", description = "Get all comments by user id with pagination")
     public ResponseEntity<List<CommentModel>> findByUserIdPaginated(@PathVariable Integer userId, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments = commentService.getCommentsByUserId(userId, page, pageSize);
+        if (comments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -135,6 +148,9 @@ public class CommentController {
     @Operation(summary = "Get comments by post id and user id", description = "Get all comments by post id and user id")
     public ResponseEntity<List<CommentModel>> findByPostIdAndUserId(@PathVariable Integer postId, @PathVariable Integer userId) {
         List<CommentModel> comments = commentService.getCommentsByPostIdAndUserId(postId, userId);
+        if (comments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -142,6 +158,9 @@ public class CommentController {
     @Operation(summary = "Get comments by post id and user id with pagination", description = "Get all comments by post id and user id with pagination")
     public ResponseEntity<List<CommentModel>> findByPostIdAndUserIdPaginated(@PathVariable Integer postId, @PathVariable Integer userId, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments = commentService.getCommentsByPostIdAndUserId(postId, userId, page, pageSize);
+        if (comments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 

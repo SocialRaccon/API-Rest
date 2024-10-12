@@ -31,7 +31,7 @@ public class FollowerController {
     @Autowired
     private ModelMapper modelMapper;
     // Follow a user
-    @PostMapping("/{userId}/follow/{followerId}")
+    @PostMapping("/user/{userId}/follow/{followerId}")
     @Operation(summary = "Follow a user", description = "Follow a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User followed", content = @Content),
@@ -43,7 +43,7 @@ public class FollowerController {
     }
 
     // Unfollow a user
-    @DeleteMapping("/{userId}/unfollow/{followerId}")
+    @DeleteMapping("/user/{userId}/unfollow/{followerId}")
     @Operation(summary = "Unfollow a user", description = "Unfollow a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User unfollowed", content = @Content),
@@ -55,7 +55,7 @@ public class FollowerController {
     }
 
     // Get followers of a user (returning FollowerDTO)
-    @GetMapping("/{userId}/followers")
+    @GetMapping("/user/{userId}/followers")
     @Operation(summary = "Get followers of a user", description = "Get followers of a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Followers of the user", content = {
@@ -75,7 +75,7 @@ public class FollowerController {
     }
 
     // Get users followed by the user (returning FollowerDTO)
-    @GetMapping("/{userId}/following")
+    @GetMapping("/user/{userId}/following")
     @Operation(summary = "Get users followed by the user", description = "Get users followed by the user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users followed by the user", content = {
