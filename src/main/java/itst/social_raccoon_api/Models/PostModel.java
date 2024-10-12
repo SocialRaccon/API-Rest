@@ -17,7 +17,6 @@ public class PostModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUser")
     @JsonBackReference(value = "user-post")
-
     private UserModel user;
     private Timestamp dateCreated;
     private String description;
@@ -37,11 +36,11 @@ public class PostModel {
         this.dateCreated = dateCreated;
     }
 
-    public Integer getPost() {
+    public Integer getIdPost() {
         return idPost;
     }
 
-    public void setPost(Integer idPost) {
+    public void setIdPost(Integer idPost) {
         this.idPost = idPost;
     }
 
