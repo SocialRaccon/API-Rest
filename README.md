@@ -1,5 +1,8 @@
 # API-Rest
-This is the API Rest for the Social Raccon App
+This is the API Rest for the Social Raccon App, it implements a SQL database with the following tables, but it is not necessary to create the database, the application will create it automatically.
+
+It doesn't use NoSQL databases because we don't need to store large amounts of data, and the data we need to store is relational.
+Also we doesn't implement NoSQL databases because we analyze our use case and we don't need to store large amounts of data such user comments, posts, etc.
 
 ## Setup
 1. Clone the repository
@@ -9,62 +12,185 @@ This is the API Rest for the Social Raccon App
 ### Script.sql
 ```sql
 
--- Insert data into users table
+CREATE DATABASE raccoondb;
+
 USE raccoondb;
+
+CREATE TABLE career
+(
+    idCareer INT AUTO_INCREMENT PRIMARY KEY,
+    name     VARCHAR(65) NOT NULL,
+    acronym  VARCHAR(10) NOT NULL,
+    CONSTRAINT unique_acronym UNIQUE (acronym)
+);
+
 CREATE TABLE user
 (
-    id             INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(50) NOT NULL,
-    lastName       VARCHAR(50) NOT NULL,
-    secondLastName VARCHAR(50) NOT NULL,
-    email          VARCHAR(50) NOT NULL,
-    controlNumber  VARCHAR(50) NOT NULL,
+    idUser         INT AUTO_INCREMENT PRIMARY KEY,
+    name           VARCHAR(65) NOT NULL,
+    lastName       VARCHAR(65) NOT NULL,
+    secondLastName VARCHAR(65) NOT NULL,
+    email          VARCHAR(65) NOT NULL,
+    controlNumber  VARCHAR(8)  NOT NULL,
+    idCareer       INT         NOT NULL,
+    FOREIGN KEY (idCareer) REFERENCES career (idCareer),
     CONSTRAINT unique_email UNIQUE (email),
     CONSTRAINT unique_controlNumber UNIQUE (controlNumber)
 );
 
+CREATE TABLE follow
+(
+    idUserFollower INT NOT NULL,
+    idUserFollowed INT NOT NULL,
+    PRIMARY KEY (idUserFollower, idUserFollowed),
+    FOREIGN KEY (idUserFollower) REFERENCES user (idUser),
+    FOREIGN KEY (idUserFollowed) REFERENCES user (idUser)
+);
+
+CREATE TABLE profile
+(
+    idProfile   INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(150) NOT NULL,
+    idUser      INT          NOT NULL,
+    FOREIGN KEY (idUser) REFERENCES user (idUser)
+);
+
+CREATE TABLE image_profile
+(
+    idImageProfile    INT AUTO_INCREMENT PRIMARY KEY,
+    idProfile         INT          NOT NULL,
+    imageUrl          VARCHAR(255) NOT NULL,
+    imageThumbnailUrl VARCHAR(255) NOT NULL,
+    FOREIGN KEY (idProfile) REFERENCES profile (idProfile)
+);
+
 CREATE TABLE post
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    dateCreated DATE         NOT NULL,
-    description TEXT         NOT NULL,
-    imageUrl    VARCHAR(255) NOT NULL,
-    idUser      INT          NOT NULL,
-    FOREIGN KEY (idUser) REFERENCES user (id)
+    idPost      INT AUTO_INCREMENT PRIMARY KEY,
+    dateCreated DATE NOT NULL,
+    idUser      INT  NOT NULL,
+    FOREIGN KEY (idUser) REFERENCES user (idUser)
+);
+
+CREATE TABLE image_post
+(
+    idImagePost       INT AUTO_INCREMENT PRIMARY KEY,
+    imageUrl          VARCHAR(255) NOT NULL,
+    imageThumbnailUrl VARCHAR(255) NOT NULL,
+    idPost            INT          NOT NULL,
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
+);
+
+CREATE TABLE post_description
+(
+    idPostDescription INT AUTO_INCREMENT PRIMARY KEY,
+    description       VARCHAR(150) NOT NULL,
+    idPost            INT          NOT NULL,
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
 
 CREATE TABLE comment
 (
-    id      INT AUTO_INCREMENT PRIMARY KEY,
-    comment TEXT NOT NULL,
-    date    DATE NOT NULL,
-    idUser  INT NOT NULL,
-    idPost  INT NOT NULL,
-    FOREIGN KEY (idUser) REFERENCES user (id),
-    FOREIGN KEY (idPost) REFERENCES post (id)
+    idComment INT AUTO_INCREMENT,
+    comment   VARCHAR(150) NOT NULL,
+    date      DATE         NOT NULL,
+    idUser    INT          NOT NULL,
+    idPost    INT          NOT NULL,
+    PRIMARY KEY (idComment, idUser, idPost),
+    FOREIGN KEY (idUser) REFERENCES user (idUser),
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
--- Insert data into users table
-INSERT INTO user (name, lastName, secondLastName, email, controlNumber)
-VALUES ('Alejandro', 'Tejeda', 'Moreno', 'alex2227@htomil.com', '21TE284'),
-       ('Gerardo', 'García', 'García', 'gerd2@gmail.com', '21TE285'),
-       ('José', 'García', 'García', 'josesito@gmail.com', '21TE286');
 
--- Insert data into posts table
-INSERT INTO post (dateCreated, description, imageUrl, idUser)
-VALUES ('2021-10-10', 'This is a post', 'https://www.google.com', 1),
-       ('2021-10-10', 'This is a post', 'https://www.google.com', 2),
-       ('2021-10-10', 'This is a post', 'https://www.google.com', 3);
+CREATE TABLE reaction_icon
+(
+    idReactionIcon INT AUTO_INCREMENT PRIMARY KEY,
+    iconUrl        VARCHAR(255) NOT NULL,
+    iconThumbnail  VARCHAR(255) NOT NULL
+);
 
--- Insert data into comments table
+CREATE TABLE reaction_type
+(
+    idReactionType INT AUTO_INCREMENT PRIMARY KEY,
+    name           VARCHAR(65) NOT NULL,
+    idReactionIcon INT         NOT NULL,
+    FOREIGN KEY (idReactionIcon) REFERENCES reaction_icon (idReactionIcon)
+);
+
+CREATE TABLE reaction
+(
+    idReactionType INT NOT NULL,
+    idUser         INT NOT NULL,
+    idPost         INT NOT NULL,
+    createdDate    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (idUser, idPost, idReactionType),
+    FOREIGN KEY (idUser) REFERENCES user (idUser),
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
+);
+
+#INSERTS
+INSERT INTO career (name, acronym)
+VALUES ('Ingeniería en Sistemas Computacionales', 'ISC'),
+       ('Ingeniería en Gestión Empresarial', 'IGE'),
+       ('Ingeniería en Mecatrónica', 'IME');
+
+INSERT INTO user (name, lastName, secondLastName, email, controlNumber, idCareer)
+VALUES ('Juan', 'Pérez', 'Gómez', 'juan@gmail.com', '21TE0121', 1),
+       ('María', 'González', 'Hernández', 'maria@gmail.com', '21TE0122', 2),
+       ('Pedro', 'Martínez', 'López', 'pedro@gmail.com', '21TE0123', 3);
+
+INSERT INTO profile (description, idUser)
+VALUES ('Estudiante de ISC', 1),
+       ('Estudiante de IGE', 2),
+       ('Estudiante de IME', 3);
+
+INSERT INTO follow (idUserFollower, idUserFollowed)
+VALUES (1, 2),
+       (1, 3),
+       (2, 1),
+       (2, 3),
+       (3, 1),
+       (3, 2);
+
+INSERT INTO image_profile (idProfile, imageUrl, imageThumbnailUrl)
+VALUES (1, 'https://www.example.com/image1.jpg', 'https://www.example.com/image1_thumbnail.jpg'),
+       (2, 'https://www.example.com/image2.jpg', 'https://www.example.com/image2_thumbnail.jpg'),
+       (3, 'https://www.example.com/image3.jpg', 'https://www.example.com/image3_thumbnail.jpg');
+
+INSERT INTO post (dateCreated, idUser)
+VALUES ('2021-10-01', 1),
+       ('2021-10-02', 2),
+       ('2021-10-03', 3);
+
+INSERT INTO image_post (imageUrl, imageThumbnailUrl, idPost)
+VALUES ('https://www.example.com/image_post1.jpg', 'https://www.example.com/image_post1_thumbnail.jpg', 1),
+       ('https://www.example.com/image_post2.jpg', 'https://www.example.com/image_post2_thumbnail.jpg', 2),
+       ('https://www.example.com/image_post3.jpg', 'https://www.example.com/image_post3_thumbnail.jpg', 3);
+
+INSERT INTO post_description (description, idPost)
+VALUES ('Evento colecta', 1),
+       ('EXAMEN FINAL', 2),
+       ('Mapachitos TEC', 3);
+
 INSERT INTO comment (comment, date, idUser, idPost)
-VALUES ('This is a comment', '2021-10-10', 1, 1),
-       ('This is a comment', '2021-10-10', 2, 2),
-       ('This is a comment', '2021-10-10', 3, 3);
+VALUES ('Hola como esta eso?', '2021-10-01', 2, 1),
+       ('Siempre lo mismo, otra vez a repite :(', '2021-10-02', 3, 2),
+       ('Vivan los mapaches!!', '2021-10-03', 1, 3);
 
-SELECT *
-FROM post;
-SELECT *
-FROM user;
-SELECT *
-FROM comment;
+INSERT INTO reaction_icon (iconUrl, iconThumbnail)
+VALUES ('https://www.example.com/icon1.jpg', 'https://www.example.com/icon1_thumbnail.jpg'),
+       ('https://www.example.com/icon2.jpg', 'https://www.example.com/icon2_thumbnail.jpg'),
+       ('https://www.example.com/icon3.jpg', 'https://www.example.com/icon3_thumbnail.jpg'),
+       ('https://www.example.com/icon4.jpg', 'https://www.example.com/icon4_thumbnail.jpg');
+
+INSERT INTO reaction_type (name, idReactionIcon)
+VALUES ('MeEnLike', 1),
+       ('MeEnLove', 2),
+       ('MeEnMapache', 3),
+       ('MeEnSad', 4);
+
+INSERT INTO reaction (idReactionType, idUser, idPost)
+VALUES (1, 2, 1),
+       (4, 3, 2),
+       (3, 1, 3);
+
 ````
