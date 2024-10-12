@@ -3,11 +3,15 @@ package itst.social_raccoon_api.Controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import itst.social_raccoon_api.Dto.FollowerDTO;
 import itst.social_raccoon_api.Models.CommentModel;
-import itst.social_raccoon_api.Models.FollowerModel;
+import itst.social_raccoon_api.Models.PostModel;
+import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Services.CommentService;
+import itst.social_raccoon_api.Services.PostService;
+import itst.social_raccoon_api.Services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +28,70 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private PostService postService;
 
     @PostMapping()
     @Operation(
             summary = "Create a comment",
             description = "Create a new comment in the database",
             requestBody = @RequestBody(
+                    description = "Comment to be created",
+                    required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CommentModel.class)
+                            schema = @Schema(implementation = CommentModel.class),
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "Comment",
+                                    value = "{\n" +
+                                            "  \"comment\": \"This is a comment\",\n" +
+                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
+                                            "  \"user\": {\n" +
+                                            "    \"idUser\": 1\n" +
+                                            "  },\n" +
+                                            "  \"post\": {\n" +
+                                            "    \"idPost\": 1\n" +
+                                            "  }\n" +
+                                            "}"
+                            )
                     )
             )
     )
-    public ResponseEntity<CommentModel> create(@RequestBody CommentModel comment) {
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "201",
+                    description = "Comment created",
+                    content = @Content(
+                            schema = @Schema(implementation = CommentModel.class),
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "Comment",
+                                    value = "{\n" +
+                                            "  \"idComment\": 1,\n" +
+                                            "  \"comment\": \"This is a comment\",\n" +
+                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "User or post not found",
+                    content = @Content
+            )
+    })
+    public ResponseEntity<CommentModel> create(@org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
+        if (comment.getUser() == null || comment.getPost() == null) {
+            throw new IllegalArgumentException("User and Post must not be null");
+        }
+
+        UserModel user = userService.findById(comment.getUser().getIdUser());
+        PostModel post = postService.findById(comment.getPost().getIdPost());
+
+        if (user == null || post == null) {
+            throw new EntityNotFoundException("User or post not found");
+        }
+
         CommentModel createdComment = commentService.save(comment);
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }

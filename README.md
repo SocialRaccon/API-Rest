@@ -91,12 +91,11 @@ CREATE TABLE post_description
 
 CREATE TABLE comment
 (
-    idComment INT AUTO_INCREMENT,
+    idComment INT AUTO_INCREMENT PRIMARY KEY,
     comment   VARCHAR(150) NOT NULL,
     date      DATE         NOT NULL,
     idUser    INT          NOT NULL,
     idPost    INT          NOT NULL,
-    PRIMARY KEY (idComment, idUser, idPost),
     FOREIGN KEY (idUser) REFERENCES user (idUser),
     FOREIGN KEY (idPost) REFERENCES post (idPost)
 );

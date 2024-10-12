@@ -1,8 +1,6 @@
 package itst.social_raccoon_api.Repositories;
 
 import itst.social_raccoon_api.Models.CommentModel;
-import itst.social_raccoon_api.Models.CompositeKeys.CommentPK;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CommentRepository extends JpaRepository<CommentModel, CommentPK> {
+public interface CommentRepository extends JpaRepository<CommentModel, Integer> {
     @Query(value = "SELECT * FROM comment WHERE idPost = :postId", nativeQuery = true)
     List<CommentModel> getCommentsByPostId(@Param("postId") Integer postId);
 

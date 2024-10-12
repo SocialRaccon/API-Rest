@@ -1,7 +1,5 @@
 package itst.social_raccoon_api.Services;
 import itst.social_raccoon_api.Models.CommentModel;
-import itst.social_raccoon_api.Models.CompositeKeys.CommentPK;
-import itst.social_raccoon_api.Models.FollowerModel;
 import itst.social_raccoon_api.Repositories.CommentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +23,11 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public CommentModel findById(CommentPK id) {
+    public CommentModel findById(Integer id) {
         return commentRepository.findById(id).orElse(null);
     }
 
-    public void delete(CommentPK id) {
+    public void delete(Integer id) {
         commentRepository.deleteById(id);
     }
 
