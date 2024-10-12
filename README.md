@@ -38,13 +38,13 @@ CREATE TABLE user
     CONSTRAINT unique_controlNumber UNIQUE (controlNumber)
 );
 
-CREATE TABLE follow
+CREATE TABLE follower
 (
-    idUserFollower INT NOT NULL,
-    idUserFollowed INT NOT NULL,
-    PRIMARY KEY (idUserFollower, idUserFollowed),
-    FOREIGN KEY (idUserFollower) REFERENCES user (idUser),
-    FOREIGN KEY (idUserFollowed) REFERENCES user (idUser)
+    idUser INT NOT NULL,
+    idFollower INT NOT NULL,
+    PRIMARY KEY (idUser, idFollower),
+    FOREIGN KEY (idUser) REFERENCES user (idUser),
+    FOREIGN KEY (idFollower) REFERENCES user (idUser)
 );
 
 CREATE TABLE profile
@@ -142,7 +142,7 @@ VALUES ('Estudiante de ISC', 1),
        ('Estudiante de IGE', 2),
        ('Estudiante de IME', 3);
 
-INSERT INTO follow (idUserFollower, idUserFollowed)
+INSERT INTO follower (idUser, idFollower)
 VALUES (1, 2),
        (1, 3),
        (2, 1),
