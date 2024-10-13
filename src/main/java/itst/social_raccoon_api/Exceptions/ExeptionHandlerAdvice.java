@@ -3,6 +3,7 @@ package itst.social_raccoon_api.Exceptions;
 import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.PersistentObjectException;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -117,4 +118,16 @@ public class ExeptionHandlerAdvice {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Null pointer exception: " + e.getMessage());
     }
+
+    @ExceptionHandler(PersistentObjectException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handlePersistentObjectException(PersistentObjectException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Persistent object exception: " + e.getMessage());
+    }
+
+    /* Commit
+         Added exception handling for PersistentObjectException
+     */
 }
+//A
