@@ -4,8 +4,16 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import itst.social_raccoon_api.Dto.FollowerDTO;
 import itst.social_raccoon_api.Dto.ReactionDTO;
+import itst.social_raccoon_api.Models.PostModel;
+import itst.social_raccoon_api.Models.ReactionTypeModel;
+import itst.social_raccoon_api.Models.UserModel;
+import itst.social_raccoon_api.Services.PostService;
+import itst.social_raccoon_api.Services.ReactionTypeService;
+import itst.social_raccoon_api.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +47,12 @@ public class ReactionController {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ReactionTypeService reactionTypeService;
 
     @Operation(summary = "Get all reactions")
     @GetMapping
@@ -47,12 +61,15 @@ public class ReactionController {
         if (reactions.isEmpty()) {
             throw new NoSuchElementException();
         }
-        return reactions.stream().map(this::convertToDTO).toList();
+        List<ReactionDTO> reactionDTOs = reactions.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return reactionDTOs;
     }
 
     @Operation(summary = "Get a reaction by its post id and user id")
     @GetMapping("/post/{postId}/user/{userId}")
-    public ResponseEntity<ReactionDTO> getById(@PathVariable int postId, @PathVariable int userId) {
+    public ResponseEntity<ReactionDTO> getById(@PathVariable Integer postId, @PathVariable Integer userId) {
         ReactionModel reaction = reactionService.getReactionByPostIdAndUserId(postId, userId);
         if (reaction == null) {
             throw new NoSuchElementException();
@@ -63,17 +80,20 @@ public class ReactionController {
 
     @Operation(summary = "Get all reactions by post id")
     @GetMapping("/post/{postId}")
-    public List<ReactionDTO> getReactionsByPostId(@PathVariable int postId) {
+    public List<ReactionDTO> getReactionsByPostId(@PathVariable Integer postId) {
         List<ReactionModel> reactions = reactionService.getReactionsByPostId(postId);
         if (reactions.isEmpty()) {
             throw new NoSuchElementException();
         }
-        return reactions.stream().map(this::convertToDTO).toList();
+        List<ReactionDTO> reactionDTOs = reactions.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return reactionDTOs;
     }
 
     @Operation(summary = "Get all reactions by user id")
     @GetMapping("/user/{userId}")
-    public List<ReactionDTO> getReactionsByUserId(@PathVariable int userId) {
+    public List<ReactionDTO> getReactionsByUserId(@PathVariable Integer userId) {
         List<ReactionModel> reactions = reactionService.getReactionsByUserId(userId);
         if (reactions.isEmpty()) {
             throw new NoSuchElementException();
@@ -83,31 +103,34 @@ public class ReactionController {
 
     @Operation(summary = "Get reaction count by post id")
     @GetMapping("/count/post/{postId}")
-    public Integer getReactionCountByPostId(@PathVariable int postId) {
+    public Integer getReactionCountByPostId(@PathVariable Integer postId) {
         return reactionService.getReactionCountByPostId(postId);
     }
 
-    @Operation(summary = "Create a reaction")
-    @PostMapping
-    public ResponseEntity<ReactionDTO> save(@RequestBody ReactionModel reaction) {
-        reactionService.save(reaction);
-        ReactionDTO reactionDTO = convertToDTO(reaction);
-        return new ResponseEntity<>(reactionDTO, HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Update a reaction")
-    @PutMapping
-    public ResponseEntity<ReactionDTO> update(@RequestBody ReactionModel reaction) {
-        reactionService.update(reaction);
+    // React or update a reaction
+    @PostMapping("/post/{postId}/user/{userId}/reaction/{reactionTypeId}")
+    @Operation(summary = "React to a post or update an existing reaction.")
+    public ResponseEntity<ReactionDTO> reactOrUpdate(
+            @PathVariable Integer postId,
+            @PathVariable Integer userId,
+            @PathVariable Integer reactionTypeId) {
+        ReactionModel reaction = reactionService.reactOrUpdate(postId, userId, reactionTypeId);
         ReactionDTO reactionDTO = convertToDTO(reaction);
         return new ResponseEntity<>(reactionDTO, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete a reaction")
-    @DeleteMapping
-    public ResponseEntity<Map<String, Boolean>> delete(@RequestBody ReactionModel reaction) {
-        reactionService.delete(reaction);
-        return new ResponseEntity<>(Map.of("deleted", true), HttpStatus.OK);
+    // Delete a reaction
+    @DeleteMapping("/post/{postId}/user/{userId}")
+    @Operation(summary = "Delete a user's reaction to a post.")
+    public ResponseEntity<Map<String, Boolean>> deleteReaction(
+            @PathVariable Integer postId,
+            @PathVariable Integer userId) {
+        boolean deleted = reactionService.deleteReaction(postId, userId);
+        if (deleted) {
+            return new ResponseEntity<>(Map.of("deleted", true), HttpStatus.OK);
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     private ReactionDTO convertToDTO(ReactionModel reaction) {

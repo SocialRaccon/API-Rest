@@ -12,18 +12,20 @@ public class ReactionDTO {
     private Integer idPost;
     private Timestamp date;
     private Integer idReactionType;
-    private String reactionType;
+    private String reactionName;
+    private String reactionIcon;
 
     public ReactionDTO() {
     }
 
-    public ReactionDTO(Integer idUser, String userName, Integer idPost, Timestamp date, Integer idReactionType, String reactionType) {
+    public ReactionDTO(Integer idUser, String userName, Integer idPost, Timestamp date, Integer idReactionType, String reactionName, String reactionIcon) {
         this.idUser = idUser;
         this.userName = userName;
         this.idPost = idPost;
         this.date = date;
         this.idReactionType = idReactionType;
-        this.reactionType = reactionType;
+        this.reactionName = reactionName;
+        this.reactionIcon = reactionIcon;
     }
 
     public Integer getIdUser() {
@@ -66,12 +68,20 @@ public class ReactionDTO {
         this.idReactionType = idReactionType;
     }
 
-    public String getReactionType() {
-        return reactionType;
+    public String getReactionName() {
+        return reactionName;
     }
 
-    public void setReactionType(String reactionType) {
-        this.reactionType = reactionType;
+    public void setReactionName(String reactionName) {
+        this.reactionName = reactionName;
+    }
+
+    public String getReactionIcon() {
+        return reactionIcon;
+    }
+
+    public void setReactionIcon(String reactionIcon) {
+        this.reactionIcon = reactionIcon;
     }
 
     @Override
@@ -82,7 +92,8 @@ public class ReactionDTO {
                 ", idPost=" + idPost +
                 ", date=" + date +
                 ", idReactionType=" + idReactionType +
-                ", reactionType='" + reactionType + '\'' +
+                ", reactionName='" + reactionName + '\'' +
+                ", reactionIcon='" + reactionIcon + '\'' +
                 '}';
     }
 }

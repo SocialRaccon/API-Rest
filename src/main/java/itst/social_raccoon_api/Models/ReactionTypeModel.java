@@ -12,29 +12,27 @@ public class ReactionTypeModel {
     @Schema(description = "Unique identifier of the reaction type", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idReactionType")
+    @JsonProperty("idReactionType")
     private Integer idReactionType;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idReactionIcon", referencedColumnName = "idReactionIcon")
+    @JoinColumn(name = "idReactionIcon")
     @JsonProperty("reactionIcon")
     @Schema(description = "Icon of the reaction", example = "1")
     private ReactionIconModel reactionIcon;
 
-    @Schema(description = "Type of reaction", example = "Like")
-    @Column(name = "reactionType")
-    @JsonProperty("reactionType")
-    private String reactionType;
+    @Schema(description = "Name of the reaction", example = "Like")
+    @Column(name = "name", nullable = false, length = 65)
+    private String name;
 
     public ReactionTypeModel() {
     }
 
-    public ReactionTypeModel(Integer idReactionType, String reactionType) {
+    public ReactionTypeModel(Integer idReactionType, ReactionIconModel reactionIcon, String name) {
         this.idReactionType = idReactionType;
-        this.reactionType = reactionType;
-    }
-
-    public ReactionTypeModel(String reactionType) {
-        this.reactionType = reactionType;
+        this.reactionIcon = reactionIcon;
+        this.name = name;
     }
 
     public Integer getIdReactionType() {
@@ -45,19 +43,28 @@ public class ReactionTypeModel {
         this.idReactionType = idReactionType;
     }
 
-    public String getReactionType() {
-        return reactionType;
+    public ReactionIconModel getReactionIcon() {
+        return reactionIcon;
     }
 
-    public void setReactionType(String reactionType) {
-        this.reactionType = reactionType;
+    public void setReactionIcon(ReactionIconModel reactionIcon) {
+        this.reactionIcon = reactionIcon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return "ReactionTypeModel{" +
                 "idReactionType=" + idReactionType +
-                ", reactionType='" + reactionType + '\'' +
+                ", reactionIcon=" + reactionIcon +
+                ", name='" + name + '\'' +
                 '}';
     }
 

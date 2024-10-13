@@ -9,28 +9,19 @@ import java.io.Serializable;
 public class ReactionPK implements Serializable {
     private UserModel idUser;
     private PostModel idPost;
-    private ReactionTypeModel idReactionType;
 
-    public ReactionPK() {
-    }
-
-    public ReactionPK(UserModel idUser, PostModel idPost, ReactionTypeModel idReaction) {
-        this.idUser = idUser;
-        this.idPost = idPost;
-        this.idReactionType = idReaction;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof ReactionPK reactionPK))
             return false;
-        return idUser.getIdUser() == reactionPK.idUser.getIdUser() && idPost.getIdPost() == reactionPK.idPost.getIdPost() && idReactionType.getIdReactionType() == reactionPK.idReactionType.getIdReactionType();
+        return idUser.getIdUser() == reactionPK.idUser.getIdUser() && idPost.getIdPost() == reactionPK.idPost.getIdPost();
     }
 
     @Override
     public int hashCode() {
-        return idUser.getIdUser() + idPost.getIdPost() + idReactionType.getIdReactionType();
+        return idUser.getIdUser() + idPost.getIdPost();
     }
 
     public UserModel getIdUser() {
@@ -41,7 +32,11 @@ public class ReactionPK implements Serializable {
         return idPost;
     }
 
-    public ReactionTypeModel getIdReactionType() {
-        return idReactionType;
+    public ReactionPK(UserModel idUser, PostModel idPost) {
+        this.idUser = idUser;
+        this.idPost = idPost;
+    }
+
+    public ReactionPK() {
     }
 }

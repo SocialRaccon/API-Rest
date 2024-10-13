@@ -9,6 +9,7 @@ import itst.social_raccoon_api.Repositories.ReactionRepository;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,7 @@ public class ReactionService {
     @Autowired
     private ReactionTypeService reactionTypeService;
 
-    public List<ReactionModel> getReactionsByPostId(int postId) {
+    public List<ReactionModel> getReactionsByPostId(Integer postId) {
         return reactionRepository.getReactionsByPostId(postId);
     }
 
@@ -41,12 +42,28 @@ public class ReactionService {
         return reactionRepository.getReactionCountByPostId(postId);
     }
 
-    public void save(ReactionModel reaction) {
-        reactionRepository.save(reaction);
+    public ReactionModel reactOrUpdate(Integer postId, Integer userId, Integer reactionTypeId) {
+        PostModel post = postService.findById(postId);
+        UserModel user = userService.findById(userId);
+        ReactionTypeModel reactionType = reactionTypeService.getById(reactionTypeId);
+
+        ReactionModel existingReaction = reactionRepository.getReactionByPostIdAndUserId(postId, userId);
+        if (existingReaction != null) {
+            existingReaction.setIdReactionType(reactionType);
+            return reactionRepository.save(existingReaction);
+        } else {
+            ReactionModel newReaction = new ReactionModel(reactionType, post, user);
+            return reactionRepository.save(newReaction);
+        }
     }
 
-    public void delete(ReactionModel reaction) {
-        reactionRepository.delete(reaction);
+    public boolean deleteReaction(Integer postId, Integer userId) {
+        ReactionModel reaction = reactionRepository.getReactionByPostIdAndUserId(postId, userId);
+        if (reaction != null) {
+            reactionRepository.delete(reaction);
+            return true;
+        }
+        return false;
     }
 
     public ReactionModel getById(ReactionPK reactionPK) {
@@ -57,8 +74,11 @@ public class ReactionService {
         return reactionRepository.findAll();
     }
 
-    public void update(ReactionModel reaction) {
+    public ReactionModel update(Integer postId, Integer userId, Integer reactionTypeId) {
+        ReactionModel reaction = reactionRepository.getReactionByPostIdAndUserId(postId, userId);
+        reaction.setIdReactionType(reactionTypeService.getById(reactionTypeId));
         reactionRepository.save(reaction);
+        return reaction;
     }
 
     public ReactionModel getReactionByPostIdAndUserId(int postId, int userId) {
