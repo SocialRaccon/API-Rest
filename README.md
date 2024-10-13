@@ -110,7 +110,7 @@ CREATE TABLE reaction_icon
 CREATE TABLE reaction_type
 (
     idReactionType INT AUTO_INCREMENT PRIMARY KEY,
-    reactionType VARCHAR(65) NOT NULL,
+    name VARCHAR(65) NOT NULL,
     idReactionIcon INT         NOT NULL,
     FOREIGN KEY (idReactionIcon) REFERENCES reaction_icon (idReactionIcon)
 );
@@ -180,14 +180,15 @@ VALUES ('https://www.example.com/icon1.jpg', 'https://www.example.com/icon1_thum
        ('https://www.example.com/icon3.jpg', 'https://www.example.com/icon3_thumbnail.jpg'),
        ('https://www.example.com/icon4.jpg', 'https://www.example.com/icon4_thumbnail.jpg');
 
-INSERT INTO reaction_type (reactionType, idReactionIcon)
+INSERT INTO reaction_type (name, idReactionIcon)
 VALUES ('MeEnLike', 1),
        ('MeEnLove', 2),
        ('MeEnMapache', 3),
        ('MeEnSad', 4);
 
-INSERT INTO reaction (idReactionType, idUser, idPost)
-VALUES (1, 2, 1),
-       (4, 3, 2),
-       (3, 1, 3);
+INSERT INTO reaction (idReactionType, idUser, idPost, createdDate)
+VALUES (1, 2, 1, '2021-10-01 12:00:00'),
+       (2, 3, 2, '2021-10-02 12:00:00'),
+       (3, 1, 3, '2021-10-03 12:00:00'),
+       (4, 2, 2, '2021-10-04 12:00:00');
 ````
