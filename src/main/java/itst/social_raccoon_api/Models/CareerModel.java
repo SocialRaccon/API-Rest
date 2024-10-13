@@ -17,7 +17,7 @@ public class CareerModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idCareer", nullable = false)
     @Schema(description = "Unique identifier of the career", example = "1")
-    private Integer id;
+    private Integer idCareer;
 
     @Size(max = 65)
     @NotNull
@@ -31,12 +31,16 @@ public class CareerModel {
     @Schema(description = "Acronym of the career", example = "CS")
     private String acronym;
 
-    public Integer getId() {
-        return id;
+
+    public CareerModel() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getIdCareer() {
+        return idCareer;
+    }
+
+    public void setIdCareer(Integer id) {
+        this.idCareer = id;
     }
 
     public String getName() {
@@ -53,6 +57,15 @@ public class CareerModel {
 
     public void setAcronym(String acronym) {
         this.acronym = acronym;
+    }
+
+    @Override
+    public String toString() {
+        return "CareerModel{" +
+                "idCareer=" + idCareer +
+                ", name='" + name + '\'' +
+                ", acronym='" + acronym + '\'' +
+                '}';
     }
 
 }

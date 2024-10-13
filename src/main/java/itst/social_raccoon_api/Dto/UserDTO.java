@@ -7,14 +7,19 @@ public class UserDTO {
     private String secondLastName;
     private String email;
     private String controlNumber;
+    private String careerName;
 
-    public UserDTO(Integer idUser,String name, String lastName, String secondLastName, String email, String controlNumber) {
+    public UserDTO() {
+    }
+
+    public UserDTO(Integer idUser, String name, String lastName, String secondLastName, String email, String controlNumber, String career) {
         this.idUser = idUser;
         this.name = name;
         this.lastName = lastName;
         this.secondLastName = secondLastName;
         this.email = email;
         this.controlNumber = controlNumber;
+        this.careerName = career;
     }
 
     // Getters and Setters
@@ -64,5 +69,13 @@ public class UserDTO {
 
     public void setControlNumber(String controlNumber) {
         this.controlNumber = controlNumber;
+    }
+
+    public String getCareerName() {
+        return careerName;
+    }
+
+    public void setCareerName(String careerName) {
+        this.careerName = careerName;
     }
 }

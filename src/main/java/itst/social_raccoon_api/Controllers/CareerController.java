@@ -82,7 +82,7 @@ public class CareerController {
         if (careerToUpdate == null) {
             throw new NoSuchElementException();
         }
-        career.setId(id);
+        career.setIdCareer(id);
         CareerModel updatedCareer = careerService.save(career);
         return new ResponseEntity<>(updatedCareer, HttpStatus.OK);
     }

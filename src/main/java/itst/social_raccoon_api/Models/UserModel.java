@@ -50,17 +50,18 @@ public class UserModel {
     @Schema(description = "Second last name of the user", example = "Gomez")
     private String secondLastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Schema(description = "Email of the user", example = "alex2227@hotmail.com")
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "controlNumber", length = 8, unique = true)
     @Schema(description = "Control number of the user", example = "21TE284")
     private String controlNumber;
 
-    @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idCareer", referencedColumnName = "idCareer")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCareer", referencedColumnName = "idCareer", nullable = false)
+    @Schema(description = "Career of the user")
+    @JsonProperty("career")
     private CareerModel career;
 
     public CareerModel getCareer() {
