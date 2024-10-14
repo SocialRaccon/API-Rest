@@ -85,5 +85,26 @@ public class ReactionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", is(greaterThan(0))));
     }
+
+    @Test // Test for the getReactionCountByPostId method when the post is not found
+    public void getReactionCountByPostIdNotFoundTest() throws Exception {
+        mockMvc.perform(get("/reaction/count/post/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("The requested item is not registered")));
+    }
+
+    @Test // Test for the getReactionCountByPostIdAndReactionTypeId method
+    public void getReactionCountByPostIdAndReactionTypeIdTest() throws Exception {
+        mockMvc.perform(get("/reaction/count/post/1/reactionType/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", (is(greaterThanOrEqualTo(0)))));
+    }
+
+    @Test // Test for the getReactionCountByPostIdAndReactionTypeId method when the post is not found
+    public void getReactionCountByPostIdAndReactionTypeIdNotFoundTest() throws Exception {
+        mockMvc.perform(get("/reaction/count/post/0/reactionType/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("The requested item is not registered")));
+    }
     
 }

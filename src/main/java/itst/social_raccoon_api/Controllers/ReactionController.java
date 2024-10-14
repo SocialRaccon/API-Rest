@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import itst.social_raccoon_api.Dto.FollowerDTO;
 import itst.social_raccoon_api.Dto.ReactionDTO;
 import itst.social_raccoon_api.Models.PostModel;
@@ -47,51 +49,67 @@ public class ReactionController {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private PostService postService;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private ReactionTypeService reactionTypeService;
 
     @Operation(summary = "Get all reactions")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found reactions"),
+            @ApiResponse(responseCode = "404", description = "Reactions not found")
+    })
     @GetMapping
     public List<ReactionDTO> getAll() {
         List<ReactionModel> reactions = reactionService.getAll();
         if (reactions.isEmpty()) {
             throw new NoSuchElementException();
         }
-        List<ReactionDTO> reactionDTOs = reactions.stream()
+        return reactions.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        return reactionDTOs;
     }
 
     @Operation(summary = "Get a reaction by its post id and user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found reaction"),
+            @ApiResponse(responseCode = "404", description = "Reaction not found")
+    })
     @GetMapping("/post/{postId}/user/{userId}")
     public ResponseEntity<ReactionDTO> getById(@PathVariable Integer postId, @PathVariable Integer userId) {
         ReactionModel reaction = reactionService.getReactionByPostIdAndUserId(postId, userId);
         if (reaction == null) {
             throw new NoSuchElementException();
         }
-        ReactionDTO reactionDTO = convertToDTO(reaction);
-        return new ResponseEntity<>(reactionDTO, HttpStatus.OK);
+        return new ResponseEntity<>(convertToDTO(reaction), HttpStatus.OK);
     }
 
     @Operation(summary = "Get all reactions by post id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found reactions"),
+            @ApiResponse(responseCode = "404", description = "Reactions not found")
+    })
     @GetMapping("/post/{postId}")
     public List<ReactionDTO> getReactionsByPostId(@PathVariable Integer postId) {
         List<ReactionModel> reactions = reactionService.getReactionsByPostId(postId);
         if (reactions.isEmpty()) {
             throw new NoSuchElementException();
         }
-        List<ReactionDTO> reactionDTOs = reactions.stream()
+        return reactions.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        return reactionDTOs;
     }
 
     @Operation(summary = "Get all reactions by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found reactions"),
+            @ApiResponse(responseCode = "404", description = "Reactions not found")
+    })
     @GetMapping("/user/{userId}")
     public List<ReactionDTO> getReactionsByUserId(@PathVariable Integer userId) {
         List<ReactionModel> reactions = reactionService.getReactionsByUserId(userId);
@@ -102,29 +120,49 @@ public class ReactionController {
     }
 
     @Operation(summary = "Get reaction count by post id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reaction count retrieved"),
+            @ApiResponse(responseCode = "404", description = "Post not found")
+    })
     @GetMapping("/count/post/{postId}")
     public Integer getReactionCountByPostId(@PathVariable Integer postId) {
+        if (postService.findById(postId) == null) {
+            throw new NoSuchElementException();
+        }
         return reactionService.getReactionCountByPostId(postId);
     }
 
-    // React or update a reaction
-    @PostMapping("/post/{postId}/user/{userId}/reaction/{reactionTypeId}")
-    @Operation(summary = "React to a post or update an existing reaction.")
-    public ResponseEntity<ReactionDTO> reactOrUpdate(
-            @PathVariable Integer postId,
-            @PathVariable Integer userId,
-            @PathVariable Integer reactionTypeId) {
-        ReactionModel reaction = reactionService.reactOrUpdate(postId, userId, reactionTypeId);
-        ReactionDTO reactionDTO = convertToDTO(reaction);
-        return new ResponseEntity<>(reactionDTO, HttpStatus.OK);
+    @Operation(summary = "Get reaction count by post id and reaction type id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reaction count retrieved"),
+            @ApiResponse(responseCode = "404", description = "Post or reaction type not found")
+    })
+    @GetMapping("/count/post/{postId}/reactionType/{reactionTypeId}")
+    public Integer getReactionCountByPostIdAndReactionTypeId(@PathVariable Integer postId, @PathVariable Integer reactionTypeId) {
+        if (postService.findById(postId) == null || reactionTypeService.getById(reactionTypeId) == null) {
+            throw new NoSuchElementException();
+        }
+        return reactionService.getReactionCountByPostIdAndReactionTypeId(postId, reactionTypeId);
     }
 
-    // Delete a reaction
-    @DeleteMapping("/post/{postId}/user/{userId}")
+    @Operation(summary = "React to a post or update an existing reaction.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reaction updated"),
+            @ApiResponse(responseCode = "404", description = "Post or user not found")
+    })
+    @PostMapping("/post/{postId}/user/{userId}/reaction/{reactionTypeId}")
+    public ResponseEntity<ReactionDTO> reactOrUpdate(@PathVariable Integer postId, @PathVariable Integer userId, @PathVariable Integer reactionTypeId) {
+        ReactionModel reaction = reactionService.reactOrUpdate(postId, userId, reactionTypeId);
+        return new ResponseEntity<>(convertToDTO(reaction), HttpStatus.OK);
+    }
+
     @Operation(summary = "Delete a user's reaction to a post.")
-    public ResponseEntity<Map<String, Boolean>> deleteReaction(
-            @PathVariable Integer postId,
-            @PathVariable Integer userId) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reaction deleted"),
+            @ApiResponse(responseCode = "404", description = "Reaction not found")
+    })
+    @DeleteMapping("/post/{postId}/user/{userId}")
+    public ResponseEntity<Map<String, Boolean>> deleteReaction(@PathVariable Integer postId, @PathVariable Integer userId) {
         boolean deleted = reactionService.deleteReaction(postId, userId);
         if (deleted) {
             return new ResponseEntity<>(Map.of("deleted", true), HttpStatus.OK);

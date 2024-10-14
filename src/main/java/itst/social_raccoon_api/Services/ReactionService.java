@@ -85,12 +85,8 @@ public class ReactionService {
         return reactionRepository.getReactionByPostIdAndUserId(postId, userId);
     }
 
-    public List<ReactionModel> getReactionsByPostIdAndReactionType(int postId, int reactionType) {
-        return reactionRepository.getReactionsByPostIdAndReactionType(postId, reactionType);
-    }
-
-    public List<ReactionModel> getReactionsByUserIdAndReactionType(int userId, int reactionType) {
-        return reactionRepository.getReactionsByUserIdAndReactionType(userId, reactionType);
+    public Integer getReactionCountByPostIdAndReactionTypeId(int postId, int reactionTypeId) {
+        return reactionRepository.getReactionCountByPostIdAndReactionType(postId, reactionTypeId);
     }
 
 }
