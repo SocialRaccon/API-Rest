@@ -1,18 +1,19 @@
-package itst.social_raccoon_api.Controllers;
+package itst.social_raccoon_api.Services;
+
+import org.apache.el.stream.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import itst.social_raccoon_api.Models.CareerModel;
 import itst.social_raccoon_api.Repository.CareerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Optional;
-import java.net.URI;
-
-@RestController
-@RequestMapping("/career")
-public class CarrerController {
+public class CareerService {
     @Autowired
     private CareerRepository careerRepository;
 
