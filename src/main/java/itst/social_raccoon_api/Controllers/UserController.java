@@ -95,12 +95,13 @@ public class UserController {
                     )
             )}
     )
-    public ResponseEntity<UserModel> findById(@PathVariable Integer id) {
+    public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
         UserModel user = userService.findById(id);
+        UserDTO userDTO = convertToDTO(user);
         if (user == null) {
             throw new NoSuchElementException();
         }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping()

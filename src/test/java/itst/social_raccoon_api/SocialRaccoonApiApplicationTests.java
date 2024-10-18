@@ -14,5 +14,4 @@ class SocialRaccoonApiApplicationTests {
 	void testMain() {
 		SocialRaccoonApiApplication.main(new String[] {});
 	}
-
 }
