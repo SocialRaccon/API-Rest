@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "User", description = "Provide methods to manage users")
+@Tag(name = "users", description = "Provide methods to manage users")
 public class UserController {
 
     @Autowired

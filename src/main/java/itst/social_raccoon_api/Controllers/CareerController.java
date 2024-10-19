@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("career")
+@RequestMapping("careers")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Career", description = "Provides methods to manage careers.")
+@Tag(name = "careers", description = "Provides methods to manage careers.")
 public class CareerController {
 
     @Autowired
