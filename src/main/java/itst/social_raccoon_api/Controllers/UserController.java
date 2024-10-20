@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "User", description = "Provide methods to manage users")
+@Tag(name = "users", description = "Provide methods to manage users")
 public class UserController {
 
     @Autowired
@@ -95,12 +95,13 @@ public class UserController {
                     )
             )}
     )
-    public ResponseEntity<UserModel> findById(@PathVariable Integer id) {
+    public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
         UserModel user = userService.findById(id);
+        UserDTO userDTO = convertToDTO(user);
         if (user == null) {
             throw new NoSuchElementException();
         }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping()

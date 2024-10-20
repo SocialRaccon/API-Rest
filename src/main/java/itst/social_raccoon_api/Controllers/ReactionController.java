@@ -39,9 +39,9 @@ import itst.social_raccoon_api.Models.ReactionModel;
 import itst.social_raccoon_api.Services.ReactionService;
 
 @RestController
-@RequestMapping("reaction")
+@RequestMapping("reactions")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Reaction", description = "Provides methods to manage reactions.")
+@Tag(name = "reactions", description = "Provides methods to manage reactions.")
 public class ReactionController {
 
     @Autowired

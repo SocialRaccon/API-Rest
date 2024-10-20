@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("comment")
+@RequestMapping("comments")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Comment", description = "Provides methods to manage comments.")
+@Tag(name = "comments", description = "Provides methods to manage comments.")
 public class CommentController {
 
     @Autowired

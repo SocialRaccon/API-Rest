@@ -20,9 +20,9 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("follower")
+@RequestMapping("followers")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Follower", description = "Provide methods to manage followers")
+@Tag(name = "followers", description = "Provide methods to manage followers")
 public class FollowerController {
 
     @Autowired
