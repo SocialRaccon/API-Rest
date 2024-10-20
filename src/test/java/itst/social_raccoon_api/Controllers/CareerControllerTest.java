@@ -34,7 +34,7 @@ public class CareerControllerTest {
 
     @Test
     public void testFindAll() throws Exception {
-        mockMvc.perform(get("/career"))
+        mockMvc.perform(get("/careers"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -43,16 +43,16 @@ public class CareerControllerTest {
 
     @Test
     public void testFindById() throws Exception {
-        mockMvc.perform(get("/career/1"))
+        mockMvc.perform(get("/careers/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Integer.class).value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.idCareer", Integer.class).value(1));
     }
 
     @Test
     public void testCreate() throws Exception {
-        mockMvc.perform(get("/career"))
+        mockMvc.perform(get("/careers"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -61,7 +61,7 @@ public class CareerControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        mockMvc.perform(get("/career"))
+        mockMvc.perform(get("/careers"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -70,7 +70,7 @@ public class CareerControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        mockMvc.perform(get("/career"))
+        mockMvc.perform(get("/careers"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -79,7 +79,7 @@ public class CareerControllerTest {
 
     @Test
     public void testFindByName() throws Exception {
-        mockMvc.perform(get("/career/acronym/ISC"))
+        mockMvc.perform(get("/careers/acronym/ISC"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

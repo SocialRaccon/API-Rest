@@ -26,7 +26,7 @@ public class UserService {
     }
 
     public UserModel findById(Integer id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).get();
     }
 
     public void deleteById(Integer id) {
