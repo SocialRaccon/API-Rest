@@ -1,29 +1,26 @@
 package itst.social_raccoon_api.Models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 
 @Entity(name = "image_profile")
 public class ImageProfileModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idImageProfile;
-
-    @Id
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser")
-    @JsonBackReference(value = "user-image_profile")
-    private UserModel user;
-
     private String url;
     private String thumbnail;
+    private Integer idUser;
+
+    public ImageProfileModel(Integer idImageProfile, String url, String thumbnail, Integer idUser) {
+        this.idImageProfile = idImageProfile;
+        this.url = url;
+        this.thumbnail = thumbnail;
+        this.idUser = idUser;
+    }
 
     public Integer getIdImageProfile() {
         return idImageProfile;
@@ -49,11 +46,12 @@ public class ImageProfileModel {
         this.thumbnail = thumbnail;
     }
 
-    public UserModel getIdProfile() {
-        return user;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setIdProfile(UserModel idUser) {
-        this.user = idUser;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
+
 }

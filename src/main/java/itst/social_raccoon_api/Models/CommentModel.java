@@ -13,7 +13,6 @@ public class CommentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idComment;
-    
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUser")

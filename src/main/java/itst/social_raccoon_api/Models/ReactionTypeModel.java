@@ -1,28 +1,38 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
 
-@Entity(name = "reaction_type")
+@Entity
+@Table(name = "reaction_type")
+@Schema(description = "Model representing a reaction type")
 public class ReactionTypeModel {
 
+    @Schema(description = "Unique identifier of the reaction type", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idReactionType")
+    @JsonProperty("idReactionType")
     private Integer idReactionType;
-    private String reactionType;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idReactionIcon")
+    @JsonProperty("reactionIcon")
+    @Schema(description = "Icon of the reaction", example = "1")
+    private ReactionIconModel reactionIcon;
+
+    @Schema(description = "Name of the reaction", example = "Like")
+    @Column(name = "name", nullable = false, length = 65)
+    private String name;
 
     public ReactionTypeModel() {
     }
 
-    public ReactionTypeModel(Integer idReactionType, String reactionType) {
+    public ReactionTypeModel(Integer idReactionType, ReactionIconModel reactionIcon, String name) {
         this.idReactionType = idReactionType;
-        this.reactionType = reactionType;
-    }
-
-    public ReactionTypeModel(String reactionType) {
-        this.reactionType = reactionType;
+        this.reactionIcon = reactionIcon;
+        this.name = name;
     }
 
     public Integer getIdReactionType() {
@@ -33,19 +43,28 @@ public class ReactionTypeModel {
         this.idReactionType = idReactionType;
     }
 
-    public String getReactionType() {
-        return reactionType;
+    public ReactionIconModel getReactionIcon() {
+        return reactionIcon;
     }
 
-    public void setReactionType(String reactionType) {
-        this.reactionType = reactionType;
+    public void setReactionIcon(ReactionIconModel reactionIcon) {
+        this.reactionIcon = reactionIcon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return "ReactionTypeModel{" +
                 "idReactionType=" + idReactionType +
-                ", reactionType='" + reactionType + '\'' +
+                ", reactionIcon=" + reactionIcon +
+                ", name='" + name + '\'' +
                 '}';
     }
 
