@@ -5,7 +5,7 @@ import itst.social_raccoon_api.Models.UserModel;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class FollowerPK implements Serializable {
+public class RelationshipPK implements Serializable {
     private UserModel user;
     private UserModel followerUser;
 
@@ -13,9 +13,9 @@ public class FollowerPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof FollowerPK followerPK))
+        if (!(o instanceof RelationshipPK relationshipPK))
             return false;
-        return user.getIdUser() == followerPK.user.getIdUser() && followerUser.getIdUser() == followerPK.followerUser.getIdUser();
+        return user.getIdUser() == relationshipPK.user.getIdUser() && followerUser.getIdUser() == relationshipPK.followerUser.getIdUser();
     }
 
     @Override

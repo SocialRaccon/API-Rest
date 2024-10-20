@@ -2,14 +2,14 @@ package itst.social_raccoon_api.Models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import itst.social_raccoon_api.Models.CompositeKeys.FollowerPK;
+import itst.social_raccoon_api.Models.CompositeKeys.RelationshipPK;
 import jakarta.persistence.*;
 
-@Schema(description = "Model representing a follower relationship")
+@Schema(description = "Model representing a relationship")
 @Entity
-@Table(name = "follower")
-@IdClass(FollowerPK.class)
-public class FollowerModel {
+@Table(name = "relationship")
+@IdClass(RelationshipPK.class)
+public class RelationshipModel {
 
     @Schema(description = "User who is being followed")
     @Id
@@ -25,12 +25,12 @@ public class FollowerModel {
     @JsonBackReference(value = "user-following")
     private UserModel followerUser;
 
-    public FollowerModel(UserModel user, UserModel followerUser) {
+    public RelationshipModel(UserModel user, UserModel followerUser) {
         this.user = user;
         this.followerUser = followerUser;
     }
 
-    public FollowerModel() {
+    public RelationshipModel() {
     }
 
     public UserModel getUser() {

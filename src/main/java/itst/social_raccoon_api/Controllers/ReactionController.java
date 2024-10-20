@@ -1,6 +1,5 @@
 package itst.social_raccoon_api.Controllers;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -8,11 +7,7 @@ import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import itst.social_raccoon_api.Dto.FollowerDTO;
 import itst.social_raccoon_api.Dto.ReactionDTO;
-import itst.social_raccoon_api.Models.PostModel;
-import itst.social_raccoon_api.Models.ReactionTypeModel;
-import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Services.PostService;
 import itst.social_raccoon_api.Services.ReactionTypeService;
 import itst.social_raccoon_api.Services.UserService;
@@ -25,15 +20,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.Models.ReactionModel;
 import itst.social_raccoon_api.Services.ReactionService;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -25,11 +24,11 @@ public class UserModel {
 
     @JsonManagedReference(value = "user-follower")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FollowerModel> followers;
+    private List<RelationshipModel> followers;
 
     @JsonManagedReference(value = "user-following")
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FollowerModel> following;
+    private List<RelationshipModel> following;
 
     @JsonManagedReference(value = "user-comment")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

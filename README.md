@@ -38,7 +38,7 @@ CREATE TABLE user
     CONSTRAINT unique_controlNumber UNIQUE (controlNumber)
 );
 
-CREATE TABLE follower
+CREATE TABLE relationship
 (
     idUser     INT NOT NULL,
     idFollower INT NOT NULL,
@@ -141,7 +141,7 @@ VALUES ('Estudiante de ISC', 1),
        ('Estudiante de IGE', 2),
        ('Estudiante de IME', 3);
 
-INSERT INTO follower (idUser, idFollower)
+INSERT INTO relationship (idUser, idFollower)
 VALUES (1, 2),
        (1, 3),
        (2, 1),
