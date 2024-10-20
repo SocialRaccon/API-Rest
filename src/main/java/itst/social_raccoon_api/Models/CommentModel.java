@@ -85,4 +85,15 @@ public class CommentModel {
     public void setPost(PostModel idPost) {
         this.post = idPost;
     }
+
+    @Override
+    public String toString() {
+        return "CommentModel{" +
+                "idComment=" + idComment +
+                ", user=" + user +
+                ", post=" + post +
+                ", comment='" + comment + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }
