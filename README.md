@@ -66,7 +66,7 @@ CREATE TABLE image_profile
 
 CREATE TABLE post
 (
-    idPost      INT AUTO_INCREMENT PRIMARY KEY,
+    post      INT AUTO_INCREMENT PRIMARY KEY,
     dateCreated DATE NOT NULL,
     idUser      INT  NOT NULL,
     FOREIGN KEY (idUser) REFERENCES user (idUser)
@@ -77,16 +77,16 @@ CREATE TABLE image_post
     idImagePost       INT AUTO_INCREMENT PRIMARY KEY,
     imageUrl          VARCHAR(255) NOT NULL,
     imageThumbnailUrl VARCHAR(255) NOT NULL,
-    idPost            INT          NOT NULL,
-    FOREIGN KEY (idPost) REFERENCES post (idPost)
+    post            INT          NOT NULL,
+    FOREIGN KEY (post) REFERENCES post (post)
 );
 
 CREATE TABLE post_description
 (
     idPostDescription INT AUTO_INCREMENT PRIMARY KEY,
     description       VARCHAR(150) NOT NULL,
-    idPost            INT          NOT NULL,
-    FOREIGN KEY (idPost) REFERENCES post (idPost)
+    post            INT          NOT NULL,
+    FOREIGN KEY (post) REFERENCES post (post)
 );
 
 CREATE TABLE comment
@@ -95,9 +95,9 @@ CREATE TABLE comment
     comment   VARCHAR(150) NOT NULL,
     date      DATE         NOT NULL,
     idUser    INT          NOT NULL,
-    idPost    INT          NOT NULL,
+    post    INT          NOT NULL,
     FOREIGN KEY (idUser) REFERENCES user (idUser),
-    FOREIGN KEY (idPost) REFERENCES post (idPost)
+    FOREIGN KEY (post) REFERENCES post (post)
 );
 
 CREATE TABLE reaction_icon
@@ -119,11 +119,11 @@ CREATE TABLE reaction
 (
     idReactionType INT NOT NULL,
     idUser         INT NOT NULL,
-    idPost         INT NOT NULL,
+    post         INT NOT NULL,
     createdDate    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (idUser, idPost, idReactionType),
+    PRIMARY KEY (idUser, post, idReactionType),
     FOREIGN KEY (idUser) REFERENCES user (idUser),
-    FOREIGN KEY (idPost) REFERENCES post (idPost)
+    FOREIGN KEY (post) REFERENCES post (post)
 );
 
 INSERT INTO career (name, acronym)
@@ -159,17 +159,17 @@ VALUES ('2021-10-01', 1),
        ('2021-10-02', 2),
        ('2021-10-03', 3);
 
-INSERT INTO image_post (imageUrl, imageThumbnailUrl, idPost)
+INSERT INTO image_post (imageUrl, imageThumbnailUrl, post)
 VALUES ('https://www.example.com/image_post1.jpg', 'https://www.example.com/image_post1_thumbnail.jpg', 1),
        ('https://www.example.com/image_post2.jpg', 'https://www.example.com/image_post2_thumbnail.jpg', 2),
        ('https://www.example.com/image_post3.jpg', 'https://www.example.com/image_post3_thumbnail.jpg', 3);
 
-INSERT INTO post_description (description, idPost)
+INSERT INTO post_description (description, post)
 VALUES ('Evento colecta', 1),
        ('EXAMEN FINAL', 2),
        ('Mapachitos TEC', 3);
 
-INSERT INTO comment (comment, date, idUser, idPost)
+INSERT INTO comment (comment, date, idUser, post)
 VALUES ('Hola como esta eso?', '2021-10-01', 2, 1),
        ('Siempre lo mismo, otra vez a repite :(', '2021-10-02', 3, 2),
        ('Vivan los mapaches!!', '2021-10-03', 1, 3);
@@ -186,7 +186,7 @@ VALUES ('MeEnLike', 1),
        ('MeEnMapache', 3),
        ('MeEnSad', 4);
 
-INSERT INTO reaction (idReactionType, idUser, idPost, createdDate)
+INSERT INTO reaction (idReactionType, idUser, post, createdDate)
 VALUES (1, 2, 1, '2021-10-01 12:00:00'),
        (2, 3, 2, '2021-10-02 12:00:00'),
        (3, 1, 3, '2021-10-03 12:00:00'),

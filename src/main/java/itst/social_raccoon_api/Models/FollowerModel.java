@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "follower")
 @IdClass(FollowerPK.class)
-public class FollowerModel {
+public class  FollowerModel {
 
     @Schema(description = "User who is being followed")
     @Id
