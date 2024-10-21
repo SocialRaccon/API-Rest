@@ -1,25 +1,47 @@
 package itst.social_raccoon_api.Models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-@Entity(name = "image_profile")
+@Schema(description = "Model representing a profile image")
+@Entity
+@Table(name = "image_profile")
 public class ImageProfileModel {
+
+    @Schema(description = "Unique identifier of the image profile", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idImageProfile")
+    @JsonProperty("idImageProfile")
     private Integer idImageProfile;
-    private String url;
-    private String thumbnail;
-    private Integer idUser;
 
-    public ImageProfileModel(Integer idImageProfile, String url, String thumbnail, Integer idUser) {
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idProfile")
+    @JsonProperty("idProfile")
+    @Schema(description = "Profile to which the image belongs", example = "1")
+    private ProfileModel profile;
+
+    @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
+    @Column(name = "imageUrl")
+    @Size(max = 255)
+    @NotBlank(message = "This content must not be null and must not be empty")
+    private String imageUrl;
+
+    @Schema(description = "Thumbnail of the image", example = "https://www.example.com/image.jpg")
+    @Column(name = "imageThumbnailUrl")
+    @Size(max = 255)
+    @NotBlank(message = "This content must not be null and must not be empty")
+    private String imageThumbnailUrl;
+
+    public ImageProfileModel(Integer idImageProfile, ProfileModel profile, String imageUrl, String imageThumbnailUrl) {
         this.idImageProfile = idImageProfile;
-        this.url = url;
-        this.thumbnail = thumbnail;
-        this.idUser = idUser;
+        this.profile = profile;
+        this.imageUrl = imageUrl;
+        this.imageThumbnailUrl = imageThumbnailUrl;
     }
 
     public Integer getIdImageProfile() {
@@ -30,28 +52,40 @@ public class ImageProfileModel {
         this.idImageProfile = idImageProfile;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
+    public String getImageThumbnailUrl() {
+        return imageThumbnailUrl;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setImageThumbnailUrl(String imageThumbnailUrl) {
+        this.imageThumbnailUrl = imageThumbnailUrl;
     }
 
-    public Integer getIdUser() {
-        return idUser;
+    public ProfileModel getProfile() {
+        return profile;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setProfile(ProfileModel Profile) {
+        this.profile = Profile;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ImageProfileModel{");
+        sb.append("idImageProfile=").append(idImageProfile);
+        sb.append(", profile=").append(profile);
+        sb.append(", imageUrl='").append(imageUrl).append('\'');
+        sb.append(", imageThumbnailUrl='").append(imageThumbnailUrl).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
 }

@@ -1,28 +1,48 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-@Entity(name = "image_post")
+@Schema(description = "Model representing an image post")
+@Entity
+@Table(name = "image_post")
 public class ImagePostModel {
+
+    @Schema(description = "Unique identifier of the image post", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idImagePost")
+    @JsonProperty("idImagePost")
     private Integer idImagePost;
-    private String url;
-    private String thumbnail;
-    private Integer idPost;
 
-    public ImagePostModel() {
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idPost")
+    @JsonProperty("idPost")
+    @Schema(description = "Post to which the image belongs", example = "1")
+    private PostModel post;
 
-    public ImagePostModel(Integer idImagePost, String url, String thumbnail, Integer idPost) {
+    @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
+    @Column(name = "imageUrl")
+    @Size(max = 255)
+    @NotBlank(message = "This content must not be null and must not be empty")
+    private String imageUrl;
+
+    @Schema(description = "Thumbnail of the image", example = "https://www.example.com/image.jpg")
+    @Column(name = "imageThumbnailUrl")
+    @Size(max = 255)
+    @NotBlank(message = "This content must not be null and must not be empty")
+    private String imageThumbnailUrl;
+
+    public ImagePostModel(Integer idImagePost, String imageUrl, String imageThumbnailUrl, PostModel post) {
         this.idImagePost = idImagePost;
-        this.url = url;
-        this.thumbnail = thumbnail;
-        this.idPost = idPost;
+        this.imageUrl = imageUrl;
+        this.imageThumbnailUrl = imageThumbnailUrl;
+        this.post = post;
     }
+
     public Integer getIdImagePost() {
         return idImagePost;
     }
@@ -31,37 +51,39 @@ public class ImagePostModel {
         this.idImagePost = idImagePost;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
+    public String getImageThumbnailUrl() {
+        return imageThumbnailUrl;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setImageThumbnailUrl(String imageThumbnailUrl) {
+        this.imageThumbnailUrl = imageThumbnailUrl;
     }
 
-    public Integer getIdPost() {
-        return idPost;
+    public PostModel getPost() {
+        return post;
     }
 
-    public void setIdPost(Integer idPost) {
-        this.idPost = idPost;
+    public void setPost(PostModel post) {
+        this.post = post;
     }
 
     @Override
     public String toString() {
-        return "ImagePost{" +
-                "idImagePost=" + idImagePost +
-                ", url='" + url + '\'' +
-                ", thumbnail='" + thumbnail + '\'' +
-                ", idPost=" + idPost +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("ImagePostModel{");
+        sb.append("idImagePost=").append(idImagePost);
+        sb.append(", url='").append(imageUrl).append('\'');
+        sb.append(", imageThumbnailUrl='").append(imageThumbnailUrl).append('\'');
+        sb.append(", post=").append(post);
+        sb.append('}');
+        return sb.toString();
     }
 }
