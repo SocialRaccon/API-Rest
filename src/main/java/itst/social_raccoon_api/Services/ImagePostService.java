@@ -1,60 +1,68 @@
 package itst.social_raccoon_api.Services;
 
-import itst.social_raccoon_api.Models.ImagePost;
-import itst.social_raccoon_api.Models.User;
+import itst.social_raccoon_api.Models.ImagePostModel;
 import itst.social_raccoon_api.Repositories.ImagePostRepository;
-import itst.social_raccoon_api.Repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
-
-
 
 @Service
+@Transactional
 public class ImagePostService {
 
     @Autowired
     private ImagePostRepository imagePostRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
-
-    public List<ImagePost> getAllImagePosts() {
+    public List<ImagePostModel> findAll() {
         return imagePostRepository.findAll();
     }
 
-    public Optional<ImagePost> getImagePostById(Long id) {
-        return imagePostRepository.findById(id);
+    public ImagePostModel save(ImagePostModel imagePost) {
+        return imagePostRepository.save(imagePost);
     }
 
-    public ImagePost createImagePost(Long userId, ImagePost imagePost) {
-        Optional<User> user = userService.getUserById(userId);
-        if (user.isPresent()) {
-            imagePost.setUser(user.get());
-            return imagePostRepository.save(imagePost);
-        } else {
-            throw new RuntimeException("User not found");
-        }
-    }
-
-    public ImagePost updateImagePost(Long id, ImagePost imagePostDetails) {
-        Optional<ImagePost> imagePost = imagePostRepository.findById(id);
-        if (imagePost.isPresent()) {
-            ImagePost existingImagePost = imagePost.get();
-            existingImagePost.setTitle(imagePostDetails.getTitle());
-            existingImagePost.setDescription(imagePostDetails.getDescription());
-            existingImagePost.setImageUrl(imagePostDetails.getImageUrl());
-            return imagePostRepository.save(existingImagePost);
-        } else {
-            throw new RuntimeException("ImagePost not found");
-        }
-    }
-
-    public void deleteImagePost(Long id) {
+    public void delete(Integer id) {
         imagePostRepository.deleteById(id);
+    }
+
+    public void update(ImagePostModel imagePost) {
+        imagePostRepository.save(imagePost);
+    }
+
+    public void deleteImagePost(Integer postId, Integer imagePostId) {
+        imagePostRepository.deleteImagePost(postId, imagePostId);
+    }
+
+    public List<ImagePostModel> getImagePostByPostId(Integer postId) {
+        return imagePostRepository.getImagePostByPostId(postId);
+    }
+
+    public List<ImagePostModel> getImagePostByPostId(Integer postId, int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return imagePostRepository.getImagePostByPostId(postId, pageRequest);
+    }
+
+    public List<ImagePostModel> getImagePostByUserId(Integer userId) {
+        return imagePostRepository.getImagePostByUserId(userId);
+    }
+
+    public List<ImagePostModel> getImagePostByUserId(Integer userId, int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return imagePostRepository.getImagePostByUserId(userId, pageRequest);
+    }
+
+    public List<ImagePostModel> getImagePostByPostIdAndUserId(Integer postId, Integer userId) {
+        return imagePostRepository.getImagePostByPostIdAndUserId(postId, userId);
+    }
+
+    public List<ImagePostModel> getImagePostByPostIdAndUserId(Integer postId, Integer userId, int pageNumber, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return imagePostRepository.getImagePostByPostIdAndUserId(postId, userId, pageRequest);
+    }
+
+    public ImagePostModel getImagePost(Integer postId, Integer imagePostId) {
+        return imagePostRepository.getImagePost(postId, imagePostId);
     }
 }
