@@ -1,35 +1,38 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.GenerationType;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-
-
-@Entity(name = "profile")
+@Entity
+@Table(name = "profile")
+@Schema(description = "Model representing a profile")
 public class ProfileModel {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idProfile", nullable = false)
+    @Schema(description = "Unique identifier of the profile", example = "1")
     private Integer idProfile;
+
+    @Size(max = 150)
+    @NotNull
+    @Column(name = "description", nullable = false, length = 150)
+    @Schema(description = "Description of the profile", example = "This is a description")
     private String description;
 
-    @OneToOne
-    @JoinColumn(name = "idUser")
-    @JsonBackReference
-    private UserModel user;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idUser", nullable = false)
+    @Schema(description = "User to which the profile belongs")
+    private UserModel idUser;
 
-
-    public int getIdProfile() {
+    public Integer getIdProfile() {
         return idProfile;
     }
 
-    public void setIdProfile(int idProfile) {
-        this.idProfile = idProfile;
+    public void setIdProfile(Integer id) {
+        this.idProfile = id;
     }
 
     public String getDescription() {
@@ -40,11 +43,12 @@ public class ProfileModel {
         this.description = description;
     }
 
-    public UserModel getUser() {
-        return user;
+    public UserModel getIdUser() {
+        return idUser;
     }
-    
-    public void setUser(UserModel user) {
-        this.user = user;
+
+    public void setIdUser(UserModel idUser) {
+        this.idUser = idUser;
     }
+
 }

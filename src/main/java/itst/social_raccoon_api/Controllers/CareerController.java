@@ -1,69 +1,79 @@
 package itst.social_raccoon_api.Controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.Models.CareerModel;
-import itst.social_raccoon_api.Repository.CareerRepository;
+import itst.social_raccoon_api.Services.CareerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Optional;
-import java.net.URI;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/career")
+@RequestMapping("career")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE })
+@Tag(name = "Career", description = "Provides methods to manage careers.")
 public class CareerController {
+
     @Autowired
-    private CareerRepository careerRepository;
+    private CareerService careerService;
 
-    // Find all
-    @GetMapping
-    public ResponseEntity<Iterable<CareerModel>> findAll() {
-        return ResponseEntity.ok(careerRepository.findAll());
+    @GetMapping()
+    @Operation(summary = "Get all careers", description = "Get all careers from the database")
+    public ResponseEntity<List<CareerModel>> findAll() {
+        List<CareerModel> careers = careerService.findAll();
+        return new ResponseEntity<>(careers, HttpStatus.OK);
     }
 
-    // Find By Id
-    @GetMapping("/{id}")
-    public ResponseEntity<CareerModel> findById(@PathVariable Long idCareer) {
-        Optional<CareerModel> careerOptional = careerRepository.findById(idCareer);
-        if (careerOptional.isPresent()) {
-            return ResponseEntity.ok(careerOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
+    @GetMapping("acronym/{acronym}")
+    @Operation(summary = "Get career by acronym", description = "Get a career by its acronym")
+    public ResponseEntity<CareerModel> findByAcronym(@PathVariable String acronym) {
+        CareerModel career = careerService.findByAcronym(acronym);
+        if (career == null) {
+            throw new NoSuchElementException();
         }
+        return new ResponseEntity<>(career, HttpStatus.OK);
     }
 
-    // Create User
-    @PostMapping
-    public ResponseEntity<String> create(@RequestBody CareerModel career, UriComponentsBuilder ucb) {
-        CareerModel saveCareer = careerRepository.save(career);
-        URI uri = ucb
-                .path("/career/{id}")
-                .buildAndExpand(saveCareer.getIdCareer())
-                .toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
-    // Update User
-    @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable Long idCareer, @RequestBody CareerModel careerAct) {
-        CareerModel careerAnt = careerRepository.findById(idCareer).get();
-        if (careerAnt != null) {
-            careerAct.setIdCareer(careerAnt.getIdCareer());
-            careerRepository.save(careerAct);
-            return ResponseEntity.noContent().build();
+    @GetMapping("{id}")
+    @Operation(summary = "Get career by id", description = "Get a career by its id")
+    public ResponseEntity<CareerModel> findById(@PathVariable Integer id) {
+        CareerModel career = careerService.findById(id);
+        if (career == null) {
+            throw new NoSuchElementException();
         }
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>(career, HttpStatus.OK);
     }
 
-    // Delete
-    @DeleteMapping("/{idCareer}")
-    public ResponseEntity<String> delete(@PathVariable Long idCareer) {
-        if (careerRepository.findById(idCareer).get() != null) {
-            careerRepository.deleteById(idCareer);
-            return ResponseEntity.noContent().build();
+    @PostMapping()
+    @Operation(summary = "Create a new career", description = "Create a new career in the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = CareerModel.class))))
+    public ResponseEntity<CareerModel> create(@RequestBody CareerModel career) {
+        careerService.save(career);
+        return new ResponseEntity<>(career, HttpStatus.CREATED);
+    }
+
+    @PutMapping("{id}")
+    @Operation(summary = "Update a career", description = "Update a career in the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = CareerModel.class))))
+    public ResponseEntity<CareerModel> update(@PathVariable Integer id, @RequestBody CareerModel career) {
+        CareerModel careerToUpdate = careerService.findById(id);
+        if (careerToUpdate == null) {
+            throw new NoSuchElementException();
         }
-        return ResponseEntity.notFound().build();
+        career.setIdCareer(id);
+        CareerModel updatedCareer = careerService.save(career);
+        return new ResponseEntity<>(updatedCareer, HttpStatus.OK);
     }
 
+    @DeleteMapping("{id}")
+    @Operation(summary = "Delete a career", description = "Delete a career in the database")
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
+        careerService.delete(id);
+        return new ResponseEntity<>("Career deleted", HttpStatus.OK);
+    }
 }
