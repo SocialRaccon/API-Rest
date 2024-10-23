@@ -44,6 +44,9 @@ public class ImageProfileModel {
         this.imageThumbnailUrl = imageThumbnailUrl;
     }
 
+    public ImageProfileModel() {
+    }
+
     public Integer getIdImageProfile() {
         return idImageProfile;
     }

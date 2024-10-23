@@ -1,11 +1,19 @@
 package itst.social_raccoon_api.Services;
 
 import itst.social_raccoon_api.Models.ImageProfileModel;
+import itst.social_raccoon_api.Models.ProfileModel;
 import itst.social_raccoon_api.Repositories.ImageProfileRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -14,6 +22,10 @@ public class ImageProfileService {
 
     @Autowired
     private ImageProfileRepository imageProfileRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
+
 
     public List<ImageProfileModel> findAll() {
         return imageProfileRepository.findAll();
@@ -44,7 +56,7 @@ public class ImageProfileService {
         return imageProfileRepository.getImageProfileByProfileId(profileId, pageRequest);
     }
 
-    public List<ImageProfileModel> getImageProfileByUserId(Integer userId) {
+    public ImageProfileModel getImageProfileByUserId(Integer userId) {
         return imageProfileRepository.getImageProfileByUserId(userId);
     }
 
@@ -64,5 +76,17 @@ public class ImageProfileService {
 
     public ImageProfileModel getImageProfile(Integer profileId, Integer imageProfileId) {
         return imageProfileRepository.getImageProfile(profileId, imageProfileId);
+    }
+
+    public void addProfileImage(ProfileModel profile, MultipartFile profileImage) throws IOException {
+        String imageUrl = imageStorageService.storeImage(profileImage);
+        if (imageUrl != null) {
+            // Save the image profile to the database
+            ImageProfileModel imageProfile = new ImageProfileModel();
+            imageProfile.setProfile(profile);
+            imageProfile.setImageUrl(imageUrl);
+            imageProfile.setImageThumbnailUrl(imageUrl); // Assuming thumbnail is the same for simplicity
+            imageProfileRepository.save(imageProfile);
+        }
     }
 }

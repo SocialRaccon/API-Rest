@@ -28,7 +28,7 @@ public class IconReactionService {
 
     public IconReactionModel updateIconReaction(Integer id, IconReactionModel iconReactionDetails) {
         IconReactionModel iconReaction = iconReactionRepository.findById(id).orElseThrow(() -> new RuntimeException("IconReaction not found"));
-        iconReaction.setName(iconReactionDetails.getName());
+        iconReaction.setThumbnail(iconReactionDetails.getThumbnail());
         return iconReactionRepository.save(iconReaction);
     }
 

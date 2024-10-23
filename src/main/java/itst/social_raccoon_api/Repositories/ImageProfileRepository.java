@@ -17,16 +17,28 @@ public interface ImageProfileRepository extends JpaRepository<ImageProfileModel,
     @Query(value = "SELECT * FROM image_profile WHERE idProfile = :profileId \n-- #pageable\n", nativeQuery = true)
     List<ImageProfileModel> getImageProfileByProfileId(@Param("profileId") Integer profileId, Pageable pageable);
 
-    @Query(value = "SELECT * FROM image_profile WHERE idUser = :userId", nativeQuery = true)
-    List<ImageProfileModel> getImageProfileByUserId(@Param("userId") Integer userId);
+    @Query(value = "SELECT ip.* FROM image_profile ip " +
+            "JOIN profile p ON ip.idProfile = p.idProfile " +
+            "JOIN user u ON p.idUser = u.idUser " +
+            "WHERE u.idUser = :userId", nativeQuery = true )
+    ImageProfileModel getImageProfileByUserId(@Param("userId") Integer userId);
 
-    @Query(value = "SELECT * FROM image_profile WHERE idUser = :userId \n-- #pageable\n", nativeQuery = true)
+    @Query(value = "SELECT ip.* FROM image_profile ip " +
+            "JOIN profile p ON ip.idProfile = p.idProfile " +
+            "JOIN user u ON p.idUser = u.idUser " +
+            "WHERE u.idUser = :userId \n-- #pageable\n", nativeQuery = true)
     List<ImageProfileModel> getImageProfileByUserId(@Param("userId") Integer userId, Pageable pageable);
 
-    @Query(value = "SELECT * FROM image_profile WHERE idProfile = :profileId AND idUser = :userId", nativeQuery = true)
+    @Query(value = "SELECT ip.* FROM image_profile ip " +
+            "JOIN profile p ON ip.idProfile = p.idProfile " +
+            "JOIN user u ON p.idUser = u.idUser " +
+            "WHERE p.idProfile = :profileId AND u.idUser = :userId", nativeQuery = true)
     List<ImageProfileModel> getImageProfileByProfileIdAndUserId(@Param("profileId") Integer profileId, @Param("userId") Integer userId);
 
-    @Query(value = "SELECT * FROM image_profile WHERE idProfile = :profileId AND idUser = :userId \n-- #pageable\n", nativeQuery = true)
+    @Query(value = "SELECT ip.* FROM image_profile ip " +
+            "JOIN profile p ON ip.idProfile = p.idProfile " +
+            "JOIN user u ON p.idUser = u.idUser " +
+            "WHERE p.idProfile = :profileId AND u.idUser = :userId \n-- #pageable\n", nativeQuery = true)
     List<ImageProfileModel> getImageProfileByProfileIdAndUserId(@Param("profileId") Integer profileId, @Param("userId") Integer userId, Pageable pageable);
 
     @Query(value = "SELECT * FROM image_profile WHERE idProfile = :profileId AND idImageProfile = :imageProfileId", nativeQuery = true)
