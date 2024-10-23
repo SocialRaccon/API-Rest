@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("follower")
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE })
 @Tag(name = "Follower", description = "Provide methods to manage followers")
 public class FollowerController {
 
@@ -30,6 +31,7 @@ public class FollowerController {
 
     @Autowired
     private ModelMapper modelMapper;
+
     // Follow a user
     @PostMapping("/user/{userId}/follow/{followerId}")
     @Operation(summary = "Follow a user", description = "Follow a user")
