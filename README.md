@@ -12,6 +12,7 @@ Also we doesn't implement NoSQL databases because we analyze our use case and we
 ### Script.sql
 ```sql
 
+
 CREATE DATABASE raccoondb;
 
 USE raccoondb;
@@ -66,7 +67,7 @@ CREATE TABLE image_profile
 
 CREATE TABLE post
 (
-    post      INT AUTO_INCREMENT PRIMARY KEY,
+    idPost      INT AUTO_INCREMENT PRIMARY KEY,
     dateCreated DATE NOT NULL,
     idUser      INT  NOT NULL,
     FOREIGN KEY (idUser) REFERENCES user (idUser)
@@ -77,16 +78,16 @@ CREATE TABLE image_post
     idImagePost       INT AUTO_INCREMENT PRIMARY KEY,
     imageUrl          VARCHAR(255) NOT NULL,
     imageThumbnailUrl VARCHAR(255) NOT NULL,
-    post            INT          NOT NULL,
-    FOREIGN KEY (post) REFERENCES post (post)
+    idPost            INT          NOT NULL,
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
 
 CREATE TABLE post_description
 (
     idPostDescription INT AUTO_INCREMENT PRIMARY KEY,
     description       VARCHAR(150) NOT NULL,
-    post            INT          NOT NULL,
-    FOREIGN KEY (post) REFERENCES post (post)
+    idPost            INT          NOT NULL,
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
 
 CREATE TABLE comment
@@ -95,9 +96,9 @@ CREATE TABLE comment
     comment   VARCHAR(150) NOT NULL,
     date      DATE         NOT NULL,
     idUser    INT          NOT NULL,
-    post    INT          NOT NULL,
+    idPost    INT          NOT NULL,
     FOREIGN KEY (idUser) REFERENCES user (idUser),
-    FOREIGN KEY (post) REFERENCES post (post)
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
 
 CREATE TABLE reaction_icon
@@ -119,11 +120,11 @@ CREATE TABLE reaction
 (
     idReactionType INT NOT NULL,
     idUser         INT NOT NULL,
-    post         INT NOT NULL,
+    idPost         INT NOT NULL,
     createdDate    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (idUser, post, idReactionType),
+    PRIMARY KEY (idUser, idPost, idReactionType),
     FOREIGN KEY (idUser) REFERENCES user (idUser),
-    FOREIGN KEY (post) REFERENCES post (post)
+    FOREIGN KEY (idPost) REFERENCES post (idPost)
 );
 
 INSERT INTO career (name, acronym)
@@ -159,17 +160,17 @@ VALUES ('2021-10-01', 1),
        ('2021-10-02', 2),
        ('2021-10-03', 3);
 
-INSERT INTO image_post (imageUrl, imageThumbnailUrl, post)
+INSERT INTO image_post (imageUrl, imageThumbnailUrl, idPost)
 VALUES ('https://www.example.com/image_post1.jpg', 'https://www.example.com/image_post1_thumbnail.jpg', 1),
        ('https://www.example.com/image_post2.jpg', 'https://www.example.com/image_post2_thumbnail.jpg', 2),
        ('https://www.example.com/image_post3.jpg', 'https://www.example.com/image_post3_thumbnail.jpg', 3);
 
-INSERT INTO post_description (description, post)
+INSERT INTO post_description (description, idPost)
 VALUES ('Evento colecta', 1),
        ('EXAMEN FINAL', 2),
        ('Mapachitos TEC', 3);
 
-INSERT INTO comment (comment, date, idUser, post)
+INSERT INTO comment (comment, date, idUser, idPost)
 VALUES ('Hola como esta eso?', '2021-10-01', 2, 1),
        ('Siempre lo mismo, otra vez a repite :(', '2021-10-02', 3, 2),
        ('Vivan los mapaches!!', '2021-10-03', 1, 3);
@@ -186,7 +187,7 @@ VALUES ('MeEnLike', 1),
        ('MeEnMapache', 3),
        ('MeEnSad', 4);
 
-INSERT INTO reaction (idReactionType, idUser, post, createdDate)
+INSERT INTO reaction (idReactionType, idUser, idPost, createdDate)
 VALUES (1, 2, 1, '2021-10-01 12:00:00'),
        (2, 3, 2, '2021-10-02 12:00:00'),
        (3, 1, 3, '2021-10-03 12:00:00'),

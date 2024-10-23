@@ -7,6 +7,7 @@ import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Repositories.RelationshipRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class RelationshipService {
 
     @Autowired
+    @Lazy
     private UserService userService;
 
     @Autowired

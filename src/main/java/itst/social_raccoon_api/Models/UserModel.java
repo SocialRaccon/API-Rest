@@ -34,6 +34,10 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
 
+    @JsonManagedReference(value = "user-profile")
+    @OneToOne(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfileModel profile;
+    
     @NotBlank(message = "This content must not be null and must not be empty")
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     @Column(nullable = false, name = "name")

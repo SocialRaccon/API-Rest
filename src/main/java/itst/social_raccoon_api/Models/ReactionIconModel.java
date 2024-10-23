@@ -36,6 +36,9 @@ public class ReactionIconModel {
         this.iconThumbnailUrl = iconThumbnailUrl;
     }
 
+    public ReactionIconModel() {
+    }
+
     public Integer getIdReactionIcon() {
         return idReactionIcon;
     }
