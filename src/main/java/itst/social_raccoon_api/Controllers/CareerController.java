@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("career")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
-        RequestMethod.DELETE })
-@Tag(name = "Career", description = "Provides methods to manage careers.")
+@RequestMapping("careers")
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@Tag(name = "careers", description = "Provides methods to manage careers.")
 public class CareerController {
 
     @Autowired
@@ -52,14 +51,32 @@ public class CareerController {
     }
 
     @PostMapping()
-    @Operation(summary = "Create a new career", description = "Create a new career in the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = CareerModel.class))))
+    @Operation(
+            summary = "Create a new career",
+            description = "Create a new career in the database",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CareerModel.class)
+                    )
+            )
+    )
     public ResponseEntity<CareerModel> create(@RequestBody CareerModel career) {
         careerService.save(career);
         return new ResponseEntity<>(career, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    @Operation(summary = "Update a career", description = "Update a career in the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = CareerModel.class))))
+    @Operation(
+            summary = "Update a career",
+            description = "Update a career in the database",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CareerModel.class)
+                    )
+            )
+    )
     public ResponseEntity<CareerModel> update(@PathVariable Integer id, @RequestBody CareerModel career) {
         CareerModel careerToUpdate = careerService.findById(id);
         if (careerToUpdate == null) {
@@ -71,7 +88,10 @@ public class CareerController {
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Delete a career", description = "Delete a career in the database")
+    @Operation(
+            summary = "Delete a career",
+            description = "Delete a career in the database"
+    )
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         careerService.delete(id);
         return new ResponseEntity<>("Career deleted", HttpStatus.OK);
