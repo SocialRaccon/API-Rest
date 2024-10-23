@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("relationships")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
-@Tag(name = "relationships", description = "Provide methods to manage user relationships (follow/unfollow)")
+@Tag(name = "Relationships", description = "Provide methods to manage user relationships (follow/unfollow)")
 public class RelationshipController {
 
     @Autowired

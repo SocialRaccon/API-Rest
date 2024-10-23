@@ -5,14 +5,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import itst.social_raccoon_api.Dto.ReactionDTO;
-import itst.social_raccoon_api.Services.PostService;
-import itst.social_raccoon_api.Services.ReactionTypeService;
-import itst.social_raccoon_api.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,17 +19,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.social_raccoon_api.Dto.ReactionDTO;
 import itst.social_raccoon_api.Models.ReactionModel;
+import itst.social_raccoon_api.Services.PostService;
 import itst.social_raccoon_api.Services.ReactionService;
+import itst.social_raccoon_api.Services.ReactionTypeService;
+import itst.social_raccoon_api.Services.UserService;
+
 
 @RestController
 @RequestMapping("reactions")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "reactions", description = "Provides methods to manage reactions.")
+@Tag(name = "Reactions", description = "Provides methods to manage reactions.")
 public class ReactionController {
 
     @Autowired
@@ -50,21 +55,33 @@ public class ReactionController {
     @Autowired
     private ReactionTypeService reactionTypeService;
 
-    @Operation(summary = "Get all reactions")
+    @Operation(summary = "Get all reactions with pagination")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found reactions"),
             @ApiResponse(responseCode = "404", description = "Reactions not found")
     })
     @GetMapping
-    public List<ReactionDTO> getAll() {
-        List<ReactionModel> reactions = reactionService.getAll();
-        if (reactions.isEmpty()) {
+    public ResponseEntity<List<ReactionDTO>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReactionModel> reactionPage = reactionService.getAll(pageable);
+
+        if (reactionPage.isEmpty()) {
             throw new NoSuchElementException();
         }
-        return reactions.stream()
+
+        // Extract only the content of the page
+        List<ReactionDTO> reactionDTOList = reactionPage
+                .getContent()
+                .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+
+        return new ResponseEntity<>(reactionDTOList, HttpStatus.OK);
     }
+
 
     @Operation(summary = "Get a reaction by its post id and user id")
     @ApiResponses(value = {

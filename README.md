@@ -137,6 +137,11 @@ VALUES ('Juan', 'Pérez', 'Gómez', 'juan@gmail.com', '21TE0121', 1),
        ('María', 'González', 'Hernández', 'maria@gmail.com', '21TE0122', 2),
        ('Pedro', 'Martínez', 'López', 'pedro@gmail.com', '21TE0123', 3);
 
+INSERT INTO authentication (email, password, idUser)
+VALUES ('juan@gmail.com', '123456', 1),
+       ('maria@gmail.com', '123456', 2),
+       ('pedro@gmail.com', '123456', 3);
+
 INSERT INTO profile (description, idUser)
 VALUES ('Estudiante de ISC', 1),
        ('Estudiante de IGE', 2),

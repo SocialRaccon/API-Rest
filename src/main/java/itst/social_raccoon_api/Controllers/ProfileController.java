@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("profiles")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET})
-@Tag(name = "profiles", description = "Provide methods to manage user profiles")
+@Tag(name = "Profiles", description = "Provide methods to manage user profiles")
 public class ProfileController {
 
     @Autowired
