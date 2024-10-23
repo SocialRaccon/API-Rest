@@ -1,18 +1,19 @@
 package itst.social_raccoon_api.Services;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
 import itst.social_raccoon_api.Dto.RelationshipDTO;
 import itst.social_raccoon_api.Dto.RelationshipInfoDTO;
 import itst.social_raccoon_api.Models.RelationshipModel;
 import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Repositories.RelationshipRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -60,7 +61,7 @@ public class RelationshipService {
     }
 
     private RelationshipInfoDTO convertToFollowerInfoDTO(RelationshipModel relationshipModel) {
-        // Suponiendo que quieres obtener la información del usuario que SIGUE al usuario actual
+        // Assuming you want to get the user information that FOLLOWS the current user
         UserModel followerUser = relationshipModel.getFollowerUser();
         return new RelationshipInfoDTO(followerUser.getIdUser(), followerUser.getName());
     }

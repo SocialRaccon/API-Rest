@@ -1,8 +1,17 @@
 package itst.social_raccoon_api.Models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -26,11 +35,11 @@ public class ImagePostModel {
     private String imageThumbnailUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idPost", nullable = false) // Asegúrate de que esta propiedad exista
+    @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-image")
-    private PostModel idPost; // Asegúrate de que esta propiedad exista
+    private PostModel idPost; 
 
-    // Constructor, Getters y Setters
+    // Constructor, Getters and Setters
     public ImagePostModel() {
     }
 

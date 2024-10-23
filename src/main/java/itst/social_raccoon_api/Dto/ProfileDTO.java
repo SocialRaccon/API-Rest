@@ -1,8 +1,8 @@
 package itst.social_raccoon_api.Dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Data Transfer Object representing a user profile")
 public class ProfileDTO {
@@ -28,7 +28,7 @@ public class ProfileDTO {
     @Schema(description = "List of users following the user")
     private List<RelationshipInfoDTO> followers;
 
-    // Constructor, Getters y Setters
+    // Constructor, Getters and Setters
     public ProfileDTO() {}
 
     public ProfileDTO(Integer idProfile, String description, String userName) {
