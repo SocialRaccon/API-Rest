@@ -1,6 +1,7 @@
 package itst.social_raccoon_api.Controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,9 +24,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("users" )
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "users", description = "Provide methods to manage users")
+@Tag(name = "users", description = "Provide methods to manage users" )
 public class UserController {
 
     @Autowired
@@ -37,46 +38,65 @@ public class UserController {
     @PostMapping()
     @Operation(summary = "Create a user", description = "Create a user in the database",
             responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "201",
-                    description = "User created",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class)
-                    )
-            )},
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "201",
+                            description = "User created",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation
+                                            = UserDTO.class)
+
+                            )
+                    )},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UserModel.class),
+                            schema
+                                    = @Schema(implementation
+                                    = UserModel.class),
                             examples = @ExampleObject(
                                     name = "User Example",
                                     value = "{ \"name\": \"John\", \"lastName\": \"Doe\", \"secondLastName\": \"Smith\", \"email\": \"john.doe@example.com\", \"controlNumber\": \"123456\", \"career\": { \"idCareer\": 1 } }"
                             )
                     )
-            ),
-            parameters = {
-                    @io.swagger.v3.oas.annotations.Parameter(
-                            name = "profileImage",
-                            description = "Profile image of the user",
-                            required = false,
-                            content = @Content(
-                                    mediaType = "multipart/form-data",
-                                    schema = @Schema(implementation = MultipartFile.class)
-                            )
-                    )
-            }
+            )
     )
-    public ResponseEntity<UserDTO> create(
-            @RequestBody UserModel user,
-            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
-        UserModel newUser = userService.save(user, profileImage);
+    public ResponseEntity<UserDTO> create(@RequestBody UserModel user) {
+        UserModel newUser = userService.save(user);
         UserDTO userDTO = convertToDTO(newUser);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
+    @PostMapping("/{userId}/profileImage")
+    @Operation(
+            summary = "Upload a profile image",
+            description = "Upload a profile image for a user",
+            parameters = {
+                    @Parameter(
+                            name = "userId",
+                            description = "The user's id",
+                            required = true,
+                            example = "1",
+                            schema = @Schema(type = "integer")
+                    ),
+                    @Parameter(
+                            name = "file",
+                            description = "The image file",
+                            required = true,
+                            schema = @Schema(type = "file")
+                    )
+            }
+    )
+    public ResponseEntity<String> uploadProfileImage(
+            @PathVariable Integer userId,
+            @RequestParam("file") MultipartFile profileImage
+    ) throws IOException {
+        userService.updateProfileImage(userId, profileImage);
+        return new ResponseEntity<>("Profile image uploaded", HttpStatus.CREATED);
+    }
 
-    @DeleteMapping("/{userId}")
+
+    @DeleteMapping("/{userId}" )
     @Operation(summary = "Delete a user", description = "Delete a user from the database", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -97,7 +117,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/profileImage")
+    @DeleteMapping("/{userId}/profileImage" )
     @Operation(summary = "Delete a user's profile image", description = "Delete a user's profile image from the database", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -118,25 +138,6 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // This method allows to upload a profile image for a user
-    @PutMapping("/{userId}/profileImage")
-    @Operation(
-            summary = "Update a user's profile image",
-            description = "Update a user's profile image in the database",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = "multipart/form-data",
-                            schema = @Schema(implementation = MultipartFile.class)
-                    )
-            )
-    )
-    public ResponseEntity<Map<String, Boolean>> updateProfileImage(
-            @PathVariable Integer userId,
-            @RequestBody MultipartFile profileImage) throws IOException {
-        Boolean user = userService.updateProfileImage(userId, profileImage);
-        Map<String, Boolean> response = Map.of("updated", user);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
     public UserDTO convertToDTO(UserModel user) {
         return modelMapper.map(user, UserDTO.class);

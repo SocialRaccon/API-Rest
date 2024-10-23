@@ -38,39 +38,52 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public UserModel save(UserModel user, MultipartFile profileImage) throws IOException {
+    public UserModel save(UserModel user) {
         CareerModel career = careerService.findById(user.getCareer().getIdCareer());
         if (career == null) {
-            throw new NoSuchElementException("Career not found");
+            throw new NoSuchElementException("Career not found" );
         }
         user.setCareer(career);
         UserModel newUser = userRepository.save(user);
 
         ProfileModel profile = new ProfileModel();
         profile.setIdUser(newUser);
-        profile.setDescription("");
+        profile.setDescription("" );
         profileService.save(profile);
 
-        if (profileImage != null && !profileImage.isEmpty()) {
-            imageProfileService.addProfileImage(profile, profileImage);
-        } else {
-            ImageProfileModel defaultImageProfile = new ImageProfileModel();
-            defaultImageProfile.setProfile(profile);
-            defaultImageProfile.setImageUrl(defaultProfileImageUrl);
-            defaultImageProfile.setImageThumbnailUrl(defaultProfileImageUrl);
-            imageProfileService.save(defaultImageProfile);
-        }
+        // Se guarda la imagen por defecto al crear el usuario
+        ImageProfileModel defaultImageProfile = new ImageProfileModel();
+        defaultImageProfile.setProfile(profile);
+        defaultImageProfile.setImageUrl(defaultProfileImageUrl);
+        defaultImageProfile.setImageThumbnailUrl(defaultProfileImageUrl);
+        imageProfileService.save(defaultImageProfile);
+
         return newUser;
+    }
+
+    public void uploadProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
+        UserModel user = findById(userId);
+        if (user == null) {
+            throw new NoSuchElementException("User not found" );
+        }
+
+        ProfileModel profile = profileService.findById(user.getIdUser()); // Obtener el perfil del usuario
+
+        if (profile == null) {
+            throw new NoSuchElementException("Profile not found for user with ID: " + userId);
+        }
+
+        imageProfileService.addProfileImage(profile, profileImage); // Guardar la imagen usando el servicio
     }
 
     public Boolean deleteProfileImage(Integer userId) {
         UserModel user = findById(userId);
         if (user == null) {
-            throw new NoSuchElementException("User not found");
+            throw new NoSuchElementException("User not found" );
         }
         ImageProfileModel imageProfile = imageProfileService.getImageProfileByUserId(userId);
         if (imageProfile.getImageUrl().equals(defaultProfileImageUrl)) {
-            throw new IllegalArgumentException("The user has the default profile image");
+            throw new IllegalArgumentException("The user has the default profile image" );
         }
         imageProfile.setImageUrl(defaultProfileImageUrl);
         imageProfile.setImageThumbnailUrl(defaultProfileImageUrl);
@@ -78,21 +91,17 @@ public class UserService {
         return true;
     }
 
-    public Boolean updateProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
-        UserModel user = findById(userId);
+    public Boolean updateProfileImage(Integer profileId, MultipartFile profileImage) throws IOException {
+        ProfileModel profile = profileService.findById(profileId);
+        UserModel user = findById(profile.getIdUser().getIdUser());
         if (user == null) {
-            throw new NoSuchElementException("User not found");
+            throw new NoSuchElementException("User not found" );
         }
-        ImageProfileModel imageProfile = imageProfileService.getImageProfileByUserId(userId);
+        ImageProfileModel imageProfile = imageProfileService.getImageProfileByProfileId(profileId);
         if (imageProfile == null) {
-            throw new NoSuchElementException("Profile image not found");
+            throw new NoSuchElementException("Profile image not found" );
         }
-        if (imageProfile.getImageUrl().equals(defaultProfileImageUrl)) {
-            imageProfile.setImageUrl(null);
-            imageProfile.setImageThumbnailUrl(null);
-            imageProfileService.update(imageProfile);
-        }
-        imageProfileService.addProfileImage(imageProfile.getProfile(), profileImage);
+        imageProfileService.updateProfileImage(profile, profileImage);
         return true;
     }
 
