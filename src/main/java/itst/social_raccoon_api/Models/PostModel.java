@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -21,13 +22,17 @@ public class PostModel {
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
     private Timestamp dateCreated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idUser")
     @JsonBackReference(value = "user-post")
     @Schema(description = "User to which the post belongs")
     private UserModel user;
 
-   // @JsonManagedReference(value = "post-comment")
+    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "post-description")
+    private PostDescriptionModel idPostDescription;
+
+    @JsonManagedReference(value = "post-comment")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
 
@@ -47,6 +52,7 @@ public class PostModel {
 
     public PostModel() {
     }
+
     public Integer getIdPost() {
         return idPost;
     }
@@ -71,6 +77,38 @@ public class PostModel {
         this.dateCreated = dateCreated;
     }
 
+    public PostDescriptionModel getIdPostDescription() {
+        return idPostDescription;
+    }
+
+    public void setIdPostDescription(PostDescriptionModel idPostDescription) {
+        this.idPostDescription = idPostDescription;
+    }
+
+    public List<CommentModel> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentModel> comments) {
+        this.comments = comments;
+    }
+
+    public List<ReactionModel> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<ReactionModel> reactions) {
+        this.reactions = reactions;
+    }
+
+    public List<ImagePostModel> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImagePostModel> images) {
+        this.images = images;
+    }
+
     @Override
     public String toString() {
         return "PostModel{" +
@@ -78,4 +116,5 @@ public class PostModel {
                 ", dateCreated=" + dateCreated +
                 '}';
     }
+
 }
