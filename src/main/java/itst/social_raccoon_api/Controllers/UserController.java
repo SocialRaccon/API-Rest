@@ -34,10 +34,17 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping(consumes = {"application/json", "multipart/form-data"})
-    @Operation(
-            summary = "Register a new user",
-            description = "Register a new user in the database",
+    @PostMapping()
+    @Operation(summary = "Create a user", description = "Create a user in the database",
+            responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "201",
+                    description = "User created",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class)
+                    )
+            )},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = "application/json",
@@ -47,14 +54,25 @@ public class UserController {
                                     value = "{ \"name\": \"John\", \"lastName\": \"Doe\", \"secondLastName\": \"Smith\", \"email\": \"john.doe@example.com\", \"controlNumber\": \"123456\", \"career\": { \"idCareer\": 1 } }"
                             )
                     )
-            )
+            ),
+            parameters = {
+                    @io.swagger.v3.oas.annotations.Parameter(
+                            name = "profileImage",
+                            description = "Profile image of the user",
+                            required = false,
+                            content = @Content(
+                                    mediaType = "multipart/form-data",
+                                    schema = @Schema(implementation = MultipartFile.class)
+                            )
+                    )
+            }
     )
-    public ResponseEntity<UserModel> register(
-            @RequestPart("user") UserModel user,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
-    ) throws IOException {
+    public ResponseEntity<UserDTO> create(
+            @RequestBody UserModel user,
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
         UserModel newUser = userService.save(user, profileImage);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        UserDTO userDTO = convertToDTO(newUser);
+        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
 
@@ -100,19 +118,24 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // This method allows to upload a profile image for a user
     @PutMapping("/{userId}/profileImage")
-    @Operation(summary = "Update a user's profile image", description = "Update a user's profile image in the database", responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "Profile image updated"
-            )}
+    @Operation(
+            summary = "Update a user's profile image",
+            description = "Update a user's profile image in the database",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "multipart/form-data",
+                            schema = @Schema(implementation = MultipartFile.class)
+                    )
+            )
     )
-    public ResponseEntity<UserModel> updateProfileImage(
+    public ResponseEntity<Map<String, Boolean>> updateProfileImage(
             @PathVariable Integer userId,
-            @RequestPart("profileImage") MultipartFile profileImage
-    ) throws IOException {
-        UserModel user = userService.updateProfileImage(userId, profileImage);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+            @RequestBody MultipartFile profileImage) throws IOException {
+        Boolean user = userService.updateProfileImage(userId, profileImage);
+        Map<String, Boolean> response = Map.of("updated", user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     public UserDTO convertToDTO(UserModel user) {

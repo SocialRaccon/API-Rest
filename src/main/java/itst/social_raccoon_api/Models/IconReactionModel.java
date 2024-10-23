@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 public class IconReactionModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idIconReaction;
+    private Integer idReactionIcon;
     private String thumbnail;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -19,11 +19,11 @@ public class IconReactionModel {
 
 
     public Integer getIdIconReaction() {
-        return idIconReaction;
+        return idReactionIcon;
     }
 
     public void setIdIconReaction(Integer idIconReaction) {
-        this.idIconReaction = idIconReaction;
+        this.idReactionIcon = idIconReaction;
     }
 
     public String getThumbnail() {

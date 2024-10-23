@@ -48,6 +48,7 @@ public class UserService {
 
         ProfileModel profile = new ProfileModel();
         profile.setIdUser(newUser);
+        profile.setDescription("");
         profileService.save(profile);
 
         if (profileImage != null && !profileImage.isEmpty()) {
@@ -77,19 +78,22 @@ public class UserService {
         return true;
     }
 
-    public UserModel updateProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
+    public Boolean updateProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
         UserModel user = findById(userId);
         if (user == null) {
             throw new NoSuchElementException("User not found");
         }
         ImageProfileModel imageProfile = imageProfileService.getImageProfileByUserId(userId);
+        if (imageProfile == null) {
+            throw new NoSuchElementException("Profile image not found");
+        }
         if (imageProfile.getImageUrl().equals(defaultProfileImageUrl)) {
             imageProfile.setImageUrl(null);
             imageProfile.setImageThumbnailUrl(null);
             imageProfileService.update(imageProfile);
         }
         imageProfileService.addProfileImage(imageProfile.getProfile(), profileImage);
-        return user;
+        return true;
     }
 
     public void deleteById(Integer id) {
