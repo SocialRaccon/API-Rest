@@ -54,35 +54,6 @@ public class ReactionController {
 
     @Autowired
     private ReactionTypeService reactionTypeService;
-
-    @Operation(summary = "Get all reactions with pagination")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found reactions"),
-            @ApiResponse(responseCode = "404", description = "Reactions not found")
-    })
-    @GetMapping
-    public ResponseEntity<List<ReactionDTO>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ReactionModel> reactionPage = reactionService.getAll(pageable);
-
-        if (reactionPage.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-
-        // Extract only the content of the page
-        List<ReactionDTO> reactionDTOList = reactionPage
-                .getContent()
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(reactionDTOList, HttpStatus.OK);
-    }
-
-
     @Operation(summary = "Get a reaction by its post id and user id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found reaction"),

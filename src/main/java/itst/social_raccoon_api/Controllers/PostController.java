@@ -24,7 +24,7 @@ import org.springframework.data.domain.Pageable;
 @RestController
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "posts", description = "Proporciona métodos para gestionar posts")
+@Tag(name = "Posts", description = "Proporciona métodos para gestionar posts")
 public class PostController {
 
     @Autowired
