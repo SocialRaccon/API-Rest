@@ -1,17 +1,22 @@
 package itst.social_raccoon_api.Controllers;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import itst.social_raccoon_api.Models.AuthenticationModel;
-import itst.social_raccoon_api.Services.AuthenticationService;
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.swagger.v3.oas.annotations.Operation;
-
-import java.util.Optional;
-import java.net.URI;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.social_raccoon_api.Models.AuthenticationModel;
+import itst.social_raccoon_api.Services.AuthenticationService;
 
 @RestController
 @RequestMapping("/authentications")
@@ -34,13 +39,13 @@ public class AuthenticationController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AuthenticationModel.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "Authentication",
-                                    value = "{\n" +
-                                            "  \"email\": \"alex2227@hotmail.com\",\n" +
-                                            "  \"password\": \"password\",\n" +
-                                            "  \"user\": {\n" +
-                                            "    \"idUser\": 1\n" +
-                                            "  }\n" +
-                                            "}"
+                                    value = "{\n"
+                                    + "  \"email\": \"alex2227@hotmail.com\",\n"
+                                    + "  \"password\": \"password\",\n"
+                                    + "  \"user\": {\n"
+                                    + "    \"idUser\": 1\n"
+                                    + "  }\n"
+                                    + "}"
                             )
                     )
             )
@@ -67,10 +72,10 @@ public class AuthenticationController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AuthenticationModel.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "Login",
-                                    value = "{\n" +
-                                            "  \"email\": \"alex2227@hotmail.com\",\n" +
-                                            "  \"password\": \"password\"\n" +
-                                            "}"
+                                    value = "{\n"
+                                    + "  \"email\": \"alex2227@hotmail.com\",\n"
+                                    + "  \"password\": \"password\"\n"
+                                    + "}"
                             )
                     )
             )
@@ -100,9 +105,9 @@ public class AuthenticationController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AuthenticationModel.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "Recover",
-                                    value = "{\n" +
-                                            "  \"email\": \"alex2227@hotmail.com \"\n" +
-                                            "}"
+                                    value = "{\n"
+                                    + "  \"email\": \"alex2227@hotmail.com \"\n"
+                                    + "}"
                             )
                     )
             )
