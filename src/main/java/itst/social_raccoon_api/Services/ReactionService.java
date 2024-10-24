@@ -1,5 +1,12 @@
 package itst.social_raccoon_api.Services;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import itst.social_raccoon_api.Models.CompositeKeys.ReactionPK;
 import itst.social_raccoon_api.Models.PostModel;
 import itst.social_raccoon_api.Models.ReactionModel;
@@ -7,14 +14,6 @@ import itst.social_raccoon_api.Models.ReactionTypeModel;
 import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Repositories.ReactionRepository;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Service;
 
 
 @Service
@@ -70,8 +69,8 @@ public class ReactionService {
         return reactionRepository.findById(reactionPK).get();
     }
 
-    public List<ReactionModel> getAll() {
-        return reactionRepository.findAll();
+    public Page<ReactionModel> getAll(Pageable pageable) {
+        return reactionRepository.findAll(pageable);
     }
 
     public ReactionModel update(Integer postId, Integer userId, Integer reactionTypeId) {

@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("careers")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "careers", description = "Provides methods to manage careers.")
+@Tag(name = "Careers", description = "Provides methods to manage careers.")
 public class CareerController {
 
     @Autowired
@@ -38,62 +38,5 @@ public class CareerController {
             throw new NoSuchElementException();
         }
         return new ResponseEntity<>(career, HttpStatus.OK);
-    }
-
-    @GetMapping("{id}")
-    @Operation(summary = "Get career by id", description = "Get a career by its id")
-    public ResponseEntity<CareerModel> findById(@PathVariable Integer id) {
-        CareerModel career = careerService.findById(id);
-        if (career == null) {
-            throw new NoSuchElementException();
-        }
-        return new ResponseEntity<>(career, HttpStatus.OK);
-    }
-
-    @PostMapping()
-    @Operation(
-            summary = "Create a new career",
-            description = "Create a new career in the database",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CareerModel.class)
-                    )
-            )
-    )
-    public ResponseEntity<CareerModel> create(@RequestBody CareerModel career) {
-        careerService.save(career);
-        return new ResponseEntity<>(career, HttpStatus.CREATED);
-    }
-
-    @PutMapping("{id}")
-    @Operation(
-            summary = "Update a career",
-            description = "Update a career in the database",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CareerModel.class)
-                    )
-            )
-    )
-    public ResponseEntity<CareerModel> update(@PathVariable Integer id, @RequestBody CareerModel career) {
-        CareerModel careerToUpdate = careerService.findById(id);
-        if (careerToUpdate == null) {
-            throw new NoSuchElementException();
-        }
-        career.setIdCareer(id);
-        CareerModel updatedCareer = careerService.save(career);
-        return new ResponseEntity<>(updatedCareer, HttpStatus.OK);
-    }
-
-    @DeleteMapping("{id}")
-    @Operation(
-            summary = "Delete a career",
-            description = "Delete a career in the database"
-    )
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        careerService.delete(id);
-        return new ResponseEntity<>("Career deleted", HttpStatus.OK);
     }
 }

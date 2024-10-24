@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ImageProfileRepository extends JpaRepository<ImageProfileModel, Integer> {
     @Query(value = "SELECT * FROM image_profile WHERE idProfile = :profileId", nativeQuery = true)
-    List<ImageProfileModel> getImageProfileByProfileId(@Param("profileId") Integer profileId);
+    ImageProfileModel getImageProfileByProfileId(@Param("profileId") Integer profileId);
 
     @Query(value = "SELECT * FROM image_profile WHERE idProfile = :profileId \n-- #pageable\n", nativeQuery = true)
     List<ImageProfileModel> getImageProfileByProfileId(@Param("profileId") Integer profileId, Pageable pageable);

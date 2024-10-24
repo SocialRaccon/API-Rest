@@ -47,7 +47,7 @@ public class ImageProfileService {
         imageProfileRepository.deleteImageProfile(profileId, imageProfileId);
     }
 
-    public List<ImageProfileModel> getImageProfileByProfileId(Integer profileId) {
+    public ImageProfileModel getImageProfileByProfileId(Integer profileId) {
         return imageProfileRepository.getImageProfileByProfileId(profileId);
     }
 
@@ -80,10 +80,27 @@ public class ImageProfileService {
 
     public void addProfileImage(ProfileModel profile, MultipartFile profileImage) throws IOException {
         String imageUrl = imageStorageService.storeImage(profileImage);
+        ImageProfileModel imageProfileOriginal = imageProfileRepository.getImageProfileByProfileId(profile.getIdProfile());
         if (imageUrl != null) {
             // Save the image profile to the database
             ImageProfileModel imageProfile = new ImageProfileModel();
+            if (imageProfileOriginal != null) {
+                imageProfile.setIdImageProfile(imageProfileOriginal.getIdImageProfile());
+            }
             imageProfile.setProfile(profile);
+            imageProfile.setImageUrl(imageUrl);
+            imageProfile.setImageThumbnailUrl(imageUrl); // Assuming thumbnail is the same for simplicity
+            imageProfileRepository.save(imageProfile);
+        }
+    }
+
+    public void updateProfileImage(ProfileModel profile, MultipartFile profileImage) throws IOException {
+        ImageProfileModel imageProfile = imageProfileRepository.getImageProfileByProfileId(profile.getIdProfile());
+        if (imageProfile == null) {
+            throw new IllegalArgumentException("Profile image not found");
+        }
+        String imageUrl = imageStorageService.storeImage(profileImage);
+        if (imageUrl != null) {
             imageProfile.setImageUrl(imageUrl);
             imageProfile.setImageThumbnailUrl(imageUrl); // Assuming thumbnail is the same for simplicity
             imageProfileRepository.save(imageProfile);
