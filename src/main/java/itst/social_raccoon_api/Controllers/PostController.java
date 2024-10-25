@@ -24,7 +24,7 @@ import org.springframework.data.domain.Pageable;
 @RestController
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Posts", description = "Proporciona métodos para gestionar posts")
+@Tag(name = "Posts", description = "Provide methods to manage posts")
 public class PostController {
 
     @Autowired
@@ -63,8 +63,6 @@ public class PostController {
     }
 
     @PostMapping
-    @JsonBackReference
-    @JsonManagedReference
     @Operation(summary = "Creación de un nuevo post",
             description = "Crea un nuevo post con la información proporcionada")
     @ApiResponse(responseCode = "201", description = "Post creado exitosamente")
