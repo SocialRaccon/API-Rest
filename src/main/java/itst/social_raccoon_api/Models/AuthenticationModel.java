@@ -1,14 +1,8 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 
 
 @Entity(name = "authentication")
@@ -19,16 +13,24 @@ public class AuthenticationModel {
     private String email;
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "idUser")
-    @JsonBackReference
+    @OneToOne(mappedBy = "authentication",fetch = FetchType.LAZY)
     private UserModel user;
 
-    public int getIdAuthentication() {
+    public AuthenticationModel() {
+    }
+
+    public AuthenticationModel(Integer idAuthentication, String email, String password, UserModel user) {
+        this.idAuthentication = idAuthentication;
+        this.email = email;
+        this.password = password;
+        this.user = user;
+    }
+
+    public Integer getIdAuthentication() {
         return idAuthentication;
     }
 
-    public void setIdAuthentication(int idAuthentication) {
+    public void setIdAuthentication(Integer idAuthentication) {
         this.idAuthentication = idAuthentication;
     }
 
@@ -39,6 +41,7 @@ public class AuthenticationModel {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getPassword() {
         return password;
     }
@@ -50,7 +53,7 @@ public class AuthenticationModel {
     public UserModel getUser() {
         return user;
     }
-    
+
     public void setUser(UserModel user) {
         this.user = user;
     }

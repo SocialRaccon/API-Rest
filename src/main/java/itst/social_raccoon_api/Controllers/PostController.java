@@ -23,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,7 +33,7 @@ import itst.social_raccoon_api.Services.PostService;
 @RestController
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Posts", description = "Provides methods to manage posts")
+@Tag(name = "Posts", description = "Provide methods to manage posts")
 public class PostController {
 
     @Autowired
@@ -75,12 +72,10 @@ public class PostController {
     }
 
     @PostMapping
-    @JsonBackReference
-    @JsonManagedReference
-    @Operation(summary = "Creation of a new post",
-            description = "Create a new post with the information provided")
-    @ApiResponse(responseCode = "201", description = "Post created successfully")
-    @ApiResponse(responseCode = "400", description = "Invalid post data")
+    @Operation(summary = "Creación de un nuevo post",
+            description = "Crea un nuevo post con la información proporcionada")
+    @ApiResponse(responseCode = "201", description = "Post creado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Datos del post inválidos")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Details of the new post",
             required = true,
