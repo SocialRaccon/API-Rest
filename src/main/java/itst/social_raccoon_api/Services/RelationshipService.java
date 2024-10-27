@@ -48,7 +48,7 @@ public class RelationshipService {
 
     public RelationshipDTO getFollowersAndFollowing(Integer userId) {
         List<RelationshipModel> followers = relationshipRepository.getFollowersByUserId(userId);
-        List<RelationshipModel> following = relationshipRepository.getFollowersByFollowerId(userId);
+        List<RelationshipModel> following = relationshipRepository.getFollowingByUserId(userId);
 
         if (followers.isEmpty() && following.isEmpty()) {
             throw new NoSuchElementException("No followers or following found for the user with ID: " + userId);
@@ -58,6 +58,24 @@ public class RelationshipService {
         relationshipDTO.setFollowers(followers.stream().map(this::convertToFollowerInfoDTO).collect(Collectors.toList()));
         relationshipDTO.setFollowing(following.stream().map(this::convertToFollowerInfoDTO).collect(Collectors.toList()));
         return relationshipDTO;
+    }
+
+    public List<RelationshipInfoDTO> getFollowersByUserId(Integer userId) {
+        List<RelationshipModel> followers = relationshipRepository.getFollowersByUserId(userId);
+        return followers.stream().map(relationshipModel -> {
+            // Obtener el usuario que ES SEGUIDO por el usuario actual
+            UserModel followedUser = relationshipModel.getUser();  // Corrección aquí
+            return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
+        }).collect(Collectors.toList());
+    }
+
+    public List<RelationshipInfoDTO> getFollowingByUserId(Integer userId) {
+        List<RelationshipModel> following = relationshipRepository.getFollowingByUserId(userId);
+        return following.stream().map(relationshipModel -> {
+            // Obtener el usuario al que el usuario actual SIGUE
+            UserModel followedUser = relationshipModel.getFollowerUser();
+            return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
+        }).collect(Collectors.toList());
     }
 
     private RelationshipInfoDTO convertToFollowerInfoDTO(RelationshipModel relationshipModel) {

@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping()
     @Operation(summary = "Create a user", description = "Create a user in the database",
-            responses = {
+    responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "201",
                             description = "User created",
