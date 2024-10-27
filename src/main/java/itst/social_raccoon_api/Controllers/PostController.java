@@ -1,30 +1,42 @@
 package itst.social_raccoon_api.Controllers;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.Dto.PostDTO;
 import itst.social_raccoon_api.Models.PostModel;
 import itst.social_raccoon_api.Services.PostService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Posts", description = "Proporciona métodos para gestionar posts")
+@Tag(name = "Posts", description = "Provides methods to manage posts")
 public class PostController {
 
     @Autowired
@@ -65,20 +77,20 @@ public class PostController {
     @PostMapping
     @JsonBackReference
     @JsonManagedReference
-    @Operation(summary = "Creación de un nuevo post",
-            description = "Crea un nuevo post con la información proporcionada")
-    @ApiResponse(responseCode = "201", description = "Post creado exitosamente")
-    @ApiResponse(responseCode = "400", description = "Datos del post inválidos")
+    @Operation(summary = "Creation of a new post",
+            description = "Create a new post with the information provided")
+    @ApiResponse(responseCode = "201", description = "Post created successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid post data")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Datos del nuevo post",
+            description = "Details of the new post",
             required = true,
             content = @io.swagger.v3.oas.annotations.media.Content(
                     mediaType = "application/json",
                     schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostDTO.class),
                     examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                            name = "Nuevo post",
+                            name = "New post",
                             value = "{\n" +
-                                    "  \"content\": \"Este es el contenido del nuevo post\",\n" +
+                                    "  \"content\": \"This is the content of the new post\",\n" +
                                     "  \"userId\": 1,\n" +
                                     "  \"imageUrl\": \"https://ejemplo.com/imagen.jpg\"\n" +
                                     "}"
@@ -108,9 +120,9 @@ public class PostController {
     }
 
     @GetMapping("/feed")
-    @Operation(summary = "Obtener feed de posts",
-            description = "Recupera un feed paginado de posts, ordenados por fecha de creación descendente")
-    @ApiResponse(responseCode = "200", description = "Feed recuperado exitosamente")
+    @Operation(summary = "Get posts feed",
+            description = "Retrieves a paginated feed of posts, sorted by descending creation date")
+    @ApiResponse(responseCode = "200", description = "Feed successfully recovered")
     public ResponseEntity<Page<PostDTO>> getFeed(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -121,10 +133,10 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un post",
-            description = "Elimina un post existente por su ID")
-    @ApiResponse(responseCode = "204", description = "Post eliminado exitosamente")
-    @ApiResponse(responseCode = "404", description = "Post no encontrado")
+    @Operation(summary = "Delete a post",
+            description = "Delete an existing post by its ID")
+    @ApiResponse(responseCode = "204", description = "Post successfully deleted")
+    @ApiResponse(responseCode = "404", description = "Post not found")
     public ResponseEntity<Void> deletePost(@PathVariable Integer id) {
         try {
             postService.deletePost(id);
@@ -135,10 +147,10 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar un post",
-            description = "Actualiza un post existente con la información proporcionada")
-    @ApiResponse(responseCode = "200", description = "Post actualizado exitosamente")
-    @ApiResponse(responseCode = "404", description = "Post no encontrado")
+    @Operation(summary = "Update a post",
+            description = "Update an existing post with the information provided")
+    @ApiResponse(responseCode = "200", description = "Post updated successfully")
+    @ApiResponse(responseCode = "404", description = "Post not found")
     public ResponseEntity<PostDTO> updatePost(@PathVariable Integer id, @RequestBody PostDTO postDTO) {
         try {
             PostModel postModel = convertToEntity(postDTO);
