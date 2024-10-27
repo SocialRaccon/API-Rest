@@ -65,23 +65,6 @@ public class ProfileService {
         // Convert ProfileModel to ProfileDTO using ModelMapper
         ProfileDTO profileDTO = modelMapper.map(profile, ProfileDTO.class);
 
-        // Obtener la imagen del perfil
-        ImageProfileModel imageProfile = imageProfileService.getImageProfileByUserId(userId);
-        String profileImageUrl = imageProfile != null ? imageProfile.getImageUrl() : null;
-        profileDTO.setProfileImageUrl(profileImageUrl);
-
-        // Get user posts and convert them to PostDTO using ModelMapper
-        List<PostModel> posts = postService.findByUser(userId);
-        java.lang.reflect.Type targetListType = new TypeToken<List<PostDTO>>() {
-        }.getType(); // PostDTO list type
-        List<PostDTO> postDTOs = modelMapper.map(posts, targetListType);
-        profileDTO.setPosts(postDTOs);
-
-        // Get the user's followers and followers
-        RelationshipDTO relationshipDTO = relationshipService.getFollowersAndFollowing(userId);
-        profileDTO.setFollowing(relationshipDTO.getFollowing());
-        profileDTO.setFollowers(relationshipDTO.getFollowers());
-
         return profileDTO;
     }
 

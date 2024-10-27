@@ -16,33 +16,12 @@ public class ProfileDTO {
     @Schema(description = "Name of the user", example = "Juan")
     private String userName;
 
-    @Schema(description = "URL of the profile image", example = "/uploads/profile-image.jpg")
-    private String profileImageUrl;
-
-    @Schema(description = "List of posts made by the user")
-    private List<PostDTO> posts;
-
-    @Schema(description = "List of users followed by the user")
-    private List<RelationshipInfoDTO> following;
-
-    @Schema(description = "List of users following the user")
-    private List<RelationshipInfoDTO> followers;
-
-    // Constructor, Getters and Setters
-    public ProfileDTO() {}
-
-    public ProfileDTO(Integer idProfile, String description, String userName) {
-        this.idProfile = idProfile;
-        this.description = description;
-        this.userName = userName;
-    }
-
     public Integer getIdProfile() {
         return idProfile;
     }
 
-    public void setIdProfile(Integer idProfile) {
-        this.idProfile = idProfile;
+    public void setIdProfile(Integer id) {
+        this.idProfile = id;
     }
 
     public String getDescription() {
@@ -61,38 +40,12 @@ public class ProfileDTO {
         this.userName = userName;
     }
 
-    //Getters and Setters for followers and following
-    public List<RelationshipInfoDTO> getFollowers() {
-        return followers;
+    public ProfileDTO(Integer idProfile, String description, String userName) {
+        this.idProfile = idProfile;
+        this.description = description;
+        this.userName = userName;
     }
 
-    public void setFollowers(List<RelationshipInfoDTO> followers) {
-        this.followers = followers;
-    }
-
-    public List<RelationshipInfoDTO> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(List<RelationshipInfoDTO> following) {
-        this.following = following;
-    }
-
-    //Getters and Setters for profileImageUrl
-    public String getProfileImageUrl() {
-        return profileImageUrl;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-
-    // Getters and Setters for posts
-    public List<PostDTO> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<PostDTO> posts) {
-        this.posts = posts;
+    public ProfileDTO() {
     }
 }
