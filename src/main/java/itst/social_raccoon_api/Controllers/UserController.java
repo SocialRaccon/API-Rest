@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/profileImage")
-    @Operation(
+    /*@Operation(
             summary = "Upload a profile image",
             description = "Upload a profile image for a user",
             parameters = {
@@ -86,7 +86,7 @@ public class UserController {
                             schema = @Schema(type = "file")
                     )
             }
-    )
+    )*/
     public ResponseEntity<String> uploadProfileImage(
             @PathVariable Integer userId,
             @RequestParam("file") MultipartFile profileImage

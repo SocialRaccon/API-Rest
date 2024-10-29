@@ -1,11 +1,17 @@
 package itst.social_raccoon_api.Services;
 
 import itst.social_raccoon_api.Models.ImagePostModel;
+import itst.social_raccoon_api.Models.ImageProfileModel;
+import itst.social_raccoon_api.Models.ProfileModel;
 import itst.social_raccoon_api.Repositories.ImagePostRepository;
+import itst.social_raccoon_api.Repositories.ImageProfileRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -14,6 +20,9 @@ public class ImagePostService {
 
     @Autowired
     private ImagePostRepository imagePostRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     public List<ImagePostModel> findAll() {
         return imagePostRepository.findAll();

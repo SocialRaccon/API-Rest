@@ -1,15 +1,24 @@
 package itst.social_raccoon_api.Controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import itst.social_raccoon_api.Dto.PostRequestDTO;
+import itst.social_raccoon_api.Models.ImagePostModel;
+import itst.social_raccoon_api.Models.PostDescriptionModel;
+import itst.social_raccoon_api.Models.UserModel;
+import itst.social_raccoon_api.Services.ImagePostService;
+import itst.social_raccoon_api.Services.ImageStorageService;
+import itst.social_raccoon_api.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +38,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.Dto.PostDTO;
 import itst.social_raccoon_api.Models.PostModel;
 import itst.social_raccoon_api.Services.PostService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("posts")
@@ -42,6 +52,9 @@ public class PostController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/{userId}")
     @Operation(summary = "Get posts by user ID",
             description = "Retrieves all posts associated with the specified user ID")
@@ -52,7 +65,6 @@ public class PostController {
         if (posts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
         List<PostDTO> postDTOs = posts.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -71,47 +83,35 @@ public class PostController {
         return modelMapper.map(dto, PostModel.class);
     }
 
-    @PostMapping
-    @Operation(summary = "Creación de un nuevo post",
-            description = "Crea un nuevo post con la información proporcionada")
-    @ApiResponse(responseCode = "201", description = "Post creado exitosamente")
-    @ApiResponse(responseCode = "400", description = "Datos del post inválidos")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Details of the new post",
-            required = true,
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                    mediaType = "application/json",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostDTO.class),
-                    examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                            name = "New post",
-                            value = "{\n" +
-                                    "  \"content\": \"This is the content of the new post\",\n" +
-                                    "  \"userId\": 1,\n" +
-                                    "  \"imageUrl\": \"https://ejemplo.com/imagen.jpg\"\n" +
-                                    "}"
-                    )
-            )
+    private PostModel convertPostRequestToEntity(PostRequestDTO postRequestDTO) {
+        PostModel postModel = modelMapper.map(postRequestDTO, PostModel.class);
+        UserModel user = userService.findById(postRequestDTO.getIdUser());
+        if(user == null) {
+            throw new NoSuchElementException("User not found");
+        }
+        postModel.setUser(user);
+        PostDescriptionModel postDescriptionModel = new PostDescriptionModel();
+        postDescriptionModel.setDescription(postRequestDTO.getPostDescription());
+        postDescriptionModel.setIdPost(postModel);
+        postModel.setIdPostDescription(postDescriptionModel);
+        return postModel;
+    }
+
+    @PostMapping(value = "/withImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(
+            summary = "Create a post with an image",
+            description = "Create a new post with an image attached"
     )
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
-        PostModel postModel = convertToEntity(postDTO);
-        PostModel savedPost = postService.save(postModel);
+    public ResponseEntity<PostDTO> createPost(
+            @RequestParam("postDescription") String postDescription,
+            @RequestParam("userId") Integer userId,
+            @RequestParam("file") MultipartFile file) {
+        PostRequestDTO postRequestDTO = new PostRequestDTO();
+        postRequestDTO.setPostDescription(postDescription);
+        postRequestDTO.setIdUser(userId);
+        PostModel postModel = convertPostRequestToEntity(postRequestDTO);
+        PostModel savedPost = postService.save(postModel, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
-    }
-
-    public PostService getPostService() {
-        return postService;
-    }
-
-    public void setPostService(PostService postService) {
-        this.postService = postService;
-    }
-
-    public ModelMapper getModelMapper() {
-        return modelMapper;
-    }
-
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/feed")

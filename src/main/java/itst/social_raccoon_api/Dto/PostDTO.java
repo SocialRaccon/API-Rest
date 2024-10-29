@@ -17,7 +17,6 @@ public class PostDTO {
     private String userName;
     private String userLastName;
     private String userSecondLastName;
-    private String userEmail;
     private String userControlNumber;
     private String postDescription = String.valueOf(new ArrayList<>());
     private List<CommentModel> comments = new ArrayList<>();
@@ -46,7 +45,6 @@ public class PostDTO {
         this.userName = userName;
         this.userLastName = userLastName;
         this.userSecondLastName = userSecondLastName;
-        this.userEmail = userEmail;
         this.userControlNumber = userControlNumber;
         this.postDescription = postDescription;
         this.comments = comments;
@@ -102,14 +100,6 @@ public class PostDTO {
         this.userSecondLastName = userSecondLastName;
     }
 
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
     public String getUserControlNumber() {
         return userControlNumber;
     }
@@ -159,7 +149,6 @@ public class PostDTO {
                 ", userName='" + userName + '\'' +
                 ", userLastName='" + userLastName + '\'' +
                 ", userSecondLastName='" + userSecondLastName + '\'' +
-                ", userEmail='" + userEmail + '\'' +
                 ", userControlNumber='" + userControlNumber + '\'' +
                 ", postDescription='" + postDescription + '\'' +
                 ", comments=" + comments +

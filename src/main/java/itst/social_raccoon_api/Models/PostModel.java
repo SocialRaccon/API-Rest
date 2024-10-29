@@ -20,7 +20,7 @@ public class PostModel {
 
     @Column(name = "dateCreated")
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
-    private Timestamp dateCreated;
+    private Timestamp dateCreated = new Timestamp(System.currentTimeMillis());
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idUser")
@@ -48,6 +48,7 @@ public class PostModel {
         this.idPost = idPost;
         this.user = user;
         this.dateCreated = dateCreated;
+        this.dateCreated = new Timestamp(System.currentTimeMillis());
     }
 
     public PostModel() {
