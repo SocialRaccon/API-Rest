@@ -1,9 +1,7 @@
 package itst.social_raccoon_api.Controllers;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
 import itst.social_raccoon_api.Dto.PostRequestDTO;
 import itst.social_raccoon_api.Models.ImagePostModel;
 import itst.social_raccoon_api.Models.PostDescriptionModel;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +32,6 @@ import itst.social_raccoon_api.Dto.PostDTO;
 import itst.social_raccoon_api.Models.PostModel;
 import itst.social_raccoon_api.Services.PostService;
 import org.springframework.web.multipart.MultipartFile;
-
 @RestController
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -166,6 +162,20 @@ public class PostController {
         return ResponseEntity.ok(images);
     }
 
+    @PutMapping(value = "/{userId}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Update an image from a post",
+            description = "Update an image from a post if it belongs to the specified user ID")
+    @ApiResponse(responseCode = "200", description = "Image updated successfully")
+    @ApiResponse(responseCode = "404", description = "Image or post not found or does not belong to the user")
+    public ResponseEntity<String> updateImageFromPost(
+            @PathVariable Integer userId,
+            @RequestParam Integer postId,
+            @RequestParam Integer imageId,
+            @RequestParam("image") MultipartFile image) {
+        postService.update(postId, userId, imageId, image);
+        return ResponseEntity.ok("Image updated successfully");
+    }
+
     @PutMapping("/{userId}")
     @Operation(summary = "Update a post",
             description = "Update an existing post with the information provided")
@@ -182,7 +192,6 @@ public class PostController {
 
     private PostDTO convertToDTO(PostModel post) {
         PostDTO dto = modelMapper.map(post, PostDTO.class);
-        // Add any additional processing if needed
         return dto;
     }
 

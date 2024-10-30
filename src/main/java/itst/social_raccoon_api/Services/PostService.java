@@ -27,6 +27,9 @@ public class PostService {
     @Autowired
     private ImageStorageService imageStorageService;
 
+    @Autowired
+    private ImagePostService imagePostService;
+
     @Transactional
     public PostModel save(PostModel post) {
         return postRepository.save(post);
@@ -107,6 +110,7 @@ public class PostService {
         }
     }
 
+
     @Transactional
     public List<ImagePostModel> getImages(Integer userId, Integer postId) {
         PostModel post = postRepository.findByUserAndPost(userId, postId);
@@ -135,15 +139,19 @@ public class PostService {
     }
 
     @Transactional
-    public String update(Integer id, Integer imageId, String imageUrl) {
-        PostModel existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Post no encontrado"));
-        existingPost.getImages().stream()
-                .filter(image -> image.getIdImagePost().equals(imageId))
-                .findFirst()
-                .ifPresent(image -> image.setImageUrl(imageUrl));
-        postRepository.save(existingPost);
-        return "Imagen actualizada";
+    public String update(Integer postId, Integer userId, Integer imageId, MultipartFile image) {
+        PostModel post = postRepository.findByUserAndPost(userId, postId);
+        ImagePostModel imagePost = imagePostService.getImagePost(postId, imageId);
+        try {
+            String imageUrl = imageStorageService.storeImage(image);
+            imagePost.setImageUrl(imageUrl);
+            imagePost.setImageThumbnailUrl(imageUrl);
+            postRepository.save(post);
+            return imageUrl;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Transactional

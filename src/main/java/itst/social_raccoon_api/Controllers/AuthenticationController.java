@@ -15,46 +15,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/authentications")
+@RequestMapping("authentications")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Authentications", description = "Provides methods to manage authentications.")
 public class AuthenticationController {
+
     @Autowired
     private AuthenticationService authenticationService;
 
-    // Create Auhtentication
-    @PostMapping
-    @Operation(
-            summary = "Create Authentication",
-            description = "Create user authentication of a user",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Authentication to be created",
-                    required = true,
-                    content = @io.swagger.v3.oas.annotations.media.Content(
-                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AuthenticationModel.class),
-                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    name = "Authentication",
-                                    value = "{\n"
-                                            + "  \"email\": \"alex2227@hotmail.com\",\n"
-                                            + "  \"password\": \"password\",\n"
-                                            + "  \"user\": {\n"
-                                            + "    \"idUser\": 1\n"
-                                            + "  }\n"
-                                            + "}"
-                            )
-                    )
-            )
-    )
-    public ResponseEntity<String> create(@RequestBody AuthenticationModel authentication, UriComponentsBuilder ucb) {
-        AuthenticationModel saveAutentication = authenticationService.save(authentication);
-        URI uri = ucb
-                .path("/authentication{id}")
-                .buildAndExpand(saveAutentication.getIdAuthentication())
-                .toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
-    // Login
     @PostMapping("/login")
     @Operation(
             summary = "Login",
