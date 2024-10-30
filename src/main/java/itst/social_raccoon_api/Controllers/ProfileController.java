@@ -1,77 +1,38 @@
 package itst.social_raccoon_api.Controllers;
 
-import itst.social_raccoon_api.Models.ProfileModel;
-import itst.social_raccoon_api.Repositories.ProfileRepository;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.social_raccoon_api.Dto.ProfileDTO;
+import itst.social_raccoon_api.Services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import io.swagger.v3.oas.annotations.Operation;
-
-import java.util.Optional;
-import java.net.URI;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("profiles")
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET})
+@Tag(name = "Profiles", description = "Provide methods to manage user profiles")
 public class ProfileController {
+
     @Autowired
-    private ProfileRepository profileRepository;
+    private ProfileService profileService;
 
-    // Find all
-    @GetMapping
-    @Operation(summary = "Get all Profile ", description = "Get all Profile from the database")
-    public ResponseEntity<Iterable<ProfileModel>> findAll() {
-        return ResponseEntity.ok(profileRepository.findAll());
+    @GetMapping("/{userId}")
+    @Operation(summary = "Get profile by user ID", description = "Retrieve a user's profile by their ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User profile found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ProfileDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description
+                    = "User profile not found", content = @Content)
+    })
+    public ResponseEntity<ProfileDTO> getProfileByUserId(@PathVariable Integer userId) {
+        ProfileDTO profileDTO = profileService.getProfileByUserId(userId);
+        return new ResponseEntity<>(profileDTO, HttpStatus.OK);
     }
-
-    // Find By Id
-    @GetMapping("/{id}")
-    @Operation(summary = "Get profile by Id ", description = "Get Profile by id from the database")
-    public ResponseEntity<ProfileModel> findById(@PathVariable Integer idProfile) {
-        Optional<ProfileModel> profileOptional = profileRepository.findById(idProfile);
-        if (profileOptional.isPresent()) {
-            return ResponseEntity.ok(profileOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // Create Profile
-    @PostMapping
-    @Operation(summary = "Create Profile ", description = "Create Profile on the database")
-    public ResponseEntity<String> create(@RequestBody ProfileModel profile, UriComponentsBuilder ucb) {
-        ProfileModel saveProfile = profileRepository.save(profile);
-        URI uri = ucb
-                .path("/profile/{id}")
-                .buildAndExpand(saveProfile.getIdProfile())
-                .toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
-    // Update Profile
-    @PutMapping("/{id}")
-    @Operation(summary = "Update Profile ", description = "Update a Profile in the database")
-    public ResponseEntity<String> update(@PathVariable Integer idProfile, @RequestBody ProfileModel profileAct) {
-        ProfileModel profileAnt = profileRepository.findById(idProfile).get();
-        if (profileAnt != null) {
-            profileAct.setIdProfile(profileAnt.getIdProfile());
-            profileRepository.save(profileAct);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    // Delete Profile
-    @DeleteMapping("/{idProfile}")
-    @Operation(summary = "Delete Profile ", description = "Delete a Profile in the database")
-    public ResponseEntity<String> delete(@PathVariable Integer idProfile) {
-        if (profileRepository.findById(idProfile).get() != null) {
-            profileRepository.deleteById(idProfile);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
 }

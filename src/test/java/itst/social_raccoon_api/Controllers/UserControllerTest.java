@@ -35,21 +35,21 @@ public class UserControllerTest {
 
     @Test // Test for the getAllUsers method
     public void getAllUsersTest() throws Exception {
-        mvc.perform(get("/user").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mvc.perform(get("/users").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @Test // Test for the getUserById method
     public void getUserByIdTest() throws Exception {
-        mvc.perform(get("/user/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mvc.perform(get("/users/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.idUser", is(2)));
     }
 
     @Test // Test for the getUserById method when the user is not found
     public void getUserByIdNotFoundTest() throws Exception {
-        mvc.perform(get("/user/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mvc.perform(get("/users/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }

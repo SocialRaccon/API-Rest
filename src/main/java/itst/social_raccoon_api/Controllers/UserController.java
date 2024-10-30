@@ -1,6 +1,7 @@
 package itst.social_raccoon_api.Controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,112 +16,130 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("user")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
-                RequestMethod.DELETE })
-@Tag(name = "User", description = "Provide methods to manage users")
+@RequestMapping("users" )
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@Tag(name = "Users", description = "Provide methods to manage users" )
 public class UserController {
 
-        @Autowired
-        private UserService userService;
-        @Autowired
-        private CareerService careerService;
-        @Autowired
-        private ModelMapper modelMapper;
+    @Autowired
+    private UserService userService;
 
-        @GetMapping()
-        @Operation(summary = "Get all users", description = "Get all users from the database", responses = {
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Found users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class), examples = @ExampleObject(name = "Users Example", value = "{"
-                                        +
-                                        "  \"idUser\": 2,\n" +
-                                        "  \"lastName\": \"Pérez\",\n" +
-                                        "  \"secondLastName\": \"Gómez\",\n" +
-                                        "  \"email\": \"juan@gmail.com\",\n" +
-                                        "  \"controlNumber\": \"21TE0121\",\n" +
-                                        "  \"career\": {\n" +
-                                        "    \"id\": 1,\n" +
-                                        "    \"name\": \"Ingeniería en Sistemas Computacionales\",\n" +
-                                        "    \"acronym\": \"ISC\"\n" +
-                                        "  },\n" +
-                                        "  \"name\": \"Juan\"\n" +
-                                        "}"))) })
-        public ResponseEntity<List<UserDTO>> findAll() {
-                List<UserModel> users = userService.findAll();
-                List<UserDTO> userDTOS = users.stream()
-                                .map(this::convertToDTO)
-                                .toList();
-                return new ResponseEntity<>(userDTOS, HttpStatus.OK);
-        }
+    @Autowired
+    private ModelMapper modelMapper;
 
-        @GetMapping("{id}")
-        @Operation(summary = "Get user by id", description = "Get a user by its id", responses = {
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "User found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class), examples = @ExampleObject(name = "User Example", value = "{"
-                                        +
-                                        "  \"idUser\": 2,\n" +
-                                        "  \"lastName\": \"Pérez\",\n" +
-                                        "  \"secondLastName\": \"Gómez\",\n" +
-                                        "  \"email\": \"juan@gmail.com\",\n" +
-                                        "  \"controlNumber\": \"21TE0121\",\n" +
-                                        "  \"career\": {\n" +
-                                        "    \"id\": 1,\n" +
-                                        "    \"name\": \"Ingeniería en Sistemas Computacionales\",\n" +
-                                        "    \"acronym\": \"ISC\"\n" +
-                                        "  },\n" +
-                                        "  \"name\": \"Juan\"\n" +
-                                        "}"))) })
-        public ResponseEntity<UserModel> findById(@PathVariable Integer id) {
-                UserModel user = userService.findById(id);
-                if (user == null) {
-                        throw new NoSuchElementException();
-                }
-                return new ResponseEntity<>(user, HttpStatus.OK);
-        }
+    @PostMapping()
+    @Operation(summary = "Create a user", description = "Create a user in the database",
+    responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "201",
+                            description = "User created",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation
+                                            = UserDTO.class)
 
-        @PostMapping()
-        @Operation(summary = "Create a new user", description = "Create a new user in the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class), examples = @ExampleObject(name = "User Example", value = "{ \"name\": \"John\", \"lastName\": \"Doe\", \"secondLastName\": \"Smith\", \"email\": \"john.doe@example.com\", \"controlNumber\": \"123456\", \"career\": { \"idCareer\": 1 } }"))))
-        public ResponseEntity<UserModel> create(@RequestBody UserModel user) {
-                CareerModel career = careerService.findById(user.getCareer().getIdCareer());
-                if (career == null) {
-                        throw new NoSuchElementException();
-                }
-                user.setCareer(career);
-                UserModel newUser = userService.save(user);
-                return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-        }
+                            )
+                    )},
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema
+                                    = @Schema(implementation
+                                    = UserModel.class),
+                            examples = @ExampleObject(
+                                    name = "User Example",
+                                    value = "{ \"name\": \"John\", \"lastName\": \"Doe\", \"secondLastName\": \"Smith\", \"email\": \"john.doe@example.com\", \"controlNumber\": \"123456\", \"career\": { \"idCareer\": 1 } }"
+                            )
+                    )
+            )
+    )
+    public ResponseEntity<UserDTO> create(@RequestBody UserModel user) {
+        UserModel newUser = userService.save(user);
+        UserDTO userDTO = convertToDTO(newUser);
+        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+    }
 
-        @PutMapping("{id}")
-        @Operation(summary = "Update a user", description = "Update a user in the database", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class), examples = @ExampleObject(name = "User Example", value = "{ \"idUser\": 1, \"name\": \"John\", \"lastName\": \"Doe\", \"secondLastName\": \"Smith\", \"email\": \"john.doe@example.com\", \"controlNumber\": \"123456\" }"))))
-        public ResponseEntity<UserModel> update(@PathVariable Integer id, @RequestBody UserModel user) {
-                UserModel existingUser = userService.findById(id);
-                if (existingUser == null) {
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                }
-                user.setIdUser(id);
-                UserModel updatedUser = userService.save(user);
-                return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-        }
+    @PostMapping("/{userId}/profileImage")
+    /*@Operation(
+            summary = "Upload a profile image",
+            description = "Upload a profile image for a user",
+            parameters = {
+                    @Parameter(
+                            name = "userId",
+                            description = "The user's id",
+                            required = true,
+                            example = "1",
+                            schema = @Schema(type = "integer")
+                    ),
+                    @Parameter(
+                            name = "file",
+                            description = "The image file",
+                            required = true,
+                            schema = @Schema(type = "file")
+                    )
+            }
+    )*/
+    public ResponseEntity<String> uploadProfileImage(
+            @PathVariable Integer userId,
+            @RequestParam("file") MultipartFile profileImage
+    ) throws IOException {
+        userService.updateProfileImage(userId, profileImage);
+        return new ResponseEntity<>("Profile image uploaded", HttpStatus.CREATED);
+    }
 
-        @DeleteMapping("{id}")
-        @Operation(summary = "Delete a user", description = "Delete a user from the database", responses = {
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "User deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Map.class), examples = @ExampleObject(name = "Deleted", value = "{ \"deleted\": true }"))) })
-        public ResponseEntity<Map<String, Boolean>> delete(@PathVariable Integer id) {
-                userService.deleteById(id);
-                Map<String, Boolean> response = Map.of("deleted", Boolean.TRUE);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-        }
 
-        public UserDTO convertToDTO(UserModel user) {
-                return modelMapper.map(user, UserDTO.class);
-        }
+    @DeleteMapping("/{userId}" )
+    @Operation(summary = "Delete a user", description = "Delete a user from the database", responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "User deleted",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Map.class),
+                            examples = @ExampleObject(
+                                    name = "Deleted",
+                                    value = "{ \"deleted\": true }"
+                            )
+                    )
+            )}
+    )
+    public ResponseEntity<Map<String, Boolean>> delete(@PathVariable Integer userId) {
+        userService.deleteById(userId);
+        Map<String, Boolean> response = Map.of("deleted", Boolean.TRUE);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-        // Commit
-        /*
-         * fixed create and update for user
-         */
+    @DeleteMapping("/{userId}/profileImage" )
+    @Operation(summary = "Delete a user's profile image", description = "Delete a user's profile image from the database", responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "Profile image deleted",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Map.class),
+                            examples = @ExampleObject(
+                                    name = "Deleted",
+                                    value = "{ \"deleted\": true }"
+                            )
+                    )
+            )}
+    )
+    public ResponseEntity<Map<String, Boolean>> deleteProfileImage(@PathVariable Integer userId) {
+        boolean deleted = userService.deleteProfileImage(userId);
+        Map<String, Boolean> response = Map.of("deleted", deleted);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    public UserDTO convertToDTO(UserModel user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
 }

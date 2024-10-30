@@ -32,77 +32,77 @@ public class ReactionControllerTest {
 
     @Test // Test for the getAll method
     public void getAllTest() throws Exception {
-        mockMvc.perform(get("/reaction").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @Test // Test for the getById method
     public void getByIdTest() throws Exception {
-        mockMvc.perform(get("/reaction/post/1/user/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/post/1/user/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.idPost", is(1)));
     }
 
     @Test // Test for the getById method when the reaction is not found
     public void getByIdNotFoundTest() throws Exception {
-        mockMvc.perform(get("/reaction/post/0/user/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/post/0/user/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }
 
     @Test // Test for the getReactionsByPostId method
     public void getReactionsByPostIdTest() throws Exception {
-        mockMvc.perform(get("/reaction/post/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/post/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @Test // Test for the getReactionsByPostId method when the post is not found
     public void getReactionsByPostIdNotFoundTest() throws Exception {
-        mockMvc.perform(get("/reaction/post/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/post/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }
 
     @Test // Test for the getReactionsByUserId method
     public void getReactionsByUserIdTest() throws Exception {
-        mockMvc.perform(get("/reaction/user/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/user/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @Test // Test for the getReactionsByUserId method when the user is not found
     public void getReactionsByUserIdNotFoundTest() throws Exception {
-        mockMvc.perform(get("/reaction/user/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/user/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }
 
     @Test // Test for the getReactionCountByPostId method
     public void getReactionCountByPostIdTest() throws Exception {
-        mockMvc.perform(get("/reaction/count/post/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/count/post/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", is(greaterThan(0))));
     }
 
     @Test // Test for the getReactionCountByPostId method when the post is not found
     public void getReactionCountByPostIdNotFoundTest() throws Exception {
-        mockMvc.perform(get("/reaction/count/post/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/count/post/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }
 
     @Test // Test for the getReactionCountByPostIdAndReactionTypeId method
     public void getReactionCountByPostIdAndReactionTypeIdTest() throws Exception {
-        mockMvc.perform(get("/reaction/count/post/1/reactionType/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/count/post/1/reactionType/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", (is(greaterThanOrEqualTo(0)))));
     }
 
     @Test // Test for the getReactionCountByPostIdAndReactionTypeId method when the post is not found
     public void getReactionCountByPostIdAndReactionTypeIdNotFoundTest() throws Exception {
-        mockMvc.perform(get("/reaction/count/post/0/reactionType/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mockMvc.perform(get("/reactions/count/post/0/reactionType/1").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }

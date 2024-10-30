@@ -1,5 +1,6 @@
 package itst.social_raccoon_api.Models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,9 +15,10 @@ public class ReactionIconModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier of the reaction icon", example = "1")
     @Column(name = "idReactionIcon")
+    @JsonProperty("idReactionIcon")
     private Integer idReactionIcon;
 
-    @Schema(description = "Thumbnail of the reaction icon", example = "https://www.example.com/icon.jpg")
+    @Schema(description = "URL of the reaction icon", example = "https://www.example.com/icon.jpg")
     @Column(name = "iconUrl")
     @Size(max = 255)
     @NotBlank(message = "This content must not be null and must not be empty")
@@ -28,9 +30,10 @@ public class ReactionIconModel {
     @NotBlank(message = "This content must not be null and must not be empty")
     private String iconThumbnailUrl;
 
-    public ReactionIconModel(Integer IdReactionIcon, String thumbnail) {
-        this.idReactionIcon = IdReactionIcon;
-        this.iconUrl = thumbnail;
+    public ReactionIconModel(Integer idReactionIcon, String iconUrl, String iconThumbnailUrl) {
+        this.idReactionIcon = idReactionIcon;
+        this.iconUrl = iconUrl;
+        this.iconThumbnailUrl = iconThumbnailUrl;
     }
 
     public ReactionIconModel() {

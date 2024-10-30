@@ -1,9 +1,13 @@
 package itst.social_raccoon_api.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "profile")
@@ -21,10 +25,9 @@ public class ProfileModel {
     @Schema(description = "Description of the profile", example = "This is a description")
     private String description;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idUser", nullable = false)
-    @Schema(description = "User to which the profile belongs")
+    @OneToOne
+    @JoinColumn(name = "idUser", referencedColumnName = "idUser", nullable = false)
+    @JsonBackReference(value = "user-profile")
     private UserModel idUser;
 
     public Integer getIdProfile() {
