@@ -4,9 +4,17 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import itst.social_raccoon_api.Models.CompositeKeys.ReactionPK;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity()
 @Table(name = "reaction")
@@ -14,7 +22,7 @@ import jakarta.persistence.*;
 @Schema(description = "Model representing a reaction")
 public class ReactionModel {
 
-    @ManyToOne(fetch = FetchType.LAZY)  // Cambiado de @OneToOne a @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)  // Changed from @OneToOne to @ManyToOne
     @JoinColumn(name = "idReactionType", referencedColumnName = "idReactionType")
     @Schema(description = "Unique identifier of the reaction type", example = "1")
     @JsonBackReference(value = "reactionType-reaction")
@@ -27,20 +35,20 @@ public class ReactionModel {
     @Schema(description = "Unique identifier of the post", example = "1")
     @JsonBackReference(value = "post-reaction")
     @JsonProperty("idPost")
-    private PostModel idPost;  // Campo para el identificador del post
+    private PostModel idPost;  // Post identifier field
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser")
+    @ManyToOne()
+    @JoinColumn(name = "idUser", nullable = false)
     @Schema(description = "Unique identifier of the user", example = "1")
     @JsonBackReference(value = "user-reaction")
     @JsonProperty("idUser")
-    private UserModel idUser;  // Campo para el identificador del usuario
+    private UserModel idUser;  // User ID field
 
     @Column(name = "createdDate")
     @Schema(description = "Date when the reaction was made", example = "2021-10-10 10:00:00")
     @JsonProperty("createdDate")
-    private Timestamp date = new Timestamp(System.currentTimeMillis());  // Campo para la fecha de la reacción
+    private Timestamp date = new Timestamp(System.currentTimeMillis());  // Reaction date field
 
     public ReactionModel() {
     }

@@ -1,24 +1,27 @@
 package itst.social_raccoon_api.Controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.Dto.RelationshipDTO;
+import itst.social_raccoon_api.Dto.RelationshipInfoDTO;
 import itst.social_raccoon_api.Services.RelationshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("relationships")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
-@Tag(name = "relationships", description = "Provide methods to manage user relationships (follow/unfollow)")
+@Tag(name = "Relationships", description = "Provide methods to manage user relationships (follow/unfollow)")
 public class RelationshipController {
 
     @Autowired
@@ -46,20 +49,23 @@ public class RelationshipController {
         return new ResponseEntity<>("User unfollowed", HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    @Operation(summary = "Get followers and following of a user", description = "Get followers and following of a user")
+    @GetMapping("/{userId}/followers") //Se obtienen los seguidores de un usuario
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Followers and following of the user", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = RelationshipDTO.class))
-            }),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Followers found", content = @Content(schema = @Schema(implementation = RelationshipInfoDTO.class)),
+                    headers = {@io.swagger.v3.oas.annotations.headers.Header(name = "X-Rate-Limit", description = "Rate limit for the user", required = true, schema = @Schema(type = "integer"))}),
+            @ApiResponse(responseCode = "404", description = "Followers not found", content = @Content)
     })
-    public ResponseEntity<RelationshipDTO> getFollowersAndFollowing(@PathVariable Integer userId) {
-        try {
-            RelationshipDTO relationshipDTO = relationshipService.getFollowersAndFollowing(userId);
-            return new ResponseEntity<>(relationshipDTO, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<List<RelationshipInfoDTO>> getFollowers(@PathVariable Integer userId) {
+        return new ResponseEntity<>(relationshipService.getFollowersByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/following") //Se obtienen los usuarios seguidos por un usuario
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Following found", content = @Content(schema = @Schema(implementation = RelationshipInfoDTO.class)),
+                    headers = {@io.swagger.v3.oas.annotations.headers.Header(name = "X-Rate-Limit", description = "Rate limit for the user", required = true, schema = @Schema(type = "integer"))}),
+            @ApiResponse(responseCode = "404", description = "Following not found", content = @Content)
+    })
+    public ResponseEntity<List<RelationshipInfoDTO>> getFollowing(@PathVariable Integer userId) {
+        return new ResponseEntity<>(relationshipService.getFollowingByUserId(userId), HttpStatus.OK);
     }
 }

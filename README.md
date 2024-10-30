@@ -11,7 +11,6 @@ Also we doesn't implement NoSQL databases because we analyze our use case and we
 
 ### Script.sql
 ```sql
-
 CREATE DATABASE raccoondb;
 
 USE raccoondb;
@@ -24,17 +23,25 @@ CREATE TABLE career
     CONSTRAINT unique_acronym UNIQUE (acronym)
 );
 
+CREATE TABLE authentication
+(
+    idAuthentication INT AUTO_INCREMENT PRIMARY KEY,
+    email            VARCHAR(65) NOT NULL,
+    password         VARCHAR(65) NOT NULL,
+    CONSTRAINT unique_email UNIQUE (email)
+);
+
 CREATE TABLE user
 (
-    idUser         INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(65) NOT NULL,
-    lastName       VARCHAR(65) NOT NULL,
-    secondLastName VARCHAR(65) NOT NULL,
-    email          VARCHAR(65) NOT NULL,
-    controlNumber  VARCHAR(8)  NOT NULL,
-    idCareer       INT         NOT NULL,
+    idUser           INT AUTO_INCREMENT PRIMARY KEY,
+    name             VARCHAR(65) NOT NULL,
+    lastName         VARCHAR(65) NOT NULL,
+    secondLastName   VARCHAR(65) NOT NULL,
+    controlNumber    VARCHAR(8)  NOT NULL,
+    idCareer         INT         NOT NULL,
+    idAuthentication INT         NOT NULL,
     FOREIGN KEY (idCareer) REFERENCES career (idCareer),
-    CONSTRAINT unique_email UNIQUE (email),
+    FOREIGN KEY (idAuthentication) REFERENCES authentication (idAuthentication),
     CONSTRAINT unique_controlNumber UNIQUE (controlNumber)
 );
 
@@ -102,15 +109,15 @@ CREATE TABLE comment
 
 CREATE TABLE reaction_icon
 (
-    idReactionIcon INT AUTO_INCREMENT PRIMARY KEY,
-    iconUrl        VARCHAR(255) NOT NULL,
-    iconThumbnailUrl  VARCHAR(255) NOT NULL
+    idReactionIcon   INT AUTO_INCREMENT PRIMARY KEY,
+    iconUrl          VARCHAR(255) NOT NULL,
+    iconThumbnailUrl VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE reaction_type
 (
     idReactionType INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(65) NOT NULL,
+    name           VARCHAR(65) NOT NULL,
     idReactionIcon INT         NOT NULL,
     FOREIGN KEY (idReactionIcon) REFERENCES reaction_icon (idReactionIcon)
 );
@@ -131,10 +138,15 @@ VALUES ('Ingeniería en Sistemas Computacionales', 'ISC'),
        ('Ingeniería en Gestión Empresarial', 'IGE'),
        ('Ingeniería en Mecatrónica', 'IME');
 
-INSERT INTO user (name, lastName, secondLastName, email, controlNumber, idCareer)
-VALUES ('Juan', 'Pérez', 'Gómez', 'juan@gmail.com', '21TE0121', 1),
-       ('María', 'González', 'Hernández', 'maria@gmail.com', '21TE0122', 2),
-       ('Pedro', 'Martínez', 'López', 'pedro@gmail.com', '21TE0123', 3);
+INSERT INTO authentication (email, password)
+VALUES ('juan@gmail.com', '123456'),
+       ('maria@gmail.com', '123456'),
+       ('pedro@gmail.com', '123456');
+
+INSERT INTO user (name, lastName, secondLastName, controlNumber, idCareer, idAuthentication)
+VALUES ('Juan', 'Pérez', 'Gómez', '21TE0121', 1, 1),
+       ('María', 'González', 'Hernández', '21TE0122', 2, 2),
+       ('Pedro', 'Martínez', 'López', '21TE0123', 3, 3);
 
 INSERT INTO profile (description, idUser)
 VALUES ('Estudiante de ISC', 1),
