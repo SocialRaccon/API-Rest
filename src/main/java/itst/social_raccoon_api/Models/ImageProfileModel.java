@@ -19,8 +19,8 @@ public class ImageProfileModel {
     @JsonProperty("idImageProfile")
     private Integer idImageProfile;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idProfile")
+    @ManyToOne()
+    @JoinColumn(name = "idProfile", nullable = false)
     @JsonProperty("idProfile")
     @Schema(description = "Profile to which the image belongs", example = "1")
     private ProfileModel profile;

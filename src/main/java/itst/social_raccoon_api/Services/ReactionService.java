@@ -99,6 +99,10 @@ public class ReactionService {
         return reactionRepository.getReactionByPostIdAndUserId(postId, userId);
     }
 
+    public void deleteByUserId(UserModel user) {
+        reactionRepository.deleteByIdUser(user);
+    }
+
     public Integer getReactionCountByPostIdAndReactionTypeId(int postId, int reactionTypeId) {
         if (postService.findById(postId) == null) {
             throw new NoSuchElementException();

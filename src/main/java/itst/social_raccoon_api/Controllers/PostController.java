@@ -1,16 +1,12 @@
 package itst.social_raccoon_api.Controllers;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import itst.social_raccoon_api.Dto.PostRequestDTO;
-import itst.social_raccoon_api.Models.ImagePostModel;
 import itst.social_raccoon_api.Models.PostDescriptionModel;
 import itst.social_raccoon_api.Models.UserModel;
-import itst.social_raccoon_api.Services.ImagePostService;
-import itst.social_raccoon_api.Services.ImageStorageService;
 import itst.social_raccoon_api.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,45 +51,24 @@ public class PostController {
     private UserService userService;
 
     @GetMapping("/{userId}")
-    @Operation(summary = "Get posts by user ID",
+    @Operation(summary = "Get posts by user ID with pagination",
             description = "Retrieves all posts associated with the specified user ID")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved posts")
     @ApiResponse(responseCode = "404", description = "No posts found for the user")
-    public ResponseEntity<List<PostDTO>> getPostsByUserId(@PathVariable Integer userId) {
-        List<PostModel> posts = postService.findByUser(userId);
+    public ResponseEntity<List<PostDTO>> getPostsByUserId(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        List<PostModel> posts = postService.findByUser(userId, page, size);
         if (posts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         List<PostDTO> postDTOs = posts.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(postDTOs);
     }
 
-    private PostDTO convertToDTO(PostModel post) {
-        PostDTO dto = modelMapper.map(post, PostDTO.class);
-        // Add any additional processing if needed
-        return dto;
-    }
-
-    private PostModel convertToEntity(PostDTO dto) {
-        return modelMapper.map(dto, PostModel.class);
-    }
-
-    private PostModel convertPostRequestToEntity(PostRequestDTO postRequestDTO) {
-        PostModel postModel = modelMapper.map(postRequestDTO, PostModel.class);
-        UserModel user = userService.findById(postRequestDTO.getIdUser());
-        if(user == null) {
-            throw new NoSuchElementException("User not found");
-        }
-        postModel.setUser(user);
-        PostDescriptionModel postDescriptionModel = new PostDescriptionModel();
-        postDescriptionModel.setDescription(postRequestDTO.getPostDescription());
-        postDescriptionModel.setIdPost(postModel);
-        postModel.setIdPostDescription(postDescriptionModel);
-        return postModel;
-    }
 
     @PostMapping(value = "/withImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(
@@ -126,32 +100,67 @@ public class PostController {
         return ResponseEntity.ok(postDTOPage);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a post",
-            description = "Delete an existing post by its ID")
-    @ApiResponse(responseCode = "204", description = "Post successfully deleted")
-    @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<Void> deletePost(@PathVariable Integer id) {
-        try {
-            postService.deletePost(id);
-            return ResponseEntity.noContent().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/{userId}")
+    @Operation(summary = "Delete a post by user ID and post ID",
+            description = "Deletes a post if it belongs to the specified user ID")
+    @ApiResponse(responseCode = "200", description = "Post deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
+    public ResponseEntity<String> delete(
+            @PathVariable() Integer userId,
+            @RequestParam() Integer postId) {
+        postService.delete(postId, userId);
+        return ResponseEntity.ok("Post deleted successfully");
     }
 
-    @PutMapping("/{id}")
+    @DeleteMapping("/{userId}/images")
+    @Operation(summary = "Delete an image from a post",
+            description = "Deletes an image from a post if it belongs to the specified user ID")
+    @ApiResponse(responseCode = "200", description = "Image deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Image or post not found or does not belong to the user")
+    public ResponseEntity<String> deleteImageFromPost(
+            @PathVariable Integer userId,
+            @RequestParam Integer postId,
+            @RequestParam Integer imageId) {
+        postService.deleteImage(userId, postId, imageId);
+        return ResponseEntity.ok("Image deleted successfully");
+    }
+
+    @PutMapping("/{userId}")
     @Operation(summary = "Update a post",
             description = "Update an existing post with the information provided")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> updatePost(@PathVariable Integer id, @RequestBody PostDTO postDTO) {
-        try {
-            PostModel postModel = convertToEntity(postDTO);
-            PostModel updatedPost = postService.updatePost(id, postModel);
-            return ResponseEntity.ok(convertToDTO(updatedPost));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<PostDTO> update(
+            @PathVariable Integer userId,
+            @RequestParam("postId") Integer postId,
+            @RequestParam("postDescription") String postDescription
+    ) {
+        PostModel updatedPost = postService.update(postId, postDescription, userId);
+        return ResponseEntity.ok(convertToDTO(updatedPost));
     }
+
+    private PostDTO convertToDTO(PostModel post) {
+        PostDTO dto = modelMapper.map(post, PostDTO.class);
+        // Add any additional processing if needed
+        return dto;
+    }
+
+    private PostModel convertToEntity(PostDTO dto) {
+        return modelMapper.map(dto, PostModel.class);
+    }
+
+    private PostModel convertPostRequestToEntity(PostRequestDTO postRequestDTO) {
+        PostModel postModel = modelMapper.map(postRequestDTO, PostModel.class);
+        UserModel user = userService.findById(postRequestDTO.getIdUser());
+        if (user == null) {
+            throw new NoSuchElementException("User not found");
+        }
+        postModel.setUser(user);
+        PostDescriptionModel postDescriptionModel = new PostDescriptionModel();
+        postDescriptionModel.setDescription(postRequestDTO.getPostDescription());
+        postDescriptionModel.setIdPost(postModel);
+        postModel.setIdPostDescription(postDescriptionModel);
+        return postModel;
+    }
+
 }

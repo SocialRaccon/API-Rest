@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("users" )
+@RequestMapping("users")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Users", description = "Provide methods to manage users" )
+@Tag(name = "Users", description = "Provide methods to manage users")
 public class UserController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping()
     @Operation(summary = "Create a user", description = "Create a user in the database",
-    responses = {
+            responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "201",
                             description = "User created",
@@ -96,7 +96,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/{userId}" )
+    @DeleteMapping("/{userId}")
     @Operation(summary = "Delete a user", description = "Delete a user from the database", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -117,7 +117,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/profileImage" )
+    @DeleteMapping("/{userId}/profileImage")
     @Operation(summary = "Delete a user's profile image", description = "Delete a user's profile image from the database", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",

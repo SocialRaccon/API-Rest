@@ -34,6 +34,10 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
 
+    @JsonManagedReference(value = "user-reaction")
+    @OneToMany(mappedBy = "idUser", orphanRemoval = true)
+    private List<ReactionModel> reactions;
+
     @JsonManagedReference(value = "user-profile")
     @OneToOne(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileModel profile;

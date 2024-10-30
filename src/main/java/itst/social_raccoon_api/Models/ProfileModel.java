@@ -30,6 +30,9 @@ public class ProfileModel {
     @JsonBackReference(value = "user-profile")
     private UserModel idUser;
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<ImageProfileModel> images = new LinkedHashSet<>();
+
     public Integer getIdProfile() {
         return idProfile;
     }

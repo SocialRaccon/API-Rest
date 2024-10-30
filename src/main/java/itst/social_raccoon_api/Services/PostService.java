@@ -8,6 +8,7 @@ import itst.social_raccoon_api.Repositories.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,10 @@ public class PostService {
         return postRepository.findById(id).orElse(null);
     }
 
+    public PostModel findById(Integer id, Integer userId) {
+        return postRepository.findByUserAndPost(id, userId);
+    }
+
     public void deleteById(Integer id) {
         postRepository.deleteById(id);
     }
@@ -47,17 +52,47 @@ public class PostService {
         return postRepository.findByUser(id);
     }
 
+    public List<PostModel> findByUser(Integer userId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return postRepository.findByUserAndPost(userId, pageable).getContent();
+    }
+
     public Page<PostModel> getFeed(Pageable pageable) {
         return postRepository.findAllByOrderByDateCreatedDesc(pageable);
     }
 
     @Transactional
-    public void deletePost(Integer id) {
+    public void delete(Integer id) {
         postRepository.deleteById(id);
     }
 
     @Transactional
-    public PostModel updatePost(Integer id, PostModel updatedPost) {
+    public void delete(Integer postId, Integer userId) {
+        PostModel post = postRepository.findByUserAndPost(userId, postId);
+        if (post == null) {
+            throw new NoSuchElementException("Post not found or does not belong to the user");
+        }
+        postRepository.delete(post);
+    }
+
+    @Transactional
+    public void deleteImage(Integer userId, Integer postId, Integer imageId) {
+        PostModel post = postRepository.findByUserAndPost(userId, postId);
+        boolean imageExists = post.getImages().stream()
+                .anyMatch(image -> image.getIdImagePost().equals(imageId));
+
+        if (!imageExists) {
+            throw new NoSuchElementException("Image not found");
+        }
+
+        post.getImages().removeIf(image -> image.getIdImagePost().equals(imageId));
+        postRepository.save(post);
+
+        System.out.println("Image deleted successfully");
+    }
+
+    @Transactional
+    public PostModel update(Integer id, PostModel updatedPost) {
         PostModel existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Post no encontrado"));
 
@@ -69,18 +104,16 @@ public class PostService {
     }
 
     @Transactional
-    public String updatePostDescription(Integer id, String description) {
-        PostModel existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Post no encontrado"));
+    public PostModel update(Integer id, String description, Integer userId) {
+        PostModel existingPost = postRepository.findByUserAndPost(id, userId);
         PostDescriptionModel descriptionModel = existingPost.getIdPostDescription();
         descriptionModel.setDescription(description);
         existingPost.setIdPostDescription(descriptionModel);
-        postRepository.save(existingPost);
-        return "Descripción actualizada";
+        return postRepository.save(existingPost);
     }
 
     @Transactional
-    public String updatePostImageByImageId(Integer id, Integer imageId, String imageUrl) {
+    public String update(Integer id, Integer imageId, String imageUrl) {
         PostModel existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Post no encontrado"));
         existingPost.getImages().stream()

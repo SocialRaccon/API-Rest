@@ -4,9 +4,12 @@ import itst.social_raccoon_api.Models.CareerModel;
 import itst.social_raccoon_api.Models.ImageProfileModel;
 import itst.social_raccoon_api.Models.ProfileModel;
 import itst.social_raccoon_api.Models.UserModel;
+import itst.social_raccoon_api.Repositories.ReactionRepository;
 import itst.social_raccoon_api.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,6 +27,10 @@ public class UserService {
 
     @Autowired
     private ImageProfileService imageProfileService;
+
+    @Autowired
+    @Lazy
+    private ReactionService reactionService;
 
     @Autowired
     private ProfileService profileService;
@@ -103,6 +110,16 @@ public class UserService {
         }
         imageProfileService.updateProfileImage(profile, profileImage);
         return true;
+    }
+    @Transactional
+    public void deleteUser(Integer userId) {
+        UserModel user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        // Eliminar las reacciones relacionadas con el usuario
+        reactionService.deleteByUserId(user);
+
+        // Eliminar el usuario
+        userRepository.delete(user);
     }
 
     public void deleteById(Integer id) {

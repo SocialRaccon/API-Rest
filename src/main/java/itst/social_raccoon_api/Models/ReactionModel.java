@@ -38,8 +38,8 @@ public class ReactionModel {
     private PostModel idPost;  // Post identifier field
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser")
+    @ManyToOne()
+    @JoinColumn(name = "idUser", nullable = false)
     @Schema(description = "Unique identifier of the user", example = "1")
     @JsonBackReference(value = "user-reaction")
     @JsonProperty("idUser")

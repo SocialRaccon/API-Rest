@@ -23,7 +23,7 @@ public class PostModel {
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
     private Timestamp dateCreated = new Timestamp(System.currentTimeMillis());
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "idUser")
     @JsonBackReference(value = "user-post")
     @Schema(description = "User to which the post belongs")
