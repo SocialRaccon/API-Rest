@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import itst.social_raccoon_api.Dto.PostRequestDTO;
+import itst.social_raccoon_api.Models.ImagePostModel;
 import itst.social_raccoon_api.Models.PostDescriptionModel;
 import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Services.UserService;
@@ -69,24 +70,6 @@ public class PostController {
         return ResponseEntity.ok(postDTOs);
     }
 
-
-    @PostMapping(value = "/withImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(
-            summary = "Create a post with an image",
-            description = "Create a new post with an image attached"
-    )
-    public ResponseEntity<PostDTO> createPost(
-            @RequestParam("postDescription") String postDescription,
-            @RequestParam("userId") Integer userId,
-            @RequestParam("file") MultipartFile file) {
-        PostRequestDTO postRequestDTO = new PostRequestDTO();
-        postRequestDTO.setPostDescription(postDescription);
-        postRequestDTO.setIdUser(userId);
-        PostModel postModel = convertPostRequestToEntity(postRequestDTO);
-        PostModel savedPost = postService.save(postModel, file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
-    }
-
     @GetMapping("/feed")
     @Operation(summary = "Get posts feed",
             description = "Retrieves a paginated feed of posts, sorted by descending creation date")
@@ -98,6 +81,39 @@ public class PostController {
         Page<PostModel> postPage = postService.getFeed(pageable);
         Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
         return ResponseEntity.ok(postDTOPage);
+    }
+
+    @PostMapping(value = "/withImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(
+            summary = "Create a post with an image",
+            description = "Create a new post with an image attached"
+    )
+    public ResponseEntity<PostDTO> createPost(
+            @RequestParam("postDescription") String postDescription,
+            @RequestParam("userId") Integer userId,
+            @RequestParam("image") MultipartFile image) {
+        PostRequestDTO postRequestDTO = new PostRequestDTO();
+        postRequestDTO.setPostDescription(postDescription);
+        postRequestDTO.setIdUser(userId);
+        PostModel postModel = convertPostRequestToEntity(postRequestDTO);
+        PostModel savedPost = postService.save(postModel, image);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
+    }
+
+    @PostMapping()
+    @Operation(
+            summary = "Create a post without an image",
+            description = "Create a new post without an image attached"
+    )
+    public ResponseEntity<PostDTO> createPost(
+            @RequestParam("postDescription") String postDescription,
+            @RequestParam("userId") Integer userId) {
+        PostRequestDTO postRequestDTO = new PostRequestDTO();
+        postRequestDTO.setPostDescription(postDescription);
+        postRequestDTO.setIdUser(userId);
+        PostModel postModel = convertPostRequestToEntity(postRequestDTO);
+        PostModel savedPost = postService.save(postModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
     }
 
     @DeleteMapping("/{userId}")
@@ -112,7 +128,7 @@ public class PostController {
         return ResponseEntity.ok("Post deleted successfully");
     }
 
-    @DeleteMapping("/{userId}/images")
+    @DeleteMapping(value = "/{userId}/images")
     @Operation(summary = "Delete an image from a post",
             description = "Deletes an image from a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Image deleted successfully")
@@ -123,6 +139,31 @@ public class PostController {
             @RequestParam Integer imageId) {
         postService.deleteImage(userId, postId, imageId);
         return ResponseEntity.ok("Image deleted successfully");
+    }
+
+    @PostMapping(value = "/{userId}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Add an image to a post",
+            description = "Add an image to a post if it belongs to the specified user ID")
+    @ApiResponse(responseCode = "200", description = "Image added successfully")
+    @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
+    public ResponseEntity<String> addImageToPost(
+            @PathVariable Integer userId,
+            @RequestParam Integer postId,
+            @RequestParam("image") MultipartFile image) {
+        postService.addImage(userId, postId, image);
+        return ResponseEntity.ok("Image added successfully");
+    }
+
+    @GetMapping("/{userId}/images")
+    @Operation(summary = "Get images from a post",
+            description = "Get images from a post if it belongs to the specified user ID")
+    @ApiResponse(responseCode = "200", description = "Images retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
+    public ResponseEntity<List<ImagePostModel>> getImagesFromPost(
+            @PathVariable Integer userId,
+            @RequestParam Integer postId) {
+        List<ImagePostModel> images = postService.getImages(userId, postId);
+        return ResponseEntity.ok(images);
     }
 
     @PutMapping("/{userId}")

@@ -27,15 +27,6 @@ public class ProfileService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private ImageProfileService imageProfileService;
-
-    @Autowired
-    private PostService postService;
-
-    @Autowired
-    private RelationshipService relationshipService;
-
     public List<ProfileModel> findAll() {
         return profileRepository.findAll();
     }
@@ -48,8 +39,18 @@ public class ProfileService {
         return profileRepository.findById(id).orElse(null);
     }
 
-    public void update(ProfileModel career) {
-        profileRepository.save(career);
+    public ProfileModel findByUserId(Integer id){
+        return profileRepository.findByUserId(id);
+    }
+
+    public ProfileModel update(ProfileModel profile) {
+        return profileRepository.save(profile);
+    }
+
+    public ProfileDTO updateWithDTO(ProfileModel profile) {
+        ProfileModel profileModel =  profileRepository.save(profile);
+        ProfileDTO profileDTO = modelMapper.map(profileModel, ProfileDTO.class);
+        return profileDTO;
     }
 
     public void delete(Integer id) {

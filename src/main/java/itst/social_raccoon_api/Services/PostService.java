@@ -92,6 +92,28 @@ public class PostService {
     }
 
     @Transactional
+    public void addImage(Integer userId, Integer postId, MultipartFile image) {
+        PostModel post = postRepository.findByUserAndPost(userId, postId);
+        try {
+            String imageUrl = imageStorageService.storeImage(image);
+            ImagePostModel imagePost = new ImagePostModel();
+            imagePost.setIdPost(post);
+            imagePost.setImageUrl(imageUrl);
+            imagePost.setImageThumbnailUrl(imageUrl);
+            post.getImages().add(imagePost);
+            postRepository.save(post);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public List<ImagePostModel> getImages(Integer userId, Integer postId) {
+        PostModel post = postRepository.findByUserAndPost(userId, postId);
+        return post.getImages();
+    }
+
+    @Transactional
     public PostModel update(Integer id, PostModel updatedPost) {
         PostModel existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Post no encontrado"));

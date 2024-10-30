@@ -14,6 +14,7 @@ import itst.social_raccoon_api.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,26 +68,22 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{userId}/profileImage")
-    /*@Operation(
-            summary = "Upload a profile image",
-            description = "Upload a profile image for a user",
-            parameters = {
-                    @Parameter(
-                            name = "userId",
-                            description = "The user's id",
-                            required = true,
-                            example = "1",
-                            schema = @Schema(type = "integer")
-                    ),
-                    @Parameter(
-                            name = "file",
-                            description = "The image file",
-                            required = true,
-                            schema = @Schema(type = "file")
-                    )
-            }
-    )*/
+    @PostMapping(value = "/{userId}/profileImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Upload a user's profile image", description = "Upload a user's profile image to the database",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "201",
+                            description = "Profile image uploaded",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class),
+                                    examples = @ExampleObject(
+                                            name = "Uploaded",
+                                            value = "Profile image uploaded"
+                                    )
+                            )
+                    )}
+    )
     public ResponseEntity<String> uploadProfileImage(
             @PathVariable Integer userId,
             @RequestParam("file") MultipartFile profileImage
