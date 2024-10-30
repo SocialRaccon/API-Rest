@@ -69,8 +69,7 @@ public class PostController {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
-        List<PostDTO> PostDTO = List.of();
-        return ResponseEntity.ok(PostDTO);
+        return ResponseEntity.ok(postDTOs);
     }
 
     private PostDTO convertToDTO(PostModel post) {
