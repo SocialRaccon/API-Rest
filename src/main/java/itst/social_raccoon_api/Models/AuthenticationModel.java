@@ -1,21 +1,15 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 
 
 @Entity(name = "authentication")
 public class AuthenticationModel {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAuthentication;
 
@@ -23,24 +17,29 @@ public class AuthenticationModel {
     @Schema(description = "Email of the user", example = "josuejoss10@gmail.com")
     private String email;
 
-    
+
     @Schema(description = "Password of the user", example = "1234!#$")
+    @Column(nullable = false)
     private String password;
 
-    
-    @Schema(description = "New password of the user", example = "!#$1234")
-    private String newPassword;
-
-    @OneToOne
-    @JoinColumn(name = "idUser")
-    @JsonBackReference
+    @OneToOne(mappedBy = "authentication", fetch = FetchType.LAZY)
     private UserModel user;
 
-    public int getIdAuthentication() {
+    public AuthenticationModel() {
+    }
+
+    public AuthenticationModel(Integer idAuthentication, String email, String password, UserModel user) {
+        this.idAuthentication = idAuthentication;
+        this.email = email;
+        this.password = password;
+        this.user = user;
+    }
+
+    public Integer getIdAuthentication() {
         return idAuthentication;
     }
 
-    public void setIdAuthentication(int idAuthentication) {
+    public void setIdAuthentication(Integer idAuthentication) {
         this.idAuthentication = idAuthentication;
     }
 
@@ -51,6 +50,7 @@ public class AuthenticationModel {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getPassword() {
         return password;
     }
@@ -62,16 +62,8 @@ public class AuthenticationModel {
     public UserModel getUser() {
         return user;
     }
-    
+
     public void setUser(UserModel user) {
         this.user = user;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
     }
 }

@@ -36,21 +36,21 @@ public class ProfileControllerTest {
 
     @Test
     public void getAllTest() throws Exception {
-        mvc.perform(get("/profile").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mvc.perform(get("/profiles").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @Test
     public void getByIdTest() throws Exception {
-        mvc.perform(get("/profile/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mvc.perform(get("/profiles/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.idProfile", is(2)));
     }
 
     @Test
     public void getByIdNotFoundTest() throws Exception {
-        mvc.perform(get("/profile/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
+        mvc.perform(get("/profiles/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
     }
