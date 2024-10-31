@@ -1,4 +1,4 @@
-package itst.social_raccoon_api.dto;
+package itst.social_raccoon_api.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import itst.social_raccoon_api.models.CommentModel;

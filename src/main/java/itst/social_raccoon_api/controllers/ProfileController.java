@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import itst.social_raccoon_api.dto.ProfileDTO;
+import itst.social_raccoon_api.dtos.ProfileDTO;
 import itst.social_raccoon_api.models.ProfileModel;
 import itst.social_raccoon_api.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;

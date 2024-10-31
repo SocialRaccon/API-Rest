@@ -1,49 +1,36 @@
-package itst.social_raccoon_api.dto;
+package itst.social_raccoon_api.dtos;
 
-public class UserRequestDTO {
-    private Integer userId;
+public class UserDTO {
+    private Integer idUser;
     private String name;
     private String lastName;
     private String secondLastName;
     private String email;
     private String controlNumber;
-    private String password;
-    private Integer career;
+    private String careerName;
 
-    public UserRequestDTO() {
-
+    public UserDTO() {
     }
 
-    public UserRequestDTO(Integer userId, String name, String lastName, String secondLastName, String email, String controlNumber, String password, Integer career) {
-        this.userId = userId;
+    public UserDTO(Integer idUser, String name, String lastName, String secondLastName, String email, String controlNumber, String career) {
+        this.idUser = idUser;
         this.name = name;
         this.lastName = lastName;
         this.secondLastName = secondLastName;
         this.email = email;
         this.controlNumber = controlNumber;
-        this.password = password;
-        this.career = career;
+        this.careerName = career;
     }
 
     // Getters and Setters
 
-
-    public String getPassword() {
-        return password;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public String getName() {
         return name;
     }
@@ -84,11 +71,11 @@ public class UserRequestDTO {
         this.controlNumber = controlNumber;
     }
 
-    public Integer getCareer() {
-        return career;
+    public String getCareerName() {
+        return careerName;
     }
 
-    public void setCareer(Integer career) {
-        this.career = career;
+    public void setCareerName(String careerName) {
+        this.careerName = careerName;
     }
 }

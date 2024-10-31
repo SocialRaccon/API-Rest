@@ -1,7 +1,7 @@
 package itst.social_raccoon_api.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import itst.social_raccoon_api.dto.AuthenticationDTO;
+import itst.social_raccoon_api.dtos.AuthenticationDTO;
 import itst.social_raccoon_api.models.AuthenticationModel;
 import itst.social_raccoon_api.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;

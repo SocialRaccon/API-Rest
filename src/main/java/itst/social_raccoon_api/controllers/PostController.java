@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import itst.social_raccoon_api.dto.PostRequestDTO;
+import itst.social_raccoon_api.dtos.PostRequestDTO;
 import itst.social_raccoon_api.models.ImagePostModel;
 import itst.social_raccoon_api.models.PostDescriptionModel;
 import itst.social_raccoon_api.models.UserModel;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import itst.social_raccoon_api.dto.PostDTO;
+import itst.social_raccoon_api.dtos.PostDTO;
 import itst.social_raccoon_api.models.PostModel;
 import itst.social_raccoon_api.services.PostService;
 import org.springframework.web.multipart.MultipartFile;

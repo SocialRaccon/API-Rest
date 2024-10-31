@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import itst.social_raccoon_api.dto.RelationshipDTO;
-import itst.social_raccoon_api.dto.RelationshipInfoDTO;
+import itst.social_raccoon_api.dtos.RelationshipDTO;
+import itst.social_raccoon_api.dtos.RelationshipInfoDTO;
 import itst.social_raccoon_api.models.RelationshipModel;
 import itst.social_raccoon_api.models.UserModel;
 import itst.social_raccoon_api.repositories.RelationshipRepository;

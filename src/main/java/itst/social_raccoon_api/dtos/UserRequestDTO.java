@@ -1,36 +1,49 @@
-package itst.social_raccoon_api.dto;
+package itst.social_raccoon_api.dtos;
 
-public class UserDTO {
-    private Integer idUser;
+public class UserRequestDTO {
+    private Integer userId;
     private String name;
     private String lastName;
     private String secondLastName;
     private String email;
     private String controlNumber;
-    private String careerName;
+    private String password;
+    private Integer career;
 
-    public UserDTO() {
+    public UserRequestDTO() {
+
     }
 
-    public UserDTO(Integer idUser, String name, String lastName, String secondLastName, String email, String controlNumber, String career) {
-        this.idUser = idUser;
+    public UserRequestDTO(Integer userId, String name, String lastName, String secondLastName, String email, String controlNumber, String password, Integer career) {
+        this.userId = userId;
         this.name = name;
         this.lastName = lastName;
         this.secondLastName = secondLastName;
         this.email = email;
         this.controlNumber = controlNumber;
-        this.careerName = career;
+        this.password = password;
+        this.career = career;
     }
 
     // Getters and Setters
 
-    public Integer getIdUser() {
-        return idUser;
+
+    public String getPassword() {
+        return password;
     }
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public String getName() {
         return name;
     }
@@ -71,11 +84,11 @@ public class UserDTO {
         this.controlNumber = controlNumber;
     }
 
-    public String getCareerName() {
-        return careerName;
+    public Integer getCareer() {
+        return career;
     }
 
-    public void setCareerName(String careerName) {
-        this.careerName = careerName;
+    public void setCareer(Integer career) {
+        this.career = career;
     }
 }
