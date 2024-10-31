@@ -1,6 +1,7 @@
 package itst.social_raccoon_api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -23,6 +24,7 @@ public class ImageProfileModel {
     @JoinColumn(name = "idProfile", nullable = false)
     @JsonProperty("idProfile")
     @Schema(description = "Profile to which the image belongs", example = "1")
+    @JsonBackReference(value = "profile-image")
     private ProfileModel profile;
 
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")

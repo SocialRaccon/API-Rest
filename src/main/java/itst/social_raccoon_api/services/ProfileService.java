@@ -1,12 +1,9 @@
 package itst.social_raccoon_api.services;
-
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import itst.social_raccoon_api.dtos.ProfileDTO;
 import itst.social_raccoon_api.models.ProfileModel;
 import itst.social_raccoon_api.repositories.ProfileRepository;
@@ -18,6 +15,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -34,16 +34,17 @@ public class ProfileService {
         return profileRepository.findById(id).orElse(null);
     }
 
-    public ProfileModel findByUserId(Integer id){
+    public ProfileModel findByUserId(Integer id) {
         return profileRepository.findByUserId(id);
     }
 
+    @Transactional
     public ProfileModel update(ProfileModel profile) {
         return profileRepository.save(profile);
     }
 
     public ProfileDTO updateWithDTO(ProfileModel profile) {
-        ProfileModel profileModel =  profileRepository.save(profile);
+        ProfileModel profileModel = profileRepository.save(profile);
         ProfileDTO profileDTO = modelMapper.map(profileModel, ProfileDTO.class);
         return profileDTO;
     }

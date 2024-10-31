@@ -83,14 +83,14 @@ public class PostController {
         return ResponseEntity.ok(postDTOPage);
     }
 
-    @PostMapping(value = "/withImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/withImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(
             summary = "Create a post with an image",
             description = "Create a new post with an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
             @RequestParam(value = "postDescription", required = false) String postDescription,
-            @RequestParam("userId") Integer userId,
+            @PathVariable Integer userId,
             @RequestParam("image") MultipartFile image) {
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
@@ -100,14 +100,14 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
     }
 
-    @PostMapping()
+    @PostMapping("/{userId}")
     @Operation(
             summary = "Create a post without an image",
             description = "Create a new post without an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
             @RequestParam(value = "postDescription", required = false) String postDescription,
-            @RequestParam("userId") Integer userId) {
+            @PathVariable Integer userId) {
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);

@@ -54,6 +54,7 @@ public class UserService {
         defaultImageProfile.setProfile(profile);
         defaultImageProfile.setImageUrl(defaultProfileImageUrl);
         defaultImageProfile.setImageThumbnailUrl(defaultProfileImageUrl);
+        imageProfileService.save(defaultImageProfile);
         profile.setImages(Set.of(defaultImageProfile));
         user.setProfile(profile);
         UserModel newUser = userRepository.save(user);
@@ -82,21 +83,6 @@ public class UserService {
         }
     }
 
-    public void uploadProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
-        UserModel user = findById(userId);
-        if (user == null) {
-            throw new NoSuchElementException("User not found");
-        }
-
-        ProfileModel profile = profileService.findById(user.getIdUser()); // Obtener el perfil del usuario
-
-        if (profile == null) {
-            throw new NoSuchElementException("Profile not found for user with ID: " + userId);
-        }
-
-        imageProfileService.addProfileImage(profile, profileImage); // Guardar la imagen usando el servicio
-    }
-
     public Boolean deleteProfileImage(Integer userId) {
         UserModel user = findById(userId);
         if (user == null) {
@@ -112,19 +98,6 @@ public class UserService {
         return true;
     }
 
-    public Boolean updateProfileImage(Integer profileId, MultipartFile profileImage) throws IOException {
-        ProfileModel profile = profileService.findById(profileId);
-        UserModel user = findById(profile.getIdUser().getIdUser());
-        if (user == null) {
-            throw new NoSuchElementException("User not found");
-        }
-        ImageProfileModel imageProfile = imageProfileService.getImageProfileByProfileId(profileId);
-        if (imageProfile == null) {
-            throw new NoSuchElementException("Profile image not found");
-        }
-        imageProfileService.updateProfileImage(profile, profileImage);
-        return true;
-    }
 
     @Transactional
     public void deleteUser(Integer userId) {
@@ -134,6 +107,9 @@ public class UserService {
     }
 
     public void deleteById(Integer id) {
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User not found");
+        }
         userRepository.deleteById(id);
     }
 }

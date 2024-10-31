@@ -31,7 +31,8 @@ public class ProfileModel {
     @Schema(description = "User to which the profile belongs")
     private UserModel idUser;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference(value = "profile-image")
     private Set<ImageProfileModel> images = new LinkedHashSet<>();
 
     public Integer getIdProfile() {

@@ -36,36 +36,6 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping(value = "/withImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(
-            summary = "Create a new user with image",
-            description = "",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "User object that needs to be added to the database",
-                    required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = CommentModel.class),
-                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    name = "User",
-                                    value = "{\n  " +
-                                            "\"name\": \"Josue\",\n  " +
-                                            "\"lastName\": \"Fuentes\",\n  " +
-                                            "\"secondLastName\": \"Luna\",\n  " +
-                                            "\"email\": \"luna2227@hotmail.com\",\n  " +
-                                            "\"controlNumber\": \"21TE0374\",\n  " +
-                                            "\"password\": \"12345\",\n  " +
-                                            "\"career\": 1\n}"
-                            )
-                    )
-            )
-    )
-    public ResponseEntity<UserDTO> create(
-            @RequestBody UserRequestDTO user,
-            @RequestParam("image") MultipartFile imagen) {
-        UserModel userModel = userService.save(convertToEntity(user), imagen);
-        return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
-    }
-
     @PostMapping()
     @Operation(
             summary = "Create a new user",
@@ -96,31 +66,6 @@ public class UserController {
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/profileImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "Upload a user's profile image", description = "Upload a user's profile image to the database",
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "201",
-                            description = "Profile image uploaded",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class),
-                                    examples = @ExampleObject(
-                                            name = "Uploaded",
-                                            value = "Profile image uploaded"
-                                    )
-                            )
-                    )}
-    )
-    public ResponseEntity<String> uploadProfileImage(
-            @PathVariable Integer userId,
-            @RequestParam("file") MultipartFile profileImage
-    ) throws IOException {
-        userService.updateProfileImage(userId, profileImage);
-        return new ResponseEntity<>("Profile image uploaded", HttpStatus.CREATED);
-    }
-
-
     @DeleteMapping("/{userId}")
     @Operation(summary = "Delete a user", description = "Delete a user from the database", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -139,27 +84,6 @@ public class UserController {
     public ResponseEntity<Map<String, Boolean>> delete(@PathVariable Integer userId) {
         userService.deleteById(userId);
         Map<String, Boolean> response = Map.of("deleted", Boolean.TRUE);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/profileImage/{userId}")
-    @Operation(summary = "Delete a user's profile image", description = "Delete a user's profile image from the database", responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "Profile image deleted",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Map.class),
-                            examples = @ExampleObject(
-                                    name = "Deleted",
-                                    value = "{ \"deleted\": true }"
-                            )
-                    )
-            )}
-    )
-    public ResponseEntity<Map<String, Boolean>> deleteProfileImage(@PathVariable Integer userId) {
-        boolean deleted = userService.deleteProfileImage(userId);
-        Map<String, Boolean> response = Map.of("deleted", deleted);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

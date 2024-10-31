@@ -55,4 +55,15 @@ public class RemoteImageStorageService implements ImageStorageService {
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
         return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
+
+    @Override
+    public String deleteImage(String imageUrl) throws IOException {
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        BlobId blobId = BlobId.of(BUCKET_NAME, fileName);
+        InputStream inputStream = RemoteImageStorageService.class.getClassLoader().getResourceAsStream("firebase-private-key.json");
+        Credentials credentials = GoogleCredentials.fromStream(inputStream);
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        storage.delete(blobId);
+        return fileName;
+    }
 }
