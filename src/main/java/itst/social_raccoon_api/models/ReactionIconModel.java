@@ -13,9 +13,9 @@ public class ReactionIconModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Unique identifier of the reaction icon", example = "1")
     @Column(name = "idReactionIcon")
     @JsonProperty("idReactionIcon")
+    @Schema(description = "Unique identifier of the reaction icon", example = "1")
     private Integer idReactionIcon;
 
     @Schema(description = "URL of the reaction icon", example = "https://www.example.com/icon.jpg")

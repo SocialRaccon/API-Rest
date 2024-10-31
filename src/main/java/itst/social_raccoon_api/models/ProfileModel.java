@@ -28,6 +28,7 @@ public class ProfileModel {
     @OneToOne
     @JoinColumn(name = "idUser", referencedColumnName = "idUser", nullable = false)
     @JsonBackReference(value = "user-profile")
+    @Schema(description = "User to which the profile belongs")
     private UserModel idUser;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.REMOVE, orphanRemoval = true)

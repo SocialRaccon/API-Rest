@@ -22,21 +22,25 @@ public class ImagePostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idImagePost", nullable = false)
+    @Schema(description = "Unique identifier of the image post", example = "1")
     private Integer idImagePost;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "imageUrl", nullable = false)
+    @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
     private String imageUrl;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "imageThumbnailUrl", nullable = false)
+    @Schema(description = "URL of the image thumbnail", example = "https://www.example.com/image-thumbnail.jpg")
     private String imageThumbnailUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-image")
+    @Schema(description = "Post where the image was uploaded")
     private PostModel idPost; 
 
     // Constructor, Getters and Setters

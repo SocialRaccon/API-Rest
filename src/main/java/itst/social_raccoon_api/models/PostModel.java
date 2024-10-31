@@ -30,18 +30,22 @@ public class PostModel {
 
     @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "post-description")
+    @Schema(description = "Description of the post")
     private PostDescriptionModel idPostDescription;
 
     @JsonManagedReference(value = "post-comment")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Comments made on the post")
     private List<CommentModel> comments = new ArrayList<>();
 
     @JsonManagedReference(value = "post-reaction")
     @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Reactions made on the post")
     private List<ReactionModel> reactions = new ArrayList<>();
 
     @JsonManagedReference(value = "post-image")
     @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Images uploaded to the post")
     private List<ImagePostModel> images = new ArrayList<>();
 
     public PostModel(Integer idPost, UserModel user, Timestamp dateCreated) {

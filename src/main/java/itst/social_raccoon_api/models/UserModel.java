@@ -16,34 +16,42 @@ public class UserModel {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier of the user", example = "1")
     private Integer idUser;
 
     @JsonManagedReference(value = "user-post")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Posts made by the user")
     private List<PostModel> posts;
 
     @JsonManagedReference(value = "user-follower")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Followers of the user")
     private List<RelationshipModel> followers;
 
     @JsonManagedReference(value = "user-following")
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Users followed by the user")
     private List<RelationshipModel> following;
 
     @JsonManagedReference(value = "user-comment")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Comments made by the user")
     private List<CommentModel> comments;
 
     @JsonManagedReference(value = "user-reaction")
     @OneToMany(mappedBy = "idUser", orphanRemoval = true)
+    @Schema(description = "Reactions made by the user")
     private List<ReactionModel> reactions;
 
     @JsonManagedReference(value = "user-profile")
     @OneToOne(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "Profile of the user")
     private ProfileModel profile;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "idAuthentication", referencedColumnName = "idAuthentication", nullable = false)
+    @Schema(description = "Authentication data of the user")
     private AuthenticationModel authentication;
     
     @NotBlank(message = "This content must not be null and must not be empty")

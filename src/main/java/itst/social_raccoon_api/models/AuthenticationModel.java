@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 @Entity(name = "authentication")
+@Schema(description = "Model representing an authentication")
 public class AuthenticationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier of the authentication", example = "1")
     private Integer idAuthentication;
 
     @Column(nullable = false, unique = true)

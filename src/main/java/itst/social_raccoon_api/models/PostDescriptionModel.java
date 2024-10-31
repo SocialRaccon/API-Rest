@@ -13,17 +13,20 @@ public class PostDescriptionModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPostDescription", nullable = false)
+    @Schema(description = "Unique identifier of the post description", example = "1")
     private Integer idPostDescription;
 
     @Size(max = 150)
     @NotNull
     @Column(name = "description", nullable = false, length = 150)
+    @Schema(description = "Description of the post", example = "This is a post")
     private String description;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-description")
+    @Schema(description = "Post to which the description belongs")
     private PostModel idPost;
 
     public Integer getIdPostDescription() {
