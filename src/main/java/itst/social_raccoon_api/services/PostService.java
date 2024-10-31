@@ -55,6 +55,12 @@ public class PostService {
     }
 
     public List<PostModel> findByUser(Integer userId, int pageNumber, int pageSize) {
+        if (pageNumber < 0 || pageSize < 1) {
+            throw new IllegalArgumentException("Invalid page number or size");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return postRepository.findByUserAndPost(userId, pageable).getContent();
     }
@@ -65,6 +71,9 @@ public class PostService {
 
     @Transactional
     public void delete(Integer id) {
+        if (!postRepository.existsById(id)) {
+            throw new NoSuchElementException("Post not found");
+        }
         postRepository.deleteById(id);
     }
 
@@ -78,24 +87,24 @@ public class PostService {
     }
 
     @Transactional
-    public void deleteImage(Integer userId, Integer postId, Integer imageId) {
-        PostModel post = postRepository.findByUserAndPost(userId, postId);
+    public void deleteImage(Integer postId, Integer imageId) {
+        PostModel post = postRepository.getReferenceById(postId);
         boolean imageExists = post.getImages().stream()
                 .anyMatch(image -> image.getIdImagePost().equals(imageId));
-
         if (!imageExists) {
             throw new NoSuchElementException("Image not found");
         }
-
         post.getImages().removeIf(image -> image.getIdImagePost().equals(imageId));
         postRepository.save(post);
-
         System.out.println("Image deleted successfully");
     }
 
     @Transactional
-    public void addImage(Integer userId, Integer postId, MultipartFile image) {
-        PostModel post = postRepository.findByUserAndPost(userId, postId);
+    public void addImage(Integer postId, MultipartFile image) {
+        if (!postRepository.existsById(postId)) {
+            throw new NoSuchElementException("Post not found");
+        }
+        PostModel post = postRepository.getReferenceById(postId);
         try {
             String imageUrl = imageStorageService.storeImage(image);
             ImagePostModel imagePost = new ImagePostModel();
@@ -111,20 +120,17 @@ public class PostService {
 
 
     @Transactional
-    public List<ImagePostModel> getImages(Integer userId, Integer postId) {
-        PostModel post = postRepository.findByUserAndPost(userId, postId);
+    public List<ImagePostModel> getImages(Integer postId) {
+        PostModel post = postRepository.getReferenceById(postId);
         return post.getImages();
     }
 
     @Transactional
-    public PostModel update(Integer id, PostModel updatedPost) {
-        PostModel existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Post no encontrado"));
-
-        existingPost.setIdPostDescription(updatedPost.getIdPostDescription());
-        existingPost.setDateCreated(updatedPost.getDateCreated());
-
-
+    public PostModel update(Integer id, String description) {
+        PostModel existingPost = postRepository.getReferenceById(id);
+        PostDescriptionModel descriptionModel = existingPost.getIdPostDescription();
+        descriptionModel.setDescription(description);
+        existingPost.setIdPostDescription(descriptionModel);
         return postRepository.save(existingPost);
     }
 
@@ -138,8 +144,8 @@ public class PostService {
     }
 
     @Transactional
-    public String update(Integer postId, Integer userId, Integer imageId, MultipartFile image) {
-        PostModel post = postRepository.findByUserAndPost(userId, postId);
+    public String update(Integer postId, Integer imageId, MultipartFile image) {
+        PostModel post = postRepository.getReferenceById(postId);
         ImagePostModel imagePost = imagePostService.getImagePost(postId, imageId);
         try {
             String imageUrl = imageStorageService.storeImage(image);

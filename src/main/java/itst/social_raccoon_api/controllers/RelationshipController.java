@@ -46,23 +46,33 @@ public class RelationshipController {
         return new ResponseEntity<>("User unfollowed", HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/followers") //Se obtienen los seguidores de un usuario
+    @GetMapping("/{userId}/followers")
+    @Operation(summary = "Get the followers", description = "Get the followers of a user through userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Followers found", content = @Content(schema = @Schema(implementation = RelationshipInfoDTO.class)),
                     headers = {@io.swagger.v3.oas.annotations.headers.Header(name = "X-Rate-Limit", description = "Rate limit for the user", required = true, schema = @Schema(type = "integer"))}),
             @ApiResponse(responseCode = "404", description = "Followers not found", content = @Content)
     })
-    public ResponseEntity<List<RelationshipInfoDTO>> getFollowers(@PathVariable Integer userId) {
-        return new ResponseEntity<>(relationshipService.getFollowersByUserId(userId), HttpStatus.OK);
+    public ResponseEntity<List<RelationshipInfoDTO>> getFollowers(
+            @PathVariable Integer userId,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
+    ) {
+        return new ResponseEntity<>(relationshipService.getFollowersByUserId(userId, page, size), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/following") //Se obtienen los usuarios seguidos por un usuario
+    @GetMapping("/{userId}/following")
+    @Operation(summary = "Get the following", description = "Get the following of a user through userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Following found", content = @Content(schema = @Schema(implementation = RelationshipInfoDTO.class)),
                     headers = {@io.swagger.v3.oas.annotations.headers.Header(name = "X-Rate-Limit", description = "Rate limit for the user", required = true, schema = @Schema(type = "integer"))}),
             @ApiResponse(responseCode = "404", description = "Following not found", content = @Content)
     })
-    public ResponseEntity<List<RelationshipInfoDTO>> getFollowing(@PathVariable Integer userId) {
-        return new ResponseEntity<>(relationshipService.getFollowingByUserId(userId), HttpStatus.OK);
+    public ResponseEntity<List<RelationshipInfoDTO>> getFollowing(
+            @PathVariable Integer userId,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
+    ) {
+        return new ResponseEntity<>(relationshipService.getFollowingByUserId(userId, page, size), HttpStatus.OK);
     }
 }

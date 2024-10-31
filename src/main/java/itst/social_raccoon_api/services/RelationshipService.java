@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import itst.social_raccoon_api.dtos.RelationshipDTO;
@@ -60,8 +62,9 @@ public class RelationshipService {
         return relationshipDTO;
     }
 
-    public List<RelationshipInfoDTO> getFollowersByUserId(Integer userId) {
-        List<RelationshipModel> followers = relationshipRepository.getFollowersByUserId(userId);
+    public List<RelationshipInfoDTO> getFollowersByUserId(Integer userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<RelationshipModel> followers = relationshipRepository.getFollowersByUserIdPaginated(userId, pageable);
         return followers.stream().map(relationshipModel -> {
             // Obtener el usuario que ES SEGUIDO por el usuario actual
             UserModel followedUser = relationshipModel.getUser();  // Corrección aquí
@@ -69,8 +72,9 @@ public class RelationshipService {
         }).collect(Collectors.toList());
     }
 
-    public List<RelationshipInfoDTO> getFollowingByUserId(Integer userId) {
-        List<RelationshipModel> following = relationshipRepository.getFollowingByUserId(userId);
+    public List<RelationshipInfoDTO> getFollowingByUserId(Integer userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<RelationshipModel> following = relationshipRepository.getFollowingByUserIdPaginated(userId, pageable);
         return following.stream().map(relationshipModel -> {
             // Obtener el usuario al que el usuario actual SIGUE
             UserModel followedUser = relationshipModel.getFollowerUser();

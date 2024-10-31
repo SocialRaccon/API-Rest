@@ -126,79 +126,67 @@ public class PostController {
         return ResponseEntity.ok("Post deleted successfully");
     }
 
-    @DeleteMapping(value = "/{userId}/images")
+    @DeleteMapping(value = "/images/{postId}")
     @Operation(summary = "Delete an image from a post",
             description = "Deletes an image from a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Image deleted successfully")
     @ApiResponse(responseCode = "404", description = "Image or post not found or does not belong to the user")
     public ResponseEntity<String> deleteImageFromPost(
-            @PathVariable Integer userId,
-            @RequestParam Integer postId,
+            @PathVariable Integer postId,
             @RequestParam Integer imageId) {
-        postService.deleteImage(userId, postId, imageId);
+        postService.deleteImage(postId, imageId);
         return ResponseEntity.ok("Image deleted successfully");
     }
 
-    @PostMapping(value = "/{userId}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/images/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Add an image to a post",
             description = "Add an image to a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Image added successfully")
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<String> addImageToPost(
-            @PathVariable Integer userId,
-            @RequestParam Integer postId,
+            @PathVariable Integer postId,
             @RequestParam("image") MultipartFile image) {
-        postService.addImage(userId, postId, image);
+        postService.addImage(postId, image);
         return ResponseEntity.ok("Image added successfully");
     }
 
-    @GetMapping("/{userId}/images")
+    @GetMapping("/images/{postId}")
     @Operation(summary = "Get images from a post",
             description = "Get images from a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Images retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<List<ImagePostModel>> getImagesFromPost(
-            @PathVariable Integer userId,
-            @RequestParam Integer postId) {
-        List<ImagePostModel> images = postService.getImages(userId, postId);
+            @PathVariable Integer postId) {
+        List<ImagePostModel> images = postService.getImages(postId);
         return ResponseEntity.ok(images);
     }
 
-    @PutMapping(value = "/{userId}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/images/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Update an image from a post",
             description = "Update an image from a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Image updated successfully")
     @ApiResponse(responseCode = "404", description = "Image or post not found or does not belong to the user")
     public ResponseEntity<String> updateImageFromPost(
-            @PathVariable Integer userId,
-            @RequestParam Integer postId,
+            @PathVariable Integer postId,
             @RequestParam Integer imageId,
             @RequestParam("image") MultipartFile image) {
-        postService.update(postId, userId, imageId, image);
+        postService.update(postId, imageId, image);
         return ResponseEntity.ok("Image updated successfully");
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/{postId}")
     @Operation(summary = "Update a post",
             description = "Update an existing post with the information provided")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> update(
-            @PathVariable Integer userId,
-            @RequestParam("postId") Integer postId,
-            @RequestParam("postDescription") String postDescription
-    ) {
-        PostModel updatedPost = postService.update(postId, postDescription, userId);
+    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @RequestParam("postDescription") String postDescription) {
+        PostModel updatedPost = postService.update(postId, postDescription);
         return ResponseEntity.ok(convertToDTO(updatedPost));
     }
 
     private PostDTO convertToDTO(PostModel post) {
         PostDTO dto = modelMapper.map(post, PostDTO.class);
         return dto;
-    }
-
-    private PostModel convertToEntity(PostDTO dto) {
-        return modelMapper.map(dto, PostModel.class);
     }
 
     private PostModel convertPostRequestToEntity(PostRequestDTO postRequestDTO) {
