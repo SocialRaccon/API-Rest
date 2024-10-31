@@ -66,7 +66,6 @@ public class RelationshipService {
         Pageable pageable = PageRequest.of(page, size);
         List<RelationshipModel> followers = relationshipRepository.getFollowersByUserIdPaginated(userId, pageable);
         return followers.stream().map(relationshipModel -> {
-            // Obtener el usuario que ES SEGUIDO por el usuario actual
             UserModel followedUser = relationshipModel.getUser();  // Corrección aquí
             return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
         }).collect(Collectors.toList());
@@ -76,14 +75,12 @@ public class RelationshipService {
         Pageable pageable = PageRequest.of(page, size);
         List<RelationshipModel> following = relationshipRepository.getFollowingByUserIdPaginated(userId, pageable);
         return following.stream().map(relationshipModel -> {
-            // Obtener el usuario al que el usuario actual SIGUE
             UserModel followedUser = relationshipModel.getFollowerUser();
             return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
         }).collect(Collectors.toList());
     }
 
     private RelationshipInfoDTO convertToFollowerInfoDTO(RelationshipModel relationshipModel) {
-        // Assuming you want to get the user information that FOLLOWS the current user
         UserModel followerUser = relationshipModel.getFollowerUser();
         return new RelationshipInfoDTO(followerUser.getIdUser(), followerUser.getName());
     }

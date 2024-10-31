@@ -24,29 +24,33 @@ public class RelationshipController {
     @Autowired
     private RelationshipService relationshipService;
 
-    @PostMapping("/{userId}/{followerId}")
-    @Operation(summary = "Follow a user", description = "Establish a following relationship between two users")
+    @PostMapping("/{userId}")
+    @Operation(summary = "Follow a user", description = "Create a following relationship between two users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User followed", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
-    public ResponseEntity<String> followUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
+    public ResponseEntity<String> followUser(
+            @PathVariable Integer userId,
+            @RequestParam Integer followerId) {
         relationshipService.followUser(userId, followerId);
         return new ResponseEntity<>("User followed", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/{followerId}")
-    @Operation(summary = "Unfollow a user", description = "Remove a following relationship between two users")
+    @DeleteMapping("/{userId}")
+    @Operation(summary = "Unfollow a user", description = "Delete a following relationship between two users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User unfollowed", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
-    public ResponseEntity<String> unfollowUser(@PathVariable Integer userId, @PathVariable Integer followerId) {
+    public ResponseEntity<String> unfollowUser(
+            @PathVariable Integer userId,
+            @RequestParam Integer followerId) {
         relationshipService.unfollowUser(userId, followerId);
         return new ResponseEntity<>("User unfollowed", HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/followers")
+    @GetMapping("/followers/{userId}")
     @Operation(summary = "Get the followers", description = "Get the followers of a user through userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Followers found", content = @Content(schema = @Schema(implementation = RelationshipInfoDTO.class)),
@@ -61,7 +65,7 @@ public class RelationshipController {
         return new ResponseEntity<>(relationshipService.getFollowersByUserId(userId, page, size), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/following")
+    @GetMapping("/following/{userId}")
     @Operation(summary = "Get the following", description = "Get the following of a user through userId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Following found", content = @Content(schema = @Schema(implementation = RelationshipInfoDTO.class)),

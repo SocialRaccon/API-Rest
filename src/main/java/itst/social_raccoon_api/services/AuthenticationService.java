@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class AuthenticationService {
-    
+
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
@@ -22,6 +22,7 @@ public class AuthenticationService {
     public AuthenticationModel save(AuthenticationModel authentication) {
         return authenticationRepository.save(authentication);
     }
+
     public AuthenticationModel findById(Integer id) {
         return authenticationRepository.findById(id).orElse(null);
     }
@@ -33,6 +34,7 @@ public class AuthenticationService {
     public void update(AuthenticationModel career) {
         authenticationRepository.save(career);
     }
+
     public void delete(Integer id) {
         authenticationRepository.deleteById(id);
     }

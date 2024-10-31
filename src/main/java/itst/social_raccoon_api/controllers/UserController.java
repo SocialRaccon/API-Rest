@@ -96,7 +96,7 @@ public class UserController {
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/{userId}/profileImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/profileImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Upload a user's profile image", description = "Upload a user's profile image to the database",
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -142,7 +142,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/profileImage")
+    @DeleteMapping("/profileImage/{userId}")
     @Operation(summary = "Delete a user's profile image", description = "Delete a user's profile image from the database", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",

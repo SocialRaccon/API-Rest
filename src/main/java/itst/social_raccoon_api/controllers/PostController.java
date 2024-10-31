@@ -2,6 +2,7 @@ package itst.social_raccoon_api.controllers;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import itst.social_raccoon_api.dtos.PostRequestDTO;
@@ -88,11 +89,11 @@ public class PostController {
             description = "Create a new post with an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
-            @RequestParam("postDescription") String postDescription,
+            @RequestParam(value = "postDescription", required = false) String postDescription,
             @RequestParam("userId") Integer userId,
             @RequestParam("image") MultipartFile image) {
         PostRequestDTO postRequestDTO = new PostRequestDTO();
-        postRequestDTO.setPostDescription(postDescription);
+        postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);
         PostModel postModel = convertPostRequestToEntity(postRequestDTO);
         PostModel savedPost = postService.save(postModel, image);
@@ -105,10 +106,10 @@ public class PostController {
             description = "Create a new post without an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
-            @RequestParam("postDescription") String postDescription,
+            @RequestParam(value = "postDescription", required = false) String postDescription,
             @RequestParam("userId") Integer userId) {
         PostRequestDTO postRequestDTO = new PostRequestDTO();
-        postRequestDTO.setPostDescription(postDescription);
+        postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);
         PostModel postModel = convertPostRequestToEntity(postRequestDTO);
         PostModel savedPost = postService.save(postModel);
@@ -152,12 +153,15 @@ public class PostController {
 
     @GetMapping("/images/{postId}")
     @Operation(summary = "Get images from a post",
-            description = "Get images from a post if it belongs to the specified user ID")
+            description = "Get all images from a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Images retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<List<ImagePostModel>> getImagesFromPost(
-            @PathVariable Integer postId) {
-        List<ImagePostModel> images = postService.getImages(postId);
+            @PathVariable Integer postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<ImagePostModel> images = postService.getImages(postId, page, size);
         return ResponseEntity.ok(images);
     }
 

@@ -129,11 +129,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Integer userId) {
         UserModel user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
-
-        // Eliminar las reacciones relacionadas con el usuario
         reactionService.deleteByUserId(user);
-
-        // Eliminar el usuario
         userRepository.delete(user);
     }
 

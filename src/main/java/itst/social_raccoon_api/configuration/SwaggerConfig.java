@@ -10,9 +10,6 @@ import io.swagger.v3.oas.models.info.Info;
 public class SwaggerConfig {
 
     @Bean
-    //Esto me sirve para personalizar la documentación de Swagger
-    //En este caso, se cambia el título, la versión y la descripción
-    //de la documentación
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()

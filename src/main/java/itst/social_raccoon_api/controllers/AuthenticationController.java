@@ -53,7 +53,6 @@ public class AuthenticationController {
         }
     }
 
-    // Recover password
     @PostMapping("/recover")
     @Operation(
             summary = "Recover password",
@@ -81,16 +80,13 @@ public class AuthenticationController {
         }
     }
 
-    // Change password
     @PutMapping("/change")
     @Operation(summary = "Change password", description = "Change user password")
     public ResponseEntity<String> changePassword(@RequestBody AuthenticationDTO authenticationDTO) {
         AuthenticationModel authenticationModel = authenticationService.findByEmail(authenticationDTO.getEmail());
         if (authenticationModel != null) {
             if (authenticationModel.getPassword().equals(authenticationDTO.getPassword())) {
-                // Actualizar la contraseña directamente en la entidad AuthenticationModel
                 authenticationModel.setPassword(authenticationDTO.getNewPassword());
-                // Guardar la entidad AuthenticationModel con la nueva contraseña
                 authenticationService.save(authenticationModel);
                 return ResponseEntity.ok("Password changed successfully");
             } else {

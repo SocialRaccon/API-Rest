@@ -124,8 +124,4 @@ public class ExceptionHandlerAdvice {
                 .body("Persistent object exception: " + e.getMessage());
     }
 
-    /* Commit
-         Added exception handling for PersistentObjectException
-     */
 }
-//A

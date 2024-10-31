@@ -85,7 +85,7 @@ public class ImageProfileService {
             }
             imageProfile.setProfile(profile);
             imageProfile.setImageUrl(imageUrl);
-            imageProfile.setImageThumbnailUrl(imageUrl); // Assuming thumbnail is the same for simplicity
+            imageProfile.setImageThumbnailUrl(imageUrl);
             imageProfileRepository.save(imageProfile);
         }
     }
@@ -98,7 +98,7 @@ public class ImageProfileService {
         String imageUrl = imageStorageService.storeImage(profileImage);
         if (imageUrl != null) {
             imageProfile.setImageUrl(imageUrl);
-            imageProfile.setImageThumbnailUrl(imageUrl); // Assuming thumbnail is the same for simplicity
+            imageProfile.setImageThumbnailUrl(imageUrl);
             imageProfileRepository.save(imageProfile);
         }
     }

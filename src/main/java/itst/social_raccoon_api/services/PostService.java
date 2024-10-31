@@ -120,9 +120,15 @@ public class PostService {
 
 
     @Transactional
-    public List<ImagePostModel> getImages(Integer postId) {
-        PostModel post = postRepository.getReferenceById(postId);
-        return post.getImages();
+    public List<ImagePostModel> getImages(Integer postId, int pageNumber, int pageSize)
+    {
+        if (pageNumber < 0 || pageSize < 1) {
+            throw new IllegalArgumentException("Invalid page number or size");
+        }
+        if (!postRepository.existsById(postId)) {
+            throw new NoSuchElementException("Post not found");
+        }
+        return imagePostService.getImagePostByPostId(postId, pageNumber, pageSize);
     }
 
     @Transactional
