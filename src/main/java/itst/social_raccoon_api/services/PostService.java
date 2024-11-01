@@ -152,7 +152,13 @@ public class PostService {
     @Transactional
     public String update(Integer postId, Integer imageId, MultipartFile image) {
         PostModel post = postRepository.getReferenceById(postId);
+        if (post == null) {
+            throw new NoSuchElementException("Post not found");
+        }
         ImagePostModel imagePost = imagePostService.getImagePost(postId, imageId);
+        if (imagePost == null) {
+            throw new NoSuchElementException("Image not found");
+        }
         try {
             String imageUrl = imageStorageService.storeImage(image);
             imagePost.setImageUrl(imageUrl);
