@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 @RestController
 @RequestMapping("authentications")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Authentications", description = "Provides methods to manage authentications.")
+@Tag(name = "Authentications", description = "Provides methods to manage authentications")
 public class AuthenticationController {
 
     @Autowired

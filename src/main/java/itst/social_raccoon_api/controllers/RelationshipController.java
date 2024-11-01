@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("relationships")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
-@Tag(name = "Relationships", description = "Provide methods to manage user relationships (follow/unfollow)")
+@Tag(name = "Relationships", description = "Provides methods to manage relationships between users")
 public class RelationshipController {
 
     @Autowired

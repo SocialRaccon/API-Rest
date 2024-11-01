@@ -24,7 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("users")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Users", description = "Provide methods to manage users")
+@Tag(name = "Users", description = "Provides methods to manage users")
 public class UserController {
 
     @Autowired

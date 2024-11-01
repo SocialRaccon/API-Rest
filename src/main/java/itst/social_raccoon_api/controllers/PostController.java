@@ -39,7 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-@Tag(name = "Posts", description = "Provide methods to manage posts")
+@Tag(name = "Posts", description = "Provides methods to manage posts")
 public class PostController {
 
     @Autowired

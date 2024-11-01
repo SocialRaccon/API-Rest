@@ -21,8 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("profiles")
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET})
-@Tag(name = "Profiles", description = "Provide methods to manage user profiles")
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@Tag(name = "Profiles", description = "Provides methods to manage profiles")
 public class ProfileController {
 
     @Autowired
