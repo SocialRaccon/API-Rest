@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -50,36 +51,54 @@ public class UserService {
         if (profile == null) {
             throw new IllegalArgumentException("Profile not found");
         }
+
+        // Create a default image profile
         ImageProfileModel defaultImageProfile = new ImageProfileModel();
         defaultImageProfile.setProfile(profile);
         defaultImageProfile.setImageUrl(defaultProfileImageUrl);
         defaultImageProfile.setImageThumbnailUrl(defaultProfileImageUrl);
-        imageProfileService.save(defaultImageProfile);
-        profile.setImages(Set.of(defaultImageProfile));
+
+        // Add the default image profile to the profile's images set
+        Set<ImageProfileModel> images = new HashSet<>();
+        images.add(defaultImageProfile);
+        profile.setImages(images);
+
+        // Set the profile to the user
         user.setProfile(profile);
-        UserModel newUser = userRepository.save(user);
-        return newUser;
+
+        // Save the user, which will cascade save the profile and image profiles
+        return userRepository.save(user);
     }
 
     @Transactional
-    public UserModel save(UserModel user, MultipartFile profileImage) {
-        try {
+    public UserModel save(UserModel user, MultipartFile image) {
+        try{
             ProfileModel profile = user.getProfile();
             if (profile == null) {
                 throw new IllegalArgumentException("Profile not found");
             }
-            String imageUrl = imageStorageService.storeImage(profileImage);
-            ImageProfileModel defaultImageProfile = new ImageProfileModel();
-            defaultImageProfile.setProfile(profile);
-            defaultImageProfile.setImageUrl(imageUrl);
-            defaultImageProfile.setImageThumbnailUrl(imageUrl);
-            profile.setImages(Set.of(defaultImageProfile));
+
+            // Save the image
+            String imageUrl = imageStorageService.storeImage(image);
+
+            // Create an image profile
+            ImageProfileModel imageProfile = new ImageProfileModel();
+            imageProfile.setProfile(profile);
+            imageProfile.setImageUrl(imageUrl);
+            imageProfile.setImageThumbnailUrl(imageUrl);
+
+            // Add the image profile to the profile's images set
+            Set<ImageProfileModel> images = new HashSet<>();
+            images.add(imageProfile);
+            profile.setImages(images);
+
+            // Set the profile to the user
             user.setProfile(profile);
-            UserModel newUser = userRepository.save(user);
-            return newUser;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+
+            // Save the user, which will cascade save the profile and image profiles
+            return userRepository.save(user);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error saving image");
         }
     }
 

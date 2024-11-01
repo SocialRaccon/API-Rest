@@ -1,9 +1,9 @@
 package itst.social_raccoon_api.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.social_raccoon_api.dtos.UserDTO;
 import itst.social_raccoon_api.dtos.UserRequestDTO;
@@ -44,7 +44,6 @@ public class UserController {
                     description = "User object that needs to be added to the database",
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CommentModel.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "User",
                                     value = "{\n  " +
@@ -63,6 +62,18 @@ public class UserController {
     public ResponseEntity<UserDTO> create(
             @RequestBody UserRequestDTO user) {
         UserModel userModel = userService.save(convertToEntity(user));
+        return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/withImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Create a new user with an image", description = "Creates a new user with profile image")
+    public ResponseEntity<UserDTO> createWithImage(
+            @RequestPart("file")
+            @Schema(type = "string", format = "binary") MultipartFile file,
+            @RequestPart("user") @Parameter(schema = @Schema(implementation = UserRequestDTO.class))
+            String userJson) throws IOException {
+        UserRequestDTO user = new ObjectMapper().readValue(userJson, UserRequestDTO.class);
+        UserModel userModel = userService.save(convertToEntity(user), file);
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
     }
 
