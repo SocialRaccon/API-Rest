@@ -18,7 +18,7 @@ public class PostDTO {
     private String userSecondLastName;
     private String userControlNumber;
     private String postDescription = String.valueOf(new ArrayList<>());
-    private List<CommentModel> comments = new ArrayList<>();
+    private List<CommentDTO> comments = new ArrayList<>();
     private List<ReactionDTO> reactions = new ArrayList<>();
     private List<ImagePostModel> images = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class PostDTO {
             String userEmail,
             String userControlNumber,
             String postDescription,
-            List<CommentModel> comments,
+            List<CommentDTO> comments,
             List<ReactionDTO> reactions,
             List<ImagePostModel> images) {
         this.post = idPost;
@@ -115,11 +115,11 @@ public class PostDTO {
         this.postDescription = postDescription;
     }
 
-    public List<CommentModel> getComments() {
+    public List<CommentDTO> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentModel> comments) {
+    public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
     }
 

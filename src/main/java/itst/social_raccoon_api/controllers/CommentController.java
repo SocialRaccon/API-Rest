@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.social_raccoon_api.dtos.CommentDTO;
 import itst.social_raccoon_api.models.CommentModel;
 import itst.social_raccoon_api.models.PostModel;
 import itst.social_raccoon_api.models.UserModel;
@@ -12,6 +13,7 @@ import itst.social_raccoon_api.services.CommentService;
 import itst.social_raccoon_api.services.PostService;
 import itst.social_raccoon_api.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,8 @@ public class CommentController {
     private UserService userService;
     @Autowired
     private PostService postService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PostMapping("/post/{postId}")
     @Operation(
@@ -61,13 +65,15 @@ public class CommentController {
                     responseCode = "201",
                     description = "Comment created",
                     content = @Content(
-                            schema = @Schema(implementation = CommentModel.class),
+                            schema = @Schema(implementation = CommentDTO.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "Comment",
                                     value = "{\n" +
                                             "  \"idComment\": 1,\n" +
+                                            "  \"idUser\": 1,\n" +
+                                            "  \"idPost\": 1,\n" +
                                             "  \"comment\": \"This is a comment\",\n" +
-                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
+                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\"\n" +
                                             "}"
                             )
                     )
@@ -78,7 +84,7 @@ public class CommentController {
                     content = @Content
             )
     })
-    public ResponseEntity<CommentModel> create(
+    public ResponseEntity<CommentDTO> create(
             @PathVariable Integer postId,
             @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
         if (comment.getUser() == null) {
@@ -94,7 +100,7 @@ public class CommentController {
 
         comment.setPost(post);
         CommentModel createdComment = commentService.save(comment);
-        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
+        return new ResponseEntity<>(convertToDto(createdComment), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{commentId}")
@@ -107,7 +113,7 @@ public class CommentController {
 
     @GetMapping(value = "/post/{postId}", params = {"page", "pageSize"})
     @Operation(summary = "Get comments by post id with pagination", description = "Get all comments by post id with optional user filter and pagination")
-    public ResponseEntity<List<CommentModel>> findByPostId(
+    public ResponseEntity<List<CommentDTO>> findByPostId(
             @PathVariable Integer postId,
             @RequestParam(required = false) Integer userId,
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
@@ -121,12 +127,12 @@ public class CommentController {
         if (comments.isEmpty()) {
             throw new NoSuchElementException("No comments found for the given criteria.");
         }
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        return new ResponseEntity<>(comments.stream().map(this::convertToDto).toList(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/user/{userId}", params = {"page", "pageSize"})
     @Operation(summary = "Get comments by user id with pagination", description = "Get all comments by user id with pagination")
-    public ResponseEntity<List<CommentModel>> findByUserId(
+    public ResponseEntity<List<CommentDTO>> findByUserId(
             @PathVariable Integer userId,
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
@@ -134,7 +140,7 @@ public class CommentController {
         if (comments.isEmpty()) {
             throw new NoSuchElementException("No comments found for the given user.");
         }
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        return new ResponseEntity<>(comments.stream().map(this::convertToDto).toList(), HttpStatus.OK);
     }
 
     @PutMapping("/{commentId}")
@@ -161,13 +167,15 @@ public class CommentController {
                     responseCode = "200",
                     description = "Comment updated",
                     content = @Content(
-                            schema = @Schema(implementation = CommentModel.class),
+                            schema = @Schema(implementation = CommentDTO.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "Comment",
                                     value = "{\n" +
                                             "  \"idComment\": 1,\n" +
+                                            "  \"idUser\": 1,\n" +
+                                            "  \"idPost\": 1,\n" +
                                             "  \"comment\": \"This is an updated comment\",\n" +
-                                            "  \"date\": \"2021-10-04T05:00:00.000+00:00\",\n" +
+                                            "  \"date\": \"2021-10-04T05:00:00.000+00:00\"\n" +
                                             "}"
                             )
                     )
@@ -178,13 +186,17 @@ public class CommentController {
                     content = @Content
             )
     })
-    public ResponseEntity<CommentModel> update(
+    public ResponseEntity<CommentDTO> update(
             @PathVariable Integer commentId,
             @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
         CommentModel commentToUpdate = commentService.findById(commentId);
         commentToUpdate.setComment(comment.getComment());
         commentToUpdate.setDate(comment.getDate());
-        return new ResponseEntity<>(commentService.save(commentToUpdate), HttpStatus.OK);
+        CommentModel updatedComment = commentService.save(commentToUpdate);
+        return new ResponseEntity<>(convertToDto(updatedComment), HttpStatus.OK);
     }
 
+    public CommentDTO convertToDto(CommentModel comment) {
+        return modelMapper.map(comment, CommentDTO.class);
+    }
 }

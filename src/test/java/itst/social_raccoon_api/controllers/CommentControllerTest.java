@@ -34,9 +34,11 @@ public class CommentControllerTest {
         String requestBody = "{\n" +
                 "  \"comment\": \"This is a comment\",\n" +
                 "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
-                "  \"user\": {\"idUser\": 1}\n" +
+                "  \"user\": {\n" +
+                "    \"idUser\": 1\n" +
+                "  }\n" +
                 "}";
-        mvc.perform(post("/comments/post/1")
+        mvc.perform(post("/comments/post/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andDo(print())
@@ -53,7 +55,7 @@ public class CommentControllerTest {
 
     @Test
     public void getCommentsByPostId() throws Exception {
-        mvc.perform(get("/comments/post/1?page=0&pageSize=10")
+        mvc.perform(get("/comments/post/2?page=0&pageSize=10")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

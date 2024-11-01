@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import itst.social_raccoon_api.dtos.PostRequestDTO;
 import itst.social_raccoon_api.models.ImagePostModel;
 import itst.social_raccoon_api.models.PostDescriptionModel;
@@ -52,8 +54,16 @@ public class PostController {
     @GetMapping("/{userId}")
     @Operation(summary = "Get posts by user ID with pagination",
             description = "Retrieves all posts associated with the specified user ID")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved posts")
-    @ApiResponse(responseCode = "404", description = "No posts found for the user")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Posts successfully recovered",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            schema = @Schema(implementation = PostDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Posts not found")
+    })
     public ResponseEntity<List<PostDTO>> getPostsByUserId(
             @PathVariable Integer userId,
             @RequestParam(defaultValue = "0") int page,
