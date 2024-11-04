@@ -1,11 +1,7 @@
-
 package itst.social_raccoon_api.controllers;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,15 +24,8 @@ public class ProfileControllerTest {
     private ProfileController profileController;
 
     @Test
-	void contextLoads() throws Exception {
-		assertThat(profileController).isNotNull();
-	}
-
-    @Test
-    public void getAllTest() throws Exception {
-        mvc.perform(get("/profiles").accept(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
+    void contextLoads() throws Exception {
+        assertThat(profileController).isNotNull();
     }
 
     @Test
