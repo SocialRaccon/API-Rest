@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>itst</groupId>
-    <artifactId>social-raccoon-api</artifactId>
+    <artifactId>socialraccoon.api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>social-raccoon-api</name>
+    <name>socialraccoon.api</name>
     <description>API REST para la aplicación social universitaria Social Raccoon</description>
     <url/>
     <licenses>
