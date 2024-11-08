@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -14,9 +16,10 @@ import java.util.List;
 @Schema(description = "Model representing a user")
 public class UserModel {
     @Id
-    @Column
+    @Column(name = "idUser", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier of the user", example = "1")
+    @JsonProperty("idUser")
     private Integer idUser;
 
     @JsonManagedReference(value = "user-post")
@@ -44,42 +47,56 @@ public class UserModel {
     @Schema(description = "Reactions made by the user")
     private List<ReactionModel> reactions;
 
+    @NotNull(message = "The profile must not be null")
     @JsonManagedReference(value = "user-profile")
     @OneToOne(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Schema(description = "Profile of the user")
+    @Schema(description = "Profile of the user", example = "1")
+    @JsonProperty("profile")
     private ProfileModel profile;
 
+    @NotNull(message = "The authentication must not be null")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "idAuthentication", referencedColumnName = "idAuthentication", nullable = false)
     @Schema(description = "Authentication data of the user")
+    @JsonProperty("authentication")
     private AuthenticationModel authentication;
-    
-    @NotBlank(message = "This content must not be null and must not be empty")
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
-    @Column(nullable = false, name = "name")
+
+    @NotBlank(message = "name must not be null and must not be empty")
+    @Size(min = 1, max = 60, message = "The name must not exceed 60 characters")
+    @Column(nullable = false, name = "name", length = 60)
     @Schema(description = "Name of the user", example = "Juan")
     @JsonProperty("name")
     private String name;
 
-    @Column(nullable = false)
+    @NotBlank(message = "lastName must not be null and must not be empty")
+    @Size(min = 1, max = 60, message = "The last name must not exceed 60 characters")
+    @Column(nullable = false, name = "lastName", length = 60)
     @Schema(description = "Last name of the user", example = "Perez")
+    @JsonProperty("lastName")
     private String lastName;
 
-    @Column(nullable = false)
+    @NotBlank(message = "secondLastName must not be null and must not be empty")
+    @Size(min = 1, max = 60, message = "The second last name must not exceed 60 characters")
+    @Column(nullable = false, name = "secondLastName", length = 60)
     @Schema(description = "Second last name of the user", example = "Gomez")
+    @JsonProperty("secondLastName")
     private String secondLastName;
 
+    @NotBlank(message = "controlNumber must not be null and must not be empty")
+    @Pattern(regexp = "[0-2][0-9]TE[0-9]{4}", message = "The control number must be a string of 8 digits like 21TE0284")
     @Column(nullable = false, name = "controlNumber", length = 8, unique = true)
-    @Schema(description = "Control number of the user", example = "21TE284")
+    @Schema(description = "Control number of the user", example = "21TE0284")
+    @JsonProperty("controlNumber")
     private String controlNumber;
 
+    @NotNull(message = "The career must not be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCareer", referencedColumnName = "idCareer", nullable = false)
     @Schema(description = "Career of the user")
     @JsonProperty("career")
     private CareerModel career;
 
-    public UserModel(){
+    public UserModel() {
 
     }
 
