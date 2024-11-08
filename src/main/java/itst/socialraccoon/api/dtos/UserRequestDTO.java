@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.checkerframework.checker.regex.qual.Regex;
 
 @Schema(description = "Data Transfer Object representing a user request")
 public class UserRequestDTO {
