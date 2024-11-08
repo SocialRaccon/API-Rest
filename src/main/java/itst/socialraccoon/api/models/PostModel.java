@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class PostModel {
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
     private Timestamp dateCreated = new Timestamp(System.currentTimeMillis());
 
+    @NotNull(message = "El usuario no puede ser nulo")
     @ManyToOne()
     @JoinColumn(name = "idUser")
     @JsonBackReference(value = "user-post")

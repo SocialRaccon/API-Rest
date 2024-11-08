@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import itst.socialraccoon.api.models.PostDescriptionModel;
 import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.UserModel;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.sql.Timestamp;
+
 
 /**
  * @author Alejandro Tejeda Moreno
@@ -18,13 +22,14 @@ import java.sql.Timestamp;
  */
 @Schema(description = "Data Transfer Object representing a post")
 public class PostRequestDTO {
-    @Schema(description = "Unique identifier of the post", example = "1")
+    @NotNull(message = "El ID del post no puede ser nulo")
     private Integer idPost;
-    @Schema(description = "Description of the post", example = "This is a post")
+    @NotBlank(message = "La descripción del post no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
+    @Size(min = 1, max = 500, message = "La descripción del post debe tener como máximo 500 caracteres y al menos un carácter")
     private String postDescription;
-    @Schema(description = "Unique identifier of the user", example = "1")
+    @NotNull(message = "El ID del usuario no puede ser nulo")
     private Integer idUser;
-    @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
+    @NotNull(message = "La fecha de creación no puede ser nula")
     private Timestamp dateCreated = new Timestamp(System.currentTimeMillis());
 
     public PostRequestDTO() {

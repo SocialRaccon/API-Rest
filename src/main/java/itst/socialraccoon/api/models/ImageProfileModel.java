@@ -29,14 +29,14 @@ public class ImageProfileModel {
 
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
     @Column(name = "imageUrl")
-    @Size(max = 255)
-    @NotBlank(message = "This content must not be null and must not be empty")
+    @Size(max = 255, message = "La URL de la imagen debe tener como máximo 255 caracteres")
+    @NotBlank(message = "La URL de la imagen no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
     private String imageUrl = "/uploads/default-profile.png";
 
     @Schema(description = "Thumbnail of the image", example = "https://www.example.com/image.jpg")
     @Column(name = "imageThumbnailUrl")
-    @Size(max = 255)
-    @NotBlank(message = "This content must not be null and must not be empty")
+    @Size(max = 255, message = "La URL de la miniatura debe tener como máximo 255 caracteres")
+    @NotBlank(message = "La URL de la miniatura no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
     private String imageThumbnailUrl = "/uploads/default-profile.png";
 
     public ImageProfileModel(Integer idImageProfile, ProfileModel profile, String imageUrl, String imageThumbnailUrl) {

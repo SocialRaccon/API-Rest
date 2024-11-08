@@ -28,5 +28,6 @@ public interface PostRepository extends JpaRepository<PostModel, Integer> {
     @Query
     Page<PostModel> findAllByOrderByDateCreatedDesc(Pageable pageable);
 
-    Page<PostModel> findByUser(UserModel user, Pageable pageable);
+    @Query("SELECT p FROM PostModel p WHERE p.user.idUser = :userId")
+    Page<PostModel> findByUser_IdUser(@Param("userId") Integer userId, Pageable pageable);
 }

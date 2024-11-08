@@ -3,6 +3,7 @@ package itst.socialraccoon.api.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -16,13 +17,13 @@ public class PostDescriptionModel {
     @Schema(description = "Unique identifier of the post description", example = "1")
     private Integer idPostDescription;
 
-    @Size(max = 150)
-    @NotNull
+    @Size(max = 150, message = "La descripción debe tener como máximo 150 caracteres")
+    @NotBlank(message = "La descripción no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
     @Column(name = "description", nullable = false, length = 150)
     @Schema(description = "Description of the post", example = "This is a post")
     private String description;
 
-    @NotNull
+    @NotNull(message = "El post no puede ser nulo")
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-description")

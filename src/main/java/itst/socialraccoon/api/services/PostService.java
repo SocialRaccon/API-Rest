@@ -196,11 +196,7 @@ public class PostService {
         if (userId == null) {
             throw new IllegalArgumentException("User ID cannot be null");
         }
-        UserModel user = userService.findById(userId);
-        if (user == null) {
-            throw new NoSuchElementException("User not found");
-        }
-        return postRepository.findByUser(user, pageable);
+        return postRepository.findByUser_IdUser(userId, pageable);
     }
     
 }
