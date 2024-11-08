@@ -2,6 +2,7 @@ package itst.socialraccoon.api.services;
 
 import itst.socialraccoon.api.models.PostDescriptionModel;
 import itst.socialraccoon.api.models.PostModel;
+import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.repositories.PostRepository;
 import itst.socialraccoon.api.models.ImagePostModel;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,9 @@ public class PostService {
 
     @Autowired
     private ImagePostService imagePostService;
+
+    @Autowired
+    private UserService userService;
 
     @Transactional
     public PostModel save(PostModel post) {
@@ -186,4 +190,17 @@ public class PostService {
             return null;
         }
     }
+
+    @Transactional
+    public Page<PostModel> getFeedByUserId(Integer userId, Pageable pageable) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        UserModel user = userService.findById(userId);
+        if (user == null) {
+            throw new NoSuchElementException("User not found");
+        }
+        return postRepository.findByUser(user, pageable);
+    }
+    
 }

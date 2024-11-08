@@ -91,6 +91,24 @@ public class PostController {
         return ResponseEntity.ok(postDTOPage);
     }
 
+    @GetMapping("/feed/user/{userId}")
+    @Operation(summary = "Get posts feed by user ID",
+            description = "Retrieves a paginated feed of posts for a specific user, sorted by descending creation date")
+    @ApiResponse(responseCode = "200", description = "Feed successfully recovered")
+    public ResponseEntity<?> getFeedByUserId(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PostModel> postPage = postService.getFeedByUserId(userId, pageable);
+            Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
+            return ResponseEntity.ok(postDTOPage);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
     @PostMapping(value = "/withImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(
             summary = "Create a post with an image",

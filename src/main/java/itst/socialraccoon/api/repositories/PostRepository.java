@@ -1,6 +1,7 @@
 package itst.socialraccoon.api.repositories;
 
 import itst.socialraccoon.api.models.PostModel;
+import itst.socialraccoon.api.models.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,6 @@ public interface PostRepository extends JpaRepository<PostModel, Integer> {
 
     @Query
     Page<PostModel> findAllByOrderByDateCreatedDesc(Pageable pageable);
+
+    Page<PostModel> findByUser(UserModel user, Pageable pageable);
 }
