@@ -1,12 +1,36 @@
 package itst.socialraccoon.api.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+@Schema(description = "Data Transfer Object representing a user")
 public class UserDTO {
     private Integer idUser;
+    @Schema(description = "Name of the user", example = "Alejandro")
+    @NotNull(message = "The name must not be null")
+    @Size(max = 60, message = "The name must be at most 60 characters")
     private String name;
+    @Schema(description = "Last name of the user", example = "Tejeda")
+    @NotNull(message = "The last name must not be null")
+    @Size(max = 60, message = "The last name must be at most 60 characters")
     private String lastName;
+    @Schema(description = "Second last name of the user", example = "Moreno")
+    @NotNull(message = "The second last name must not be null")
+    @Size(max = 60, message = "The second last name must be at most 60 characters")
     private String secondLastName;
+    @Schema(description = "Email of the user", example = "L21TE0284@teziutlan.tecnm.mx")
+    @NotNull(message = "The email must not be null")
+    @Pattern(regexp = "[a-zA-Z0-9.]+@teziutlan\\.tecnm\\.mx", message = "The email must be a valid email from the TecNM campus Teziutlan")
     private String email;
+    @Schema(description = "Control number of the user", example = "21TE0284")
+    @NotNull(message = "The control number must not be null")
+    @Pattern(regexp = "([0-1][0-9])TE[0-9]{4}", message = "The control number must be a string of 8 digits like 21TE284")
     private String controlNumber;
+    @Schema(description = "Career of the user", example = "Ingenieria en Sistemas Computacionales")
+    @NotNull(message = "The career must not be null")
+    @Size(max = 80, message = "The career must be at most 80 characters")
     private String careerName;
 
     public UserDTO() {
@@ -31,6 +55,7 @@ public class UserDTO {
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
+
     public String getName() {
         return name;
     }

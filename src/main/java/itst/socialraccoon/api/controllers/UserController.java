@@ -13,11 +13,13 @@ import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.CareerService;
 import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.dtos.UserDTO;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("users")
+@Validated
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Users", description = "Provides methods to manage users")
 public class UserController {
@@ -63,7 +66,7 @@ public class UserController {
             )
     )
     public ResponseEntity<UserDTO> create(
-            @RequestBody UserRequestDTO user) {
+            @Valid @RequestBody UserRequestDTO user) {
         UserModel userModel = userService.save(convertToEntity(user));
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
     }
