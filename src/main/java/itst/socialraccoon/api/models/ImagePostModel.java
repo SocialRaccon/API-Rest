@@ -25,34 +25,24 @@ public class ImagePostModel {
     @Schema(description = "Unique identifier of the image post", example = "1")
     private Integer idImagePost;
 
-    @Size(max = 255)
-    @NotNull
+    @NotNull(message = "The URL of the image must not be null")
+    @Size(min = 1,max = 500, message = "The URL of the image must not exceed 500 characters")
     @Column(name = "imageUrl", nullable = false)
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
     private String imageUrl;
 
-    @Size(max = 255)
-    @NotNull
+    @NotNull(message = "The URL of the image thumbnail must not be null")
+    @Size(min = 1,max = 500, message = "The URL of the image thumbnail must not exceed 500 characters")
     @Column(name = "imageThumbnailUrl", nullable = false)
     @Schema(description = "URL of the image thumbnail", example = "https://www.example.com/image-thumbnail.jpg")
     private String imageThumbnailUrl;
 
-    @NotNull
+    @NotNull(message = "The post must not be null")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-image")
-    @Schema(
-            description = "Post to which the image belongs",
-            implementation = PostModel.class,
-            required = true,
-            example = "{\n" +
-                    "  \"idPost\": 1\n" +
-                    "}",
-            name = "idPost",
-            type = "object",
-            format = "int32"
-    )
-    private PostModel idPost; 
+    @Schema(description = "Post where the image was uploaded")
+    private PostModel idPost;
 
     // Constructor, Getters and Setters
     public ImagePostModel() {

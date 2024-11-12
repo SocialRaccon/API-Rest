@@ -10,8 +10,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 @Schema(description = "Data Transfer Object representing a post")
 public class PostDTO {
     @NotNull(message = "El ID del post no puede ser nulo")
@@ -47,6 +45,8 @@ public class PostDTO {
     private List<ReactionDTO> reactions = new ArrayList<>();
     private List<ImagePostModel> images = new ArrayList<>();
 
+    public PostDTO() {
+    }
 
     public PostDTO(
             Integer idPost,

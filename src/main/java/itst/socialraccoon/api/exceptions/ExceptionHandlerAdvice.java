@@ -94,8 +94,13 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Invalid request body: " + e.getMessage());
+        String message = e.getMessage();
+        if (message != null && message.contains("Unexpected end-of-input")) {
+            message = "Invalid JSON format: It looks like a closing brace '}' is missing.";
+        } else {
+            message = "Invalid request body: " + message;
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
