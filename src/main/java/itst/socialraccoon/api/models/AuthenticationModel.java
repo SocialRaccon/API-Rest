@@ -1,12 +1,13 @@
 package itst.socialraccoon.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 
 @Entity(name = "authentication")
@@ -17,19 +18,22 @@ public class AuthenticationModel {
     @Schema(description = "Unique identifier of the authentication", example = "1")
     private Integer idAuthentication;
 
-    @Column(nullable = false, unique = true)
-    @Schema(description = "Email of the user", example = "L21TE0279@teziutlan.tecnm.mx")
+    @Column(nullable = false, unique = true, length = 60)
+    @Size(min = 1, max = 60, message = "The email must not exceed 60 characters")
+    @Schema(description = "Email of the user", example = "L21TE0279@teziutlan.tecnm.mx", format = "email")
     @NotNull(message = "email must not be null and must not be empty")
     @Email(message = "Email should be valid", regexp = "[a-zA-Z0-9.]+@teziutlan\\.tecnm\\.mx")
     private String email;
 
-    @Schema(description = "Password of the user", example = "1234!#$")
-    @Column(nullable = false)
+    @Schema(description = "Password of the user", example = "1234!#$", format = "password")
+    @Column(nullable = false, length = 60)
+    @Size(min = 8, max = 60, message = "The password must be at least 8 characters long")
     @NotNull(message = "password must not be null and must not be empty")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "The password must contain at least one lowercase letter, one uppercase letter, one digit, and must be at least 8 characters long")
     private String password;
 
     @OneToOne(mappedBy = "authentication", fetch = FetchType.LAZY)
+    @JsonIgnore
     private UserModel user;
 
     public AuthenticationModel() {

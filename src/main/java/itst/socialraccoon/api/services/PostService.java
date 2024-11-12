@@ -43,7 +43,8 @@ public class PostService {
     }
 
     public PostModel findById(Integer id) {
-        return postRepository.findById(id).orElse(null);
+        return postRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Post not found"));
     }
 
     public PostModel findById(Integer id, Integer userId) {

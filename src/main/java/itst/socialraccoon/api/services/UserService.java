@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public UserModel findById(Integer id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
     @Transactional

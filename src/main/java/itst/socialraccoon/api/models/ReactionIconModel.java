@@ -3,7 +3,7 @@ package itst.socialraccoon.api.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import jakarta.validation.constraints.Size;
 
 @Schema(description = "Model representing a reaction icon")
@@ -20,14 +20,18 @@ public class ReactionIconModel {
 
     @Schema(description = "URL of the reaction icon", example = "https://www.example.com/icon.jpg")
     @Column(name = "iconUrl")
-    @Size(max = 255)
-    @NotBlank(message = "This content must not be null and must not be empty")
+    @Size(min = 1, max = 500, message = "The icon URL must be at most 500 characters")
+    @NotBlank(message = "The icon URL must not be empty")
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "The icon URL must be a valid image URL ending in JPG, JPEG, or PNG")
     private String iconUrl;
 
-    @Schema(description = "Thumbnail of the reaction icon", example = "https://www.example.com/icon.jpg")
+    @Schema(description = "Thumbnail of the reaction icon", example = "https://www.example.com/icon-thumbnail.jpg")
     @Column(name = "iconThumbnailUrl")
-    @Size(max = 255)
-    @NotBlank(message = "This content must not be null and must not be empty")
+    @Size(min = 1, max = 500, message = "The icon thumbnail URL must be at most 500 characters")
+    @NotBlank(message = "The icon thumbnail URL must not be empty")
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "The icon thumbnail URL must be a valid image URL ending in JPG, JPEG, or PNG")
     private String iconThumbnailUrl;
 
     public ReactionIconModel(Integer idReactionIcon, String iconUrl, String iconThumbnailUrl) {

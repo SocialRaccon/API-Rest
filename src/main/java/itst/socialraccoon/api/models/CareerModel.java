@@ -23,13 +23,13 @@ public class CareerModel {
     @NotNull(message = "The name of career must not be null and must not be empty")
     @Size(min = 1, max = 80, message = "The name must not exceed 60 characters")
     @Column(name = "name", nullable = false, length = 80)
-    @Schema(description = "Name of the career", example = "Computer Science")
+    @Schema(description = "Name of the career", example = "Computer Science", maxLength = 80, minLength = 1)
     private String name;
 
     @NotNull(message = "Acronym must not be null and must not be empty")
     @Size(min = 1, max = 7, message = "The acronym must not exceed 7 characters")
     @Column(name = "acronym", nullable = false, length = 7)
-    @Schema(description = "Acronym of the career", example = "CS")
+    @Schema(description = "Acronym of the career", example = "CS", maxLength = 7, minLength = 1)
     private String acronym;
 
 

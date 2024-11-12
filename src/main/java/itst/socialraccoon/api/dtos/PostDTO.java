@@ -1,13 +1,14 @@
 package itst.socialraccoon.api.dtos;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import itst.socialraccoon.api.models.ImagePostModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Schema(description = "Data Transfer Object representing a post")
@@ -16,7 +17,7 @@ public class PostDTO {
     private Integer post;
 
     @NotNull(message = "La fecha de creación no puede ser nula")
-    private Timestamp dateCreated;
+    private String dateCreated;
 
     @NotNull(message = "El ID del usuario no puede ser nulo")
     private Integer idUser;
@@ -37,8 +38,7 @@ public class PostDTO {
     @Size(min = 1, max = 50, message = "El número de control debe tener como máximo 50 caracteres y al menos un carácter")
     private String userControlNumber;
 
-    @NotBlank(message = "La descripción del post no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
-    @Size(min = 1, max = 500, message = "La descripción del post debe tener como máximo 500 caracteres y al menos un carácter")
+    @Size(max = 500, message = "La descripción del post debe tener como máximo 500 caracteres")
     private String postDescription;
 
     private List<CommentDTO> comments = new ArrayList<>();
@@ -48,20 +48,8 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(
-            Integer idPost,
-            Timestamp dateCreated,
-            Integer idUser,
-            String userName,
-            String userLastName,
-            String userSecondLastName,
-            String userEmail,
-            String userControlNumber,
-            String postDescription,
-            List<CommentDTO> comments,
-            List<ReactionDTO> reactions,
-            List<ImagePostModel> images) {
-        this.post = idPost;
+    public PostDTO(Integer post, String dateCreated, Integer idUser, String userName, String userLastName, String userSecondLastName, String userControlNumber, String postDescription, List<CommentDTO> comments, List<ReactionDTO> reactions, List<ImagePostModel> images) {
+        this.post = post;
         this.dateCreated = dateCreated;
         this.idUser = idUser;
         this.userName = userName;
@@ -74,19 +62,19 @@ public class PostDTO {
         this.images = images;
     }
 
-    public Integer getIdPost() {
+    public Integer getPost() {
         return post;
     }
 
-    public void setIdPost(Integer idPost) {
-        this.post = idPost;
+    public void setPost(Integer post) {
+        this.post = post;
     }
 
-    public Timestamp getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Timestamp dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
 
@@ -165,8 +153,8 @@ public class PostDTO {
     @Override
     public String toString() {
         return "PostDTO{" +
-                "idPost=" + post +
-                ", dateCreated=" + dateCreated +
+                "post=" + post +
+                ", dateCreated='" + dateCreated + '\'' +
                 ", idUser=" + idUser +
                 ", userName='" + userName + '\'' +
                 ", userLastName='" + userLastName + '\'' +

@@ -17,6 +17,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.google.gson.Gson;
+
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,11 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException e) {
-        return new ResponseEntity<>("The requested item is not registered", HttpStatus.NOT_FOUND);
+        if (e.getMessage() == null) {
+            return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     // 400 - Bad Request for invalid JSON format
@@ -65,9 +70,14 @@ public class ExceptionHandlerAdvice {
     // 400 - Bad Request for illegal arguments
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Illegal argument provided: " + e.getMessage());
+    public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(e.toString(), e.getMessage());
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("exception", e);
+        mav.addObject("errors", errors);
+        mav.setViewName("methodArgumentNotValid");
+        return mav;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -95,12 +105,24 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         String message = e.getMessage();
-        if (message != null && message.contains("Unexpected end-of-input")) {
-            message = "Invalid JSON format: It looks like a closing brace '}' is missing.";
-        } else {
-            message = "Invalid request body: " + message;
+        String detailedMessage = "Invalid JSON format";
+
+        if (message != null) {
+            if (message.contains("Unexpected end-of-input")) {
+                detailedMessage = "It looks like a closing brace '}' is missing.";
+            } else if (message.contains("Cannot deserialize value of type")) {
+                detailedMessage = "There is a type mismatch in the JSON data.";
+            } else if (message.contains("Unrecognized field")) {
+                detailedMessage = "There is an unrecognized field in the JSON data.";
+            } else if (message.contains("Missing required creator property")) {
+                detailedMessage = "A required property is missing in the JSON data.";
+            }
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("error", detailedMessage);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
@@ -125,7 +147,7 @@ public class ExceptionHandlerAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ MethodArgumentNotValidException.class })
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ModelAndView handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {

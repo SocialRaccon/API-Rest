@@ -21,10 +21,9 @@ public class ProfileModel {
     private Integer idProfile;
 
     @Size(max = 150, message = "La descripción debe tener como máximo 150 caracteres")
-    @NotBlank(message = "La descripción no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
     @Column(name = "description", nullable = false, length = 150)
     @Schema(description = "Description of the profile", example = "This is a description")
-    private String description;
+    private String description = "";
 
     @NotNull(message = "El usuario no puede ser nulo")
     @OneToOne

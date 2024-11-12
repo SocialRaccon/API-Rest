@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -27,13 +28,17 @@ public class ImagePostModel {
 
     @NotNull(message = "The URL of the image must not be null")
     @Size(min = 1,max = 500, message = "The URL of the image must not exceed 500 characters")
-    @Column(name = "imageUrl", nullable = false)
+    @Column(name = "imageUrl", nullable = false, length = 500)
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "The URL of the image must be a valid image URL ending in JPG, JPEG, or PNG")
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
     private String imageUrl;
 
     @NotNull(message = "The URL of the image thumbnail must not be null")
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "The URL of the image thumbnail must be a valid image URL ending in JPG, JPEG, or PNG")
     @Size(min = 1,max = 500, message = "The URL of the image thumbnail must not exceed 500 characters")
-    @Column(name = "imageThumbnailUrl", nullable = false)
+    @Column(name = "imageThumbnailUrl", nullable = false, length = 500)
     @Schema(description = "URL of the image thumbnail", example = "https://www.example.com/image-thumbnail.jpg")
     private String imageThumbnailUrl;
 

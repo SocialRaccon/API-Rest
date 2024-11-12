@@ -1,11 +1,13 @@
 package itst.socialraccoon.api.models;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +21,10 @@ public class PostModel {
     @Schema(description = "Unique identifier of the post", example = "1")
     private Integer idPost;
 
-    @Column(name = "dateCreated")
+    @Column(name = "dateCreated", nullable = false, columnDefinition = "datetime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
-    private Timestamp dateCreated = new Timestamp(System.currentTimeMillis());
+    private LocalDateTime dateCreated;
 
     @NotNull(message = "El usuario no puede ser nulo")
     @ManyToOne()
@@ -30,7 +33,7 @@ public class PostModel {
     @Schema(description = "User to which the post belongs")
     private UserModel user;
 
-    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
     @JsonManagedReference(value = "post-description")
     @Schema(description = "Description of the post")
     private PostDescriptionModel idPostDescription;
@@ -50,56 +53,72 @@ public class PostModel {
     @Schema(description = "Images uploaded to the post")
     private List<ImagePostModel> images = new ArrayList<>();
 
-    public PostModel(Integer idPost, UserModel user, Timestamp dateCreated) {
+    public PostModel(Integer idPost, UserModel user, LocalDateTime dateCreated) {
         this.idPost = idPost;
         this.user = user;
         this.dateCreated = dateCreated;
-        this.dateCreated = new Timestamp(System.currentTimeMillis());
     }
+
     public PostModel() {
+        this.dateCreated = LocalDateTime.now();
     }
+
     public Integer getIdPost() {
         return idPost;
     }
+
     public void setIdPost(Integer idPost) {
         this.idPost = idPost;
     }
+
     public UserModel getUser() {
         return user;
     }
+
     public void setUser(UserModel idUser) {
         this.user = idUser;
     }
-    public Timestamp getDateCreated() {
+
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
-    public void setDateCreated(Timestamp dateCreated) {
-        this.dateCreated = dateCreated;
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated.withNano(0);
     }
+
     public PostDescriptionModel getIdPostDescription() {
         return idPostDescription;
     }
+
     public void setIdPostDescription(PostDescriptionModel idPostDescription) {
         this.idPostDescription = idPostDescription;
     }
+
     public List<CommentModel> getComments() {
         return comments;
     }
+
     public void setComments(List<CommentModel> comments) {
         this.comments = comments;
     }
+
     public List<ReactionModel> getReactions() {
         return reactions;
     }
+
     public void setReactions(List<ReactionModel> reactions) {
         this.reactions = reactions;
     }
+
     public List<ImagePostModel> getImages() {
         return images;
     }
+
     public void setImages(List<ImagePostModel> images) {
         this.images = images;
     }
+
     @Override
     public String toString() {
         return "PostModel{" +
@@ -107,5 +126,4 @@ public class PostModel {
                 ", dateCreated=" + dateCreated +
                 '}';
     }
-
 }

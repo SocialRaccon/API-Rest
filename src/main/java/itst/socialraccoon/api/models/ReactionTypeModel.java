@@ -3,6 +3,8 @@ package itst.socialraccoon.api.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "reaction_type")
@@ -23,7 +25,11 @@ public class ReactionTypeModel {
     private ReactionIconModel reactionIcon;
 
     @Schema(description = "Name of the reaction", example = "Like")
-    @Column(name = "name", nullable = false, length = 65)
+    @Column(name = "name", nullable = false, length = 30)
+    @NotBlank(message = "The reaction name must not be empty")
+    @Pattern(regexp = "^(me enmapacha|me gusta|me enoja|me divierte)$",
+            message = "The reaction name must be one of the following: me enmapacha, me gusta, me enoja, me divierte")
+    @Size(max = 30, message = "The reaction name must be at most 30 characters")
     private String name;
 
     public ReactionTypeModel() {

@@ -17,11 +17,10 @@ public class PostDescriptionModel {
     @Schema(description = "Unique identifier of the post description", example = "1")
     private Integer idPostDescription;
 
-    @Size(max = 150, message = "La descripción debe tener como máximo 150 caracteres")
-    @NotBlank(message = "La descripción no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
-    @Column(name = "description", nullable = false, length = 150)
+    @Size(max = 255, message = "La descripción debe tener como máximo 255 caracteres")
+    @Column(name = "description")
     @Schema(description = "Description of the post", example = "This is a post")
-    private String description;
+    private String description = "";
 
     @NotNull(message = "El post no puede ser nulo")
     @OneToOne(fetch = FetchType.LAZY, optional = false)

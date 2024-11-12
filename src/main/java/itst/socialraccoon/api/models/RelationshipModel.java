@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 @IdClass(RelationshipPK.class)
 public class RelationshipModel {
 
-    @Schema(description = "User who is being followed")
+    @Schema(description = "User who is being followed", example = "1")
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUser", nullable = false)
@@ -22,7 +22,7 @@ public class RelationshipModel {
     @JsonProperty("user")
     private UserModel user;
 
-    @Schema(description = "User who is following")
+    @Schema(description = "User who is following", example = "2")
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idFollower", nullable = false)

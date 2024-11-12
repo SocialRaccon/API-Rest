@@ -1,24 +1,44 @@
 package itst.socialraccoon.api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.*;
 
 @Schema(description = "Data Transfer Object representing a reaction")
 public class ReactionDTO {
 
+    @NotNull(message = "User ID cannot be null")
     private Integer idUser;
+    @Schema(description = "Username of the user", example = "Alejandro")
+    @NotNull(message = "The username must not be null")
+    @Size(max = 30, message = "The username must be at most 20 characters")
     private String userName;
+    @NotNull(message = "The post ID must not be null")
     private Integer idPost;
-    private Timestamp date;
+    @Schema(description = "Date of the post or reaction", example = "2023-11-08T12:30:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime date = LocalDateTime.now().withNano(0);
+    @NotNull(message = "The reaction type ID must not be null")
     private Integer idReactionType;
+    @Schema(description = "Reaction name", example = "me enmapacha")
+    @NotBlank(message = "The reaction name must not be empty")
+    @Pattern(regexp = "^(me enmapacha|me gusta|me enoja|me divierte)$",
+            message = "The reaction name must be one of the following: me enmapacha, me gusta, me enoja, me divierte")
     private String reactionName;
+    @Schema(description = "URL of the reaction icon image", example = "https://example.com/reaction-icon.png")
+    @NotBlank(message = "The reaction icon URL must not be empty")
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "The reaction icon URL must be a valid image URL ending in JPG, JPEG or PNG")
     private String reactionIcon;
 
     public ReactionDTO() {
     }
 
-    public ReactionDTO(Integer idUser, String userName, Integer idPost, Timestamp date, Integer idReactionType, String reactionName, String reactionIcon) {
+    public ReactionDTO(Integer idUser, String userName, Integer idPost, LocalDateTime date, Integer idReactionType, String reactionName, String reactionIcon) {
         this.idUser = idUser;
         this.userName = userName;
         this.idPost = idPost;
@@ -52,11 +72,11 @@ public class ReactionDTO {
         this.idPost = idPost;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

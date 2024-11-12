@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Schema(description = "Model representing a profile image")
@@ -28,15 +29,19 @@ public class ImageProfileModel {
     private ProfileModel profile;
 
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
-    @Column(name = "imageUrl")
-    @Size(max = 255, message = "La URL de la imagen debe tener como máximo 255 caracteres")
+    @Column(name = "imageUrl", nullable = false, length = 500)
+    @Size(max = 500, message = "La URL de la imagen debe tener como máximo 255 caracteres")
     @NotBlank(message = "La URL de la imagen no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "La URL de la imagen debe ser una URL de imagen válida que termine en JPG, JPEG o PNG")
     private String imageUrl = "/uploads/default-profile.png";
 
     @Schema(description = "Thumbnail of the image", example = "https://www.example.com/image.jpg")
-    @Column(name = "imageThumbnailUrl")
-    @Size(max = 255, message = "La URL de la miniatura debe tener como máximo 255 caracteres")
+    @Column(name = "imageThumbnailUrl", nullable = false, length = 500)
+    @Size(max = 500, message = "La URL de la miniatura debe tener como máximo 255 caracteres")
     @NotBlank(message = "La URL de la miniatura no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
+    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+            message = "La URL de la miniatura debe ser una URL de imagen válida que termine en JPG, JPEG o PNG")
     private String imageThumbnailUrl = "/uploads/default-profile.png";
 
     public ImageProfileModel(Integer idImageProfile, ProfileModel profile, String imageUrl, String imageThumbnailUrl) {

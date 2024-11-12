@@ -1,14 +1,17 @@
 package itst.socialraccoon.api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import itst.socialraccoon.api.models.PostDescriptionModel;
 import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.UserModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 
 /**
@@ -24,18 +27,18 @@ import java.sql.Timestamp;
 public class PostRequestDTO {
     @NotNull(message = "El ID del post no puede ser nulo")
     private Integer idPost;
-    @NotBlank(message = "La descripción del post no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
-    @Size(min = 1, max = 500, message = "La descripción del post debe tener como máximo 500 caracteres y al menos un carácter")
+    @Size(max = 255, message = "The description must be at most 200 characters")
     private String postDescription;
     @NotNull(message = "El ID del usuario no puede ser nulo")
     private Integer idUser;
-    @NotNull(message = "La fecha de creación no puede ser nula")
-    private Timestamp dateCreated = new Timestamp(System.currentTimeMillis());
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
+    private LocalDateTime dateCreated = LocalDateTime.now().withNano(0);
 
     public PostRequestDTO() {
     }
 
-    public PostRequestDTO(Integer idPost, String postDescription, Integer idUser, Timestamp dateCreated) {
+    public PostRequestDTO(Integer idPost, String postDescription, Integer idUser, LocalDateTime dateCreated) {
         this.idPost = idPost;
         this.postDescription = postDescription;
         this.idUser = idUser;
@@ -66,11 +69,11 @@ public class PostRequestDTO {
         this.idUser = idUser;
     }
 
-    public Timestamp getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Timestamp dateCreated) {
+    public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }
 }

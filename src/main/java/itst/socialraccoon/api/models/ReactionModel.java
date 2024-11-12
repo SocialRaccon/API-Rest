@@ -1,8 +1,10 @@
 package itst.socialraccoon.api.models;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +17,8 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
 @Entity()
 @Table(name = "reaction")
@@ -24,6 +28,7 @@ public class ReactionModel {
 
     @ManyToOne(fetch = FetchType.LAZY)  // Changed from @OneToOne to @ManyToOne
     @JoinColumn(name = "idReactionType", referencedColumnName = "idReactionType")
+    @NotNull(message = "The reaction type ID must not be null")
     @Schema(description = "Unique identifier of the reaction type", example = "1")
     @JsonBackReference(value = "reactionType-reaction")
     @JsonProperty("idReactionType")
@@ -32,6 +37,7 @@ public class ReactionModel {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idPost")
+    @NotNull(message = "The post ID must not be null")
     @Schema(description = "Unique identifier of the post", example = "1")
     @JsonBackReference(value = "post-reaction")
     @JsonProperty("idPost")
@@ -40,15 +46,17 @@ public class ReactionModel {
     @Id
     @ManyToOne()
     @JoinColumn(name = "idUser", nullable = false)
+    @NotNull(message = "The user ID must not be null")
     @Schema(description = "Unique identifier of the user", example = "1")
     @JsonBackReference(value = "user-reaction")
     @JsonProperty("idUser")
     private UserModel idUser;  // User ID field
 
     @Column(name = "createdDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Date when the reaction was made", example = "2021-10-10 10:00:00")
     @JsonProperty("createdDate")
-    private Timestamp date = new Timestamp(System.currentTimeMillis());  // Reaction date field
+    private LocalDateTime date = LocalDateTime.now().withNano(0);
 
     public ReactionModel() {
     }
@@ -83,11 +91,11 @@ public class ReactionModel {
         this.idUser = idUser;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
