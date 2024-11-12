@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("users")
 @Validated
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.DELETE})
 @Tag(name = "Users", description = "Provides methods to manage users")
 @GlobalApiResponses
 public class UserController {

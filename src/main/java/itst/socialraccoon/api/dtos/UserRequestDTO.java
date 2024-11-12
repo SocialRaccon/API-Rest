@@ -12,27 +12,31 @@ public class UserRequestDTO {
     private Integer userId;
     @Schema(description = "Name of the user", example = "Alejandro")
     @NotBlank(message = "name must not be null and must not be empty")
-    @Size(min = 1,max = 60, message = "The name must be at most 60 characters")
+    @Size(min = 1,max = 60, message = "The name must be 1 to 60 characters long")
     private String name;
     @Schema(description = "Last name of the user", example = "Tejeda")
     @NotBlank(message = "lastName must not be null and must not be empty")
-    @Size(min = 1,max = 60, message = "The last name must be at most 60 characters")
+    @Size(min = 1,max = 60, message = "The last name must be 1 to 60 characters long")
     private String lastName;
     @Schema(description = "Second last name of the user", example = "Moreno")
     @NotBlank(message = "secondLastName must not be null and must not be empty")
-    @Size(min = 1,max = 60, message = "The second last name must be at most 60 characters")
+    @Size(min = 1,max = 60, message = "The second last name must be 1 to 60 characters long")
     private String secondLastName;
     @Schema(description = "Email of the user", example = "L21TE0284@teziutlan.tecnm.mx")
     @NotBlank(message = "email must not be null and must not be empty")
     @Pattern(regexp = "[a-zA-Z0-9.]+@teziutlan\\.tecnm\\.mx", message = "The email must be a valid email from the TecNM campus Teziutlan")
+    @Size(min = 1, max = 60, message = "The email must be 1 to 60 characters long")
     private String email;
     @Schema(description = "Control number of the user", example = "21TE0284")
     @NotBlank(message = "controlNumber must not be null and must not be empty")
     @Pattern(regexp = "[0-2][0-9]TE[0-9]{4}", message = "The control number must be a string of 8 digits like 21TE0284")
+    @Size(min = 8, max = 8, message = "The control number must be 8 characters long")
     private String controlNumber;
     @Schema(description = "Password of the user", example = "s3cureP@ssw0rd")
     @NotBlank(message = "password must not be null and must not be empty")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "The password must contain at least one lowercase letter, one uppercase letter, one digit, and must be at least 8 characters long")
+    @Size(min = 8, max = 60, message = "The password must be at least 8 characters long and at most 60 characters long")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
+            message = "The password must contain at least one lowercase letter, one uppercase letter, one digit, and must be at least 8 characters long")
     private String password;
     @Schema(description = "Career of the user", example = "Ingenieria en Sistemas Computacionales")
     @NotNull(message = "The career must not be null")

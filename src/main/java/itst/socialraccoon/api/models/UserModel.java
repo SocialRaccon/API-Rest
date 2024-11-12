@@ -62,21 +62,21 @@ public class UserModel {
     private AuthenticationModel authentication;
 
     @NotBlank(message = "name must not be null and must not be empty")
-    @Size(min = 1, max = 60, message = "The name must not exceed 60 characters")
+    @Size(min = 1, max = 60, message = "The name must be 1 to 60 characters long")
     @Column(nullable = false, name = "name", length = 60)
     @Schema(description = "Name of the user", example = "Juan")
     @JsonProperty("name")
     private String name;
 
     @NotBlank(message = "lastName must not be null and must not be empty")
-    @Size(min = 1, max = 60, message = "The last name must not exceed 60 characters")
+    @Size(min = 1, max = 60, message = "The last name must be 1 to 60 characters long")
     @Column(nullable = false, name = "lastName", length = 60)
     @Schema(description = "Last name of the user", example = "Perez")
     @JsonProperty("lastName")
     private String lastName;
 
     @NotBlank(message = "secondLastName must not be null and must not be empty")
-    @Size(min = 1, max = 60, message = "The second last name must not exceed 60 characters")
+    @Size(min = 1, max = 60, message = "The second last name must be 1 to 60 characters long")
     @Column(nullable = false, name = "secondLastName", length = 60)
     @Schema(description = "Second last name of the user", example = "Gomez")
     @JsonProperty("secondLastName")
@@ -86,6 +86,7 @@ public class UserModel {
     @Pattern(regexp = "[0-2][0-9]TE[0-9]{4}", message = "The control number must be a string of 8 digits like 21TE0284")
     @Column(nullable = false, name = "controlNumber", length = 8, unique = true)
     @Schema(description = "Control number of the user", example = "21TE0284")
+    @Size(min = 8, max = 8, message = "The control number must be 8 characters long")
     @JsonProperty("controlNumber")
     private String controlNumber;
 
