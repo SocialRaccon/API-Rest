@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.ReactionDTO;
 import itst.socialraccoon.api.models.ReactionModel;
 import itst.socialraccoon.api.services.ReactionService;
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("reactions")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Reactions", description = "Provides methods to manage reactions.")
+@GlobalApiResponses
 public class ReactionController {
 
     @Autowired

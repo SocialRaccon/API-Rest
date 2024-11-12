@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.RelationshipInfoDTO;
 import itst.socialraccoon.api.services.RelationshipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("relationships")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
 @Tag(name = "Relationships", description = "Provides methods to manage relationships between users")
+@GlobalApiResponses
 public class RelationshipController {
 
     @Autowired

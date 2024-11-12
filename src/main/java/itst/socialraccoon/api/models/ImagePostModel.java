@@ -37,10 +37,21 @@ public class ImagePostModel {
     @Schema(description = "URL of the image thumbnail", example = "https://www.example.com/image-thumbnail.jpg")
     private String imageThumbnailUrl;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-image")
-    @Schema(description = "Post where the image was uploaded")
+    @Schema(
+            description = "Post to which the image belongs",
+            implementation = PostModel.class,
+            required = true,
+            example = "{\n" +
+                    "  \"idPost\": 1\n" +
+                    "}",
+            name = "idPost",
+            type = "object",
+            format = "int32"
+    )
     private PostModel idPost; 
 
     // Constructor, Getters and Setters

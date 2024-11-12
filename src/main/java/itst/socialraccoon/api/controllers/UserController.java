@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.UserRequestDTO;
 import itst.socialraccoon.api.models.AuthenticationModel;
 import itst.socialraccoon.api.models.CareerModel;
@@ -31,6 +32,7 @@ import java.util.Map;
 @Validated
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Users", description = "Provides methods to manage users")
+@GlobalApiResponses
 public class UserController {
 
     @Autowired

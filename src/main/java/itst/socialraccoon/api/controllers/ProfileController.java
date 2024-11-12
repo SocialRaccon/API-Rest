@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.ProfileDTO;
 import itst.socialraccoon.api.models.ImageProfileModel;
 import itst.socialraccoon.api.models.ProfileModel;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("profiles")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Profiles", description = "Provides methods to manage profiles")
+@GlobalApiResponses
 public class ProfileController {
 
     @Autowired

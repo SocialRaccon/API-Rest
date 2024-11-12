@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.services.CommentService;
 import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.models.CommentModel;
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("comments")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Comments", description = "Provides methods to manage comments")
+@GlobalApiResponses
 public class CommentController {
 
     @Autowired

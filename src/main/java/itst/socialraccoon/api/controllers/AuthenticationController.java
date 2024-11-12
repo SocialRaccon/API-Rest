@@ -1,6 +1,8 @@
 package itst.socialraccoon.api.controllers;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.AuthenticationDTO;
 import itst.socialraccoon.api.models.AuthenticationModel;
 import itst.socialraccoon.api.services.AuthenticationService;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("authentications")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Authentications", description = "Provides methods to manage authentications")
+@GlobalApiResponses
 public class AuthenticationController {
 
     @Autowired
@@ -40,6 +43,9 @@ public class AuthenticationController {
                     )
             )
     )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Login successful")
+    })
     public ResponseEntity<String> login(@RequestBody AuthenticationModel authentication) {
         AuthenticationModel authenticationOptional = authenticationService.findByEmail(authentication.getEmail());
         if (authenticationOptional != null) {

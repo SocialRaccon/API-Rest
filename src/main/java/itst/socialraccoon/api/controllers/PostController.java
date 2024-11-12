@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.PostDTO;
 import itst.socialraccoon.api.dtos.PostRequestDTO;
 import itst.socialraccoon.api.models.ImagePostModel;
@@ -42,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("posts")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Posts", description = "Provides methods to manage posts")
+@GlobalApiResponses
 public class PostController {
 
     @Autowired
@@ -205,8 +207,8 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    @Operation(summary = "Update a post",
-            description = "Update an existing post with the information provided")
+    @Operation(summary = "Update description of a post",
+            description = "Update the description of a post by its ID")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
     public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @RequestParam("postDescription") String postDescription) {

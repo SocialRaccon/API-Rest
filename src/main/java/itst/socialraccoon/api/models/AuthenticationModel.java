@@ -1,8 +1,10 @@
 package itst.socialraccoon.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity(name = "authentication")
@@ -13,15 +15,18 @@ public class AuthenticationModel {
     @Schema(description = "Unique identifier of the authentication", example = "1")
     private Integer idAuthentication;
 
+    @NotNull
     @Column(nullable = false, unique = true)
     @Schema(description = "Email of the user", example = "josuejoss10@gmail.com")
     private String email;
 
+    @NotNull
     @Schema(description = "Password of the user", example = "1234!#$")
     @Column(nullable = false)
     private String password;
 
     @OneToOne(mappedBy = "authentication", fetch = FetchType.LAZY)
+    @JsonIgnore
     private UserModel user;
 
     public AuthenticationModel() {
