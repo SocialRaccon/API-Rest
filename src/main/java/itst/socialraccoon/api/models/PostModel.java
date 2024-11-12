@@ -2,6 +2,7 @@ package itst.socialraccoon.api.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ public class PostModel {
     @Column(name = "dateCreated", nullable = false, columnDefinition = "datetime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
+    @JsonIgnore
     private LocalDateTime dateCreated;
 
     @NotNull(message = "El usuario no puede ser nulo")

@@ -32,7 +32,6 @@ public class CareerModel {
     @Schema(description = "Acronym of the career", example = "CS", maxLength = 7, minLength = 1)
     private String acronym;
 
-
     public CareerModel() {
     }
 

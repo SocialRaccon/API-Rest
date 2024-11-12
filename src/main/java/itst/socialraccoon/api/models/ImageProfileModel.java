@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -26,6 +27,7 @@ public class ImageProfileModel {
     @JsonProperty("idProfile")
     @Schema(description = "Profile to which the image belongs", example = "1")
     @JsonBackReference(value = "profile-image")
+    @NotNull(message = "El perfil no puede ser nulo")
     private ProfileModel profile;
 
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")

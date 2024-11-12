@@ -46,7 +46,7 @@ public class ImagePostModel {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     @JsonBackReference(value = "post-image")
-    @Schema(description = "Post where the image was uploaded")
+    @Schema(description = "Post where the image was uploaded", example = "1")
     private PostModel idPost;
 
     // Constructor, Getters and Setters

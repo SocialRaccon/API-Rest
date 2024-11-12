@@ -22,6 +22,7 @@ public class ReactionTypeModel {
     @JoinColumn(name = "idReactionIcon")
     @JsonProperty("reactionIcon")
     @Schema(description = "Icon of the reaction", example = "1")
+    @NotNull(message = "The reaction icon must not be null")
     private ReactionIconModel reactionIcon;
 
     @Schema(description = "Name of the reaction", example = "Like")

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,7 +56,7 @@ public class ReactionModel {
     @Column(name = "createdDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Date when the reaction was made", example = "2021-10-10 10:00:00")
-    @JsonProperty("createdDate")
+    @JsonIgnore
     private LocalDateTime date = LocalDateTime.now().withNano(0);
 
     public ReactionModel() {
