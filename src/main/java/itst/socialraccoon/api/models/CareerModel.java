@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -19,15 +20,15 @@ public class CareerModel {
     @Schema(description = "Unique identifier of the career", example = "1")
     private Integer idCareer;
 
-    @Size(max = 65)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 65)
+    @NotNull(message = "The name of career must not be null and must not be empty")
+    @Size(min = 1, max = 80, message = "The name must not exceed 60 characters")
+    @Column(name = "name", nullable = false, length = 80)
     @Schema(description = "Name of the career", example = "Computer Science")
     private String name;
 
-    @Size(max = 10)
-    @NotNull
-    @Column(name = "acronym", nullable = false, length = 10)
+    @NotNull(message = "Acronym must not be null and must not be empty")
+    @Size(min = 1, max = 7, message = "The acronym must not exceed 7 characters")
+    @Column(name = "acronym", nullable = false, length = 7)
     @Schema(description = "Acronym of the career", example = "CS")
     private String acronym;
 

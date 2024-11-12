@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("posts")
+@Validated
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Posts", description = "Provides methods to manage posts")
 public class PostController {
@@ -99,14 +101,10 @@ public class PostController {
             @PathVariable Integer userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        try {
             Pageable pageable = PageRequest.of(page, size);
             Page<PostModel> postPage = postService.getFeedByUserId(userId, pageable);
             Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
             return ResponseEntity.ok(postDTOPage);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
     }
 
     @PostMapping(value = "/withImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
