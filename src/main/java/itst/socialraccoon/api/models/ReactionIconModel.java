@@ -22,15 +22,15 @@ public class ReactionIconModel {
     @Column(name = "iconUrl")
     @Size(min = 1, max = 500, message = "The icon URL must be at most 500 characters")
     @NotBlank(message = "The icon URL must not be empty")
-    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
-            message = "The icon URL must be a valid image URL ending in JPG, JPEG, or PNG")
+    @Pattern(regexp = "^(http|https)://firebasestorage\\.googleapis\\.com/v0/b/[^/]+/o/[^?]+\\.(jpg|jpeg|png)\\?alt=media$",
+            message = "The URL of the icon must be a valid Firebase Storage URL ending in JPG, JPEG, or PNG")
     private String iconUrl;
 
     @Schema(description = "Thumbnail of the reaction icon", example = "https://www.example.com/icon-thumbnail.jpg")
     @Column(name = "iconThumbnailUrl")
     @Size(min = 1, max = 500, message = "The icon thumbnail URL must be at most 500 characters")
     @NotBlank(message = "The icon thumbnail URL must not be empty")
-    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
+    @Pattern(regexp = "^(http|https)://firebasestorage\\.googleapis\\.com/v0/b/[^/]+/o/[^?]+\\.(jpg|jpeg|png)\\?alt=media$",
             message = "The icon thumbnail URL must be a valid image URL ending in JPG, JPEG, or PNG")
     private String iconThumbnailUrl;
 

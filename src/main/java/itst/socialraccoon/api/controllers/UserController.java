@@ -14,6 +14,8 @@ import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.CareerService;
 import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.dtos.UserDTO;
+import itst.socialraccoon.api.validators.FileValidator;
+import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,9 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private FileValidator fileValidator;
 
     @PostMapping()
     @Operation(
@@ -80,6 +85,11 @@ public class UserController {
             @Schema(type = "string", format = "binary") MultipartFile file,
             @RequestPart("user") @Parameter(schema = @Schema(implementation = UserRequestDTO.class))
             String userJson) throws IOException {
+        ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
+        fileValidator.setStrategy(imageFileValidationStrategy);
+        if (!fileValidator.validate(file)) {
+            throw new IllegalArgumentException("Image file must be " + imageFileValidationStrategy.getAllowedTypes());
+        }
         UserRequestDTO user = new ObjectMapper().readValue(userJson, UserRequestDTO.class);
         UserModel userModel = userService.save(convertToEntity(user), file);
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);

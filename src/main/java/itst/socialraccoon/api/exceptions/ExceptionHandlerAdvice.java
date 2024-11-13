@@ -72,7 +72,7 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
         Map<String, String> errors = new HashMap<>();
-        errors.put(e.toString(), e.getMessage());
+        errors.put("error", e.getMessage());
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", e);
         mav.addObject("errors", errors);
@@ -90,13 +90,13 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
-        StringBuilder message = new StringBuilder("Constraint violation: ");
+        StringBuilder message = new StringBuilder();
         e.getConstraintViolations().forEach(violation -> {
             message.append("Parameter '")
                     .append(violation.getPropertyPath())
                     .append("' ")
                     .append(violation.getMessage())
-                    .append(". ");
+                    .append(". \n");
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message.toString());
     }

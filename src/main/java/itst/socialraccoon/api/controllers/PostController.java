@@ -16,6 +16,8 @@ import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.PostService;
 import itst.socialraccoon.api.services.UserService;
+import itst.socialraccoon.api.validators.FileValidator;
+import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,6 +56,8 @@ public class PostController {
     private ModelMapper modelMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileValidator fileValidator;
 
     @GetMapping("/{userId}")
     @Operation(summary = "Get posts by user ID with pagination",
@@ -118,6 +122,11 @@ public class PostController {
             @RequestParam(value = "postDescription", required = false) String postDescription,
             @PathVariable Integer userId,
             @RequestParam("image") MultipartFile image) {
+        ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
+        fileValidator.setStrategy(imageFileValidationStrategy);
+        if (!fileValidator.validate(image)) {
+            throw new IllegalArgumentException("Image must be " + imageFileValidationStrategy.getAllowedTypes());
+        }
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);
@@ -173,6 +182,11 @@ public class PostController {
     public ResponseEntity<String> addImageToPost(
             @PathVariable Integer postId,
             @RequestParam("image") MultipartFile image) {
+        ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
+        fileValidator.setStrategy(imageFileValidationStrategy);
+        if (!fileValidator.validate(image)) {
+            throw new IllegalArgumentException("Image must be " + imageFileValidationStrategy.getAllowedTypes());
+        }
         postService.addImage(postId, image);
         return ResponseEntity.ok("Image added successfully");
     }
@@ -200,6 +214,11 @@ public class PostController {
             @PathVariable Integer postId,
             @RequestParam Integer imageId,
             @RequestParam("image") MultipartFile image) {
+        ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
+        fileValidator.setStrategy(imageFileValidationStrategy);
+        if (!fileValidator.validate(image)) {
+            throw new IllegalArgumentException("Image must be " + imageFileValidationStrategy.getAllowedTypes());
+        }
         postService.update(postId, imageId, image);
         return ResponseEntity.ok("Image updated successfully");
     }

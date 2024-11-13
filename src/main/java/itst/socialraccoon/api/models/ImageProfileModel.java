@@ -32,18 +32,18 @@ public class ImageProfileModel {
 
     @Schema(description = "URL of the image", example = "https://www.example.com/image.jpg")
     @Column(name = "imageUrl", nullable = false, length = 500)
-    @Size(max = 500, message = "La URL de la imagen debe tener como máximo 255 caracteres")
-    @NotBlank(message = "La URL de la imagen no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
-    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
-            message = "La URL de la imagen debe ser una URL de imagen válida que termine en JPG, JPEG o PNG")
+    @Size(max = 500, message = "The URL of the image must not exceed 500 characters")
+    @NotBlank(message = "The URL of the image must not be empty and must contain at least one character that is not a whitespace")
+    @Pattern(regexp = "^(http|https)://firebasestorage\\.googleapis\\.com/v0/b/[^/]+/o/[^?]+\\.(jpg|jpeg|png)\\?alt=media$",
+            message = "The URL of the image must be a valid Firebase Storage URL ending in JPG, JPEG, or PNG")
     private String imageUrl = "/uploads/default-profile.png";
 
     @Schema(description = "Thumbnail of the image", example = "https://www.example.com/image.jpg")
     @Column(name = "imageThumbnailUrl", nullable = false, length = 500)
-    @Size(max = 500, message = "La URL de la miniatura debe tener como máximo 255 caracteres")
-    @NotBlank(message = "La URL de la miniatura no puede estar vacía y debe contener al menos un carácter que no sea un espacio en blanco")
-    @Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png)$",
-            message = "La URL de la miniatura debe ser una URL de imagen válida que termine en JPG, JPEG o PNG")
+    @Size(max = 500, message = "The URL of the image thumbnail must not exceed 500 characters")
+    @NotBlank(message = "The URL of the image thumbnail must not be empty and must contain at least one character that is not a whitespace")
+    @Pattern(regexp = "^(http|https)://firebasestorage\\.googleapis\\.com/v0/b/[^/]+/o/[^?]+\\.(jpg|jpeg|png)\\?alt=media$",
+            message = "The URL of the image must be a valid Firebase Storage URL ending in JPG, JPEG, or PNG")
     private String imageThumbnailUrl = "/uploads/default-profile.png";
 
     public ImageProfileModel(Integer idImageProfile, ProfileModel profile, String imageUrl, String imageThumbnailUrl) {
