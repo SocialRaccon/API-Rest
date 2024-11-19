@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.google.gson.Gson;
@@ -152,7 +153,12 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Persistent object exception: " + e.getMessage());
     }
-
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleMissingServletRequestPartException(MissingServletRequestPartException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Required part '" + e.getRequestPartName() + "' is not present.");
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ModelAndView handleValidationExceptions(MethodArgumentNotValidException ex) {
