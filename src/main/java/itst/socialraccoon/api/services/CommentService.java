@@ -3,6 +3,7 @@ package itst.socialraccoon.api.services;
 import itst.socialraccoon.api.models.CommentModel;
 import itst.socialraccoon.api.repositories.CommentRepository;
 import jakarta.transaction.Transactional;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +22,14 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public void delete(Integer id) {
+    public CommentModel delete(Integer id){
+        CommentModel comment = commentRepository.findById(id).get();
+        if (comment == null) {
+            throw new IllegalArgumentException("Comment not found");
+        }
         commentRepository.deleteById(id);
+        return comment;
     }
-
     public CommentModel findById(Integer id) {
         return commentRepository.findById(id).get();
     }

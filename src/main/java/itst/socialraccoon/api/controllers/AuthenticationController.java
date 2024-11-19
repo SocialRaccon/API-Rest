@@ -4,17 +4,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.AuthenticationDTO;
+import itst.socialraccoon.api.dtos.PasswordRecoveryDTO;
 import itst.socialraccoon.api.models.AuthenticationModel;
 import itst.socialraccoon.api.services.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("authentications")
+@Validated
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Authentications", description = "Provides methods to manage authentications")
 @GlobalApiResponses
@@ -46,7 +50,7 @@ public class AuthenticationController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Login successful")
     })
-    public ResponseEntity<String> login(@RequestBody AuthenticationModel authentication) {
+    public ResponseEntity<String> login(@Valid @RequestBody AuthenticationModel authentication) {
         AuthenticationModel authenticationOptional = authenticationService.findByEmail(authentication.getEmail());
         if (authenticationOptional != null) {
             if (authenticationOptional.getPassword().equals(authentication.getPassword())) {
@@ -67,18 +71,18 @@ public class AuthenticationController {
                     description = "User email",
                     required = true,
                     content = @io.swagger.v3.oas.annotations.media.Content(
-                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AuthenticationModel.class),
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PasswordRecoveryDTO.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                                     name = "Recover",
                                     value = "{\n"
-                                            + "  \"email\": \"alex2227@hotmail.com \"\n"
+                                            + "  \"email\": \"alex2227@hotmail.com\"\n"
                                             + "}"
                             )
                     )
             )
     )
-    public ResponseEntity<String> recoverPassword(@RequestBody AuthenticationModel authentication) {
-        AuthenticationModel authenticationOptional = authenticationService.findByEmail(authentication.getEmail());
+    public ResponseEntity<String> recoverPassword(@Valid @RequestBody PasswordRecoveryDTO passwordRecoveryDTO) {
+        AuthenticationModel authenticationOptional = authenticationService.findByEmail(passwordRecoveryDTO.getEmail());
         if (authenticationOptional != null) {
             return ResponseEntity.ok("Password recovery email sent");
         } else {
@@ -88,7 +92,7 @@ public class AuthenticationController {
 
     @PutMapping("/change")
     @Operation(summary = "Change password", description = "Change user password")
-    public ResponseEntity<String> changePassword(@RequestBody AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<String> changePassword(@Valid @RequestBody AuthenticationDTO authenticationDTO) {
         AuthenticationModel authenticationModel = authenticationService.findByEmail(authenticationDTO.getEmail());
         if (authenticationModel != null) {
             if (authenticationModel.getPassword().equals(authenticationDTO.getPassword())) {

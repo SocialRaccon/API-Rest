@@ -9,15 +9,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.RelationshipInfoDTO;
 import itst.socialraccoon.api.services.RelationshipService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("relationships")
+@Validated
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
 @Tag(name = "Relationships", description = "Provides methods to manage relationships between users")
 @GlobalApiResponses

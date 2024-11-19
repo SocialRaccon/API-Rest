@@ -192,12 +192,7 @@ public class PostService {
         }
     }
 
-    @Transactional
-    public Page<PostModel> getFeedByUserId(Integer userId, Pageable pageable) {
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
-        return postRepository.findByUser_IdUser(userId, pageable);
+    public Page<PostModel> getFollowingFeed(Integer userId, Pageable pageable) {
+        return postRepository.findRandomPostsByFollowedUsers(userId, pageable);
     }
-    
 }
