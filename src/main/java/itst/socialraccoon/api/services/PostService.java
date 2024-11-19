@@ -84,6 +84,9 @@ public class PostService {
 
     @Transactional
     public void delete(Integer postId, Integer userId) {
+        if (!postRepository.existsById(postId)) {
+            throw new NoSuchElementException("Post not found");
+        }
         PostModel post = postRepository.findByUserAndPost(userId, postId);
         if (post == null) {
             throw new NoSuchElementException("Post not found or does not belong to the user");
@@ -93,6 +96,9 @@ public class PostService {
 
     @Transactional
     public void deleteImage(Integer postId, Integer imageId) {
+        if (!postRepository.existsById(postId)) {
+            throw new NoSuchElementException("Post not found");
+        }
         PostModel post = postRepository.getReferenceById(postId);
         boolean imageExists = post.getImages().stream()
                 .anyMatch(image -> image.getIdImagePost().equals(imageId));
@@ -138,7 +144,10 @@ public class PostService {
 
     @Transactional
     public PostModel update(Integer id, String description) {
-        PostModel existingPost = postRepository.getReferenceById(id);
+        if (!postRepository.existsById(id)) {
+            throw new NoSuchElementException("Post not found");
+        }
+        PostModel existingPost = postRepository.findById(id).get();
         PostDescriptionModel descriptionModel = existingPost.getIdPostDescription();
         descriptionModel.setDescription(description);
         existingPost.setIdPostDescription(descriptionModel);
@@ -156,10 +165,10 @@ public class PostService {
 
     @Transactional
     public String update(Integer postId, Integer imageId, MultipartFile image) {
-        PostModel post = postRepository.getReferenceById(postId);
-        if (post == null) {
+        if (!postRepository.existsById(postId)) {
             throw new NoSuchElementException("Post not found");
         }
+        PostModel post = postRepository.findById(postId).get();
         ImagePostModel imagePost = imagePostService.getImagePost(postId, imageId);
         if (imagePost == null) {
             throw new NoSuchElementException("Image not found");
