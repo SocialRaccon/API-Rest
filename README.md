@@ -139,9 +139,9 @@ VALUES ('Ingeniería en Sistemas Computacionales', 'ISC'),
        ('Ingeniería en Mecatrónica', 'IME');
 
 INSERT INTO authentication (email, password)
-VALUES ('juan@gmail.com', '123456'),
-       ('maria@gmail.com', '123456'),
-       ('pedro@gmail.com', '123456');
+VALUES ('juan@teziutlan.tecnm.mx', '12tT3456'),
+       ('maria@teziutlan.tecnm.mx', '12fF3456'),
+       ('pedro@teziutlan.tecnm.mx', '123Yy456');
 
 INSERT INTO user (name, lastName, secondLastName, controlNumber, idCareer, idAuthentication)
 VALUES ('Juan', 'Pérez', 'Gómez', '21TE0121', 1, 1),
@@ -162,9 +162,9 @@ VALUES (1, 2),
        (3, 2);
 
 INSERT INTO image_profile (idProfile, imageUrl, imageThumbnailUrl)
-VALUES (1, 'https://www.example.com/image1.jpg', 'https://www.example.com/image1_thumbnail.jpg'),
-       (2, 'https://www.example.com/image2.jpg', 'https://www.example.com/image2_thumbnail.jpg'),
-       (3, 'https://www.example.com/image3.jpg', 'https://www.example.com/image3_thumbnail.jpg');
+VALUES (1, 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1'),
+       (2, 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1'),
+       (3, 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1');
 
 INSERT INTO post (dateCreated, idUser)
 VALUES ('2021-10-01', 1),
@@ -187,16 +187,16 @@ VALUES ('Hola como esta eso?', '2021-10-01', 2, 1),
        ('Vivan los mapaches!!', '2021-10-03', 1, 3);
 
 INSERT INTO reaction_icon (iconUrl, iconThumbnailUrl)
-VALUES ('https://www.example.com/icon1.jpg', 'https://www.example.com/icon1_thumbnail.jpg'),
-       ('https://www.example.com/icon2.jpg', 'https://www.example.com/icon2_thumbnail.jpg'),
-       ('https://www.example.com/icon3.jpg', 'https://www.example.com/icon3_thumbnail.jpg'),
-       ('https://www.example.com/icon4.jpg', 'https://www.example.com/icon4_thumbnail.jpg');
+VALUES ('https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/MeEnmapaLike.png?alt=media&token=4ead8dba-4c77-417e-8c7b-00e3ec64b9c3', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/MeEnmapaLike.png?alt=media&token=4ead8dba-4c77-417e-8c7b-00e3ec64b9c3'),
+       ('https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/MeEnmapaLove.png?alt=media&token=10dc5d23-5a60-40c5-944c-12dfb779558c', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/MeEnmapaLove.png?alt=media&token=10dc5d23-5a60-40c5-944c-12dfb779558c'),
+       ('https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/raccoon_love.png?alt=media&token=8a29e983-e4e8-4502-8b05-c17accbac07e', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/raccoon_love.png?alt=media&token=8a29e983-e4e8-4502-8b05-c17accbac07e'),
+       ('https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/MeEnmapaSad.png?alt=media&token=76eba7e7-01f0-47e9-956d-1e7814655dc7', 'https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/MeEnmapaSad.png?alt=media&token=76eba7e7-01f0-47e9-956d-1e7814655dc7');
 
 INSERT INTO reaction_type (name, idReactionIcon)
-VALUES ('MeEnLike', 1),
-       ('MeEnLove', 2),
-       ('MeEnMapache', 3),
-       ('MeEnSad', 4);
+VALUES ('MeEnmapaLike', 1),
+       ('MeEnmapaLove', 2),
+       ('MeEnMapacha', 3),
+       ('MeEnmapaSad', 4);
 
 INSERT INTO reaction (idReactionType, idUser, idPost, createdDate)
 VALUES (1, 2, 1, '2021-10-01 12:00:00'),
