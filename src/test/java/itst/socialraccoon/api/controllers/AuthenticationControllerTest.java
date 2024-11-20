@@ -30,7 +30,7 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testLoginSuccessful() throws Exception {
-        String jsonLogin = "{ \"email\": \"juan@gmail.com\", \"password\": \"123456\" }";
+        String jsonLogin = "{ \"email\": \"pedro@teziutlan.tecnm.mx\", \"password\": \"123Yy456\" }";
 
         mockMvc.perform(post("/authentications/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -41,7 +41,7 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testRecoverPasswordEmailFound() throws Exception {
-        String jsonRecover = "{ \"email\": \"maria@gmail.com\" }";
+        String jsonRecover = "{ \"email\": \"pedro@teziutlan.tecnm.mx\" }";
 
         mockMvc.perform(post("/authentications/recover")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -53,9 +53,9 @@ public class AuthenticationControllerTest {
     @Test
     public void testChangePasswordSuccessful() throws Exception {
         String jsonChangePassword = "{\r\n" + //
-                "  \"email\": \"pedro@gmail.com\",\r\n" + //
-                "  \"password\": \"123456\",\r\n" + //
-                "  \"newPassword\": \"!#$dd1234\"\r\n" + //
+                "  \"email\": \"maria@teziutlan.tecnm.mx\",\r\n" + //
+                "  \"password\": \"12fF3456\",\r\n" + //
+                "  \"newPassword\": \"12fF3476\"\r\n" + //
                 "}";
 
         mockMvc.perform(put("/authentications/change")

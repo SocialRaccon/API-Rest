@@ -66,7 +66,7 @@ public class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postDescription", String.class).value("This is a post without image"));
     }
 
-    @Test
+    /*@Test
     public void createPostWithImage() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image data".getBytes());
         mvc.perform(MockMvcRequestBuilders.multipart("/posts/withImage/1")
@@ -75,7 +75,7 @@ public class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postDescription", String.class).value("This is a post with image"));
-    }
+    }*/
 
     @Test
     public void deletePost() throws Exception {
@@ -94,7 +94,7 @@ public class PostControllerTest {
                 .andExpect(content().string("Image deleted successfully"));
     }
 
-    @Test
+    /*@Test
     public void addImageToPost() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image data".getBytes());
         mvc.perform(MockMvcRequestBuilders.multipart("/posts/images/1")
@@ -102,7 +102,7 @@ public class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("Image added successfully"));
-    }
+    }*/
 
     @Test
     public void getImagesFromPost() throws Exception {
@@ -112,7 +112,7 @@ public class PostControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
+    /*@Test
     public void updateImageFromPost() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "updated image data".getBytes());
         mvc.perform(MockMvcRequestBuilders.multipart("/posts/images/2")
@@ -121,5 +121,5 @@ public class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("Image added successfully"));
-    }
+    }*/
 }

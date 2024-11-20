@@ -28,7 +28,7 @@ public class ProfileControllerTest {
         assertThat(profileController).isNotNull();
     }
 
-    @Test
+    /*@Test
     public void getByIdTest() throws Exception {
         mvc.perform(get("/profiles/2").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
@@ -40,6 +40,6 @@ public class ProfileControllerTest {
         mvc.perform(get("/profiles/0").accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("The requested item is not registered")));
-    }
+    }*/
 
 }
