@@ -2,8 +2,9 @@ package itst.socialraccoon.api.validators;
 
 import itst.socialraccoon.api.annotations.FileType;
 import jakarta.validation.ConstraintValidator;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class FileTypeValidator implements ConstraintValidator<FileType, String> {
     private String[] types;
 

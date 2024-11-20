@@ -2,18 +2,13 @@ package itst.socialraccoon.api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
-import itst.socialraccoon.api.dtos.ProfileDTO;
-import itst.socialraccoon.api.models.ImageProfileModel;
-import itst.socialraccoon.api.models.ProfileModel;
 import itst.socialraccoon.api.services.ProfileService;
 import itst.socialraccoon.api.services.ImageProfileService;
-import itst.socialraccoon.api.validators.FileValidator;
-import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
+import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +30,7 @@ public class ProfileController {
     private ImageProfileService imageProfileService;
 
     @Autowired
-    private FileValidator fileValidator;
+    private ImageValidationHandler Validator;
 
     @PostMapping(value = "/images/{profileId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Add profile image", description = "Add a user's profile image by their ID")
@@ -47,11 +42,7 @@ public class ProfileController {
             @PathVariable Integer profileId,
             @RequestParam(value = "image") MultipartFile image
     ) {
-        ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
-        fileValidator.setStrategy(imageFileValidationStrategy);
-        if (!fileValidator.validate(image)) {
-            throw new IllegalArgumentException("Image file must be " + imageFileValidationStrategy.getAllowedTypes());
-        }
+        Validator.validateImage(image);
         imageProfileService.addProfileImage(profileId, image);
         return new ResponseEntity<>("Profile image added successfully", HttpStatus.OK);
     }
@@ -66,11 +57,7 @@ public class ProfileController {
             @RequestParam(value = "imageId") Integer imageId,
             @RequestParam(value = "image") MultipartFile image
     ) {
-        ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
-        fileValidator.setStrategy(imageFileValidationStrategy);
-        if (!fileValidator.validate(image)) {
-            throw new IllegalArgumentException("Image file must be " + imageFileValidationStrategy.getAllowedTypes());
-        }
+        Validator.validateImage(image);
         imageProfileService.updateProfileImage(imageId, image);
         return new ResponseEntity<>("Profile image updated successfully", HttpStatus.OK);
     }

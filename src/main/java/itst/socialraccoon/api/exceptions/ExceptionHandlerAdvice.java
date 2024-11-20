@@ -58,7 +58,8 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Type mismatch for parameter '" + e.getName() + "': expected type " + e.getRequiredType().getSimpleName());
+                .body("Type mismatch for parameter '" + e.getName() + "': expected type "
+                        + e.getRequiredType().getSimpleName());
     }
 
     // 400 - Bad Request for missing parameters
@@ -129,13 +130,16 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(UnsatisfiedServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<?> handleUnsatisfiedServletRequestParameterException(UnsatisfiedServletRequestParameterException e) {
+    public ResponseEntity<?> handleUnsatisfiedServletRequestParameterException(
+            UnsatisfiedServletRequestParameterException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Required request parameters are missing: " + e.getMessage());
     }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<?> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+    public ResponseEntity<?> handleSQLIntegrityConstraintViolationException(
+            SQLIntegrityConstraintViolationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Integrity constraint violation: " + e.getMessage());
     }
@@ -153,14 +157,16 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Persistent object exception: " + e.getMessage());
     }
+
     @ExceptionHandler(MissingServletRequestPartException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleMissingServletRequestPartException(MissingServletRequestPartException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Required part '" + e.getRequestPartName() + "' is not present.");
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler({ MethodArgumentNotValidException.class })
     public ModelAndView handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -173,5 +179,27 @@ public class ExceptionHandlerAdvice {
         mav.addObject("errors", errors);
         mav.setViewName("methodArgumentNotValid");
         return mav;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ResponseEntity<String> handleInvalidFileType(InvalidFileTypeException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InappropriateContentException.class)
+    public ResponseEntity<String> handleInappropriateContent(InappropriateContentException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }
