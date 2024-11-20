@@ -35,7 +35,7 @@ public class UserService {
     @Autowired
     private ProfileService profileService;
 
-    private final String defaultProfileImageUrl = "/uploads/default-profile.png";
+    private final String defaultProfileImageUrl = "https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1";
 
     public List<UserModel> findAll() {
         return userRepository.findAll();

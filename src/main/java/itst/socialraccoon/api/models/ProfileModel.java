@@ -34,7 +34,7 @@ public class ProfileModel {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference(value = "profile-image")
-    private Set<ImageProfileModel> images = new LinkedHashSet<>();
+    private Set<ImageProfileModel> images;
 
     public Integer getIdProfile() {
         return idProfile;

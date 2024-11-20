@@ -6,10 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface RelationshipRepository extends JpaRepository<RelationshipModel, RelationshipPK> {
+
+    // Check if a relationship exists
+    boolean existsById(RelationshipPK id);
 
     // Get followers of the user
     @Query(value = "SELECT * FROM relationship WHERE idFollower = :userId", nativeQuery = true)

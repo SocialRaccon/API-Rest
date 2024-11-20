@@ -8,7 +8,9 @@ import itst.socialraccoon.api.dtos.RelationshipDTO;
 import itst.socialraccoon.api.dtos.RelationshipInfoDTO;
 import itst.socialraccoon.api.models.RelationshipModel;
 import itst.socialraccoon.api.models.UserModel;
+import itst.socialraccoon.api.models.compositekeys.RelationshipPK;
 import itst.socialraccoon.api.repositories.RelationshipRepository;
+import itst.socialraccoon.api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -26,26 +28,55 @@ public class RelationshipService {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private RelationshipRepository relationshipRepository;
 
     public void followUser(Integer userId, Integer followerId) {
-        UserModel user = userService.findById(userId);
-        UserModel follower = userService.findById(followerId);
+        // Check if users exist
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+        UserModel followerUser = userRepository.findById(followerId)
+                .orElseThrow(() -> new NoSuchElementException("Follower user with id " + followerId + " not found"));
 
-        if (user != null && follower != null) {
-            RelationshipModel relationshipModel = new RelationshipModel(user, follower);
-            relationshipRepository.save(relationshipModel);
+        // Create the composite key to check if the relationship already exists
+        RelationshipPK relationshipPK = new RelationshipPK();
+        relationshipPK.setUser(user);
+        relationshipPK.setFollowerUser(followerUser);
+
+        // Check if the relationship already exists
+        if (relationshipRepository.existsById(relationshipPK)) {
+            throw new IllegalStateException("User with id " + userId + " is already followed by user with id " + followerId);
         }
+
+        // Create the relationship
+        RelationshipModel relationship = new RelationshipModel(user, followerUser);
+        relationshipRepository.save(relationship);
     }
 
-    public void unfollowUser(Integer userId, Integer followerId) {
-        UserModel user = userService.findById(userId);
-        UserModel follower = userService.findById(followerId);
 
-        if (user != null && follower != null) {
-            RelationshipModel relationshipModel = new RelationshipModel(user, follower);
-            relationshipRepository.delete(relationshipModel);
+    public void unfollowUser(Integer userId, Integer followerId) {
+        // Check if users exist
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+        UserModel followerUser = userRepository.findById(followerId)
+                .orElseThrow(() -> new NoSuchElementException("Follower user with id " + followerId + " not found"));
+
+        // Create the composite key to check if the relationship exists
+        RelationshipPK relationshipPK = new RelationshipPK(user, followerUser);
+
+        // Check if the relationship exists
+        boolean isFollowing = relationshipRepository.existsById(relationshipPK);
+        if (!isFollowing) {
+            throw new NoSuchElementException("No relationship found for userId: " + userId + " and followerId: " + followerId);
         }
+
+        // Retrieve the existing relationship and delete it
+        RelationshipModel relationshipModel = relationshipRepository.findById(relationshipPK)
+                .orElseThrow(() -> new NoSuchElementException("Relationship could not be found"));
+
+        relationshipRepository.delete(relationshipModel);
     }
 
     public RelationshipDTO getFollowersAndFollowing(Integer userId) {
@@ -66,7 +97,7 @@ public class RelationshipService {
         Pageable pageable = PageRequest.of(page, size);
         List<RelationshipModel> followers = relationshipRepository.getFollowersByUserIdPaginated(userId, pageable);
         return followers.stream().map(relationshipModel -> {
-            UserModel followedUser = relationshipModel.getUser();  // Corrección aquí
+            UserModel followedUser = relationshipModel.getUser();
             return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
         }).collect(Collectors.toList());
     }

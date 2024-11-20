@@ -10,6 +10,8 @@ import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.RelationshipInfoDTO;
 import itst.socialraccoon.api.services.RelationshipService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,30 +31,31 @@ public class RelationshipController {
     @Autowired
     private RelationshipService relationshipService;
 
-    @PostMapping("/{userId}")
+    @PostMapping
     @Operation(summary = "Follow a user", description = "Create a following relationship between two users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User followed", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+            @ApiResponse(responseCode = "201", description = "User followed", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "User already followed", content = @Content)
     })
     public ResponseEntity<String> followUser(
-            @PathVariable Integer userId,
-            @RequestParam Integer followerId) {
+            @RequestParam @NotNull @Positive Integer userId,
+            @RequestParam @NotNull @Positive Integer followerId) {
         relationshipService.followUser(userId, followerId);
-        return new ResponseEntity<>("User followed", HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User followed");
     }
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "Unfollow a user", description = "Delete a following relationship between two users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User unfollowed", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "User or relationship not found", content = @Content)
     })
     public ResponseEntity<String> unfollowUser(
-            @PathVariable Integer userId,
-            @RequestParam Integer followerId) {
+            @PathVariable @NotNull @Positive Integer userId,
+            @RequestParam @NotNull @Positive Integer followerId) {
         relationshipService.unfollowUser(userId, followerId);
-        return new ResponseEntity<>("User unfollowed", HttpStatus.OK);
+        return ResponseEntity.ok("User unfollowed");
     }
 
     @GetMapping("/followers/{userId}")
