@@ -40,6 +40,7 @@ public class CommentController {
     private ModelMapper modelMapper;
 
     @PostMapping("/post/{postId}")
+    @Operation(summary = "Post Comment by ID", description = "Post a comment to a post with the given Id")
     public ResponseEntity<CommentDTO> create(
             @PathVariable Integer postId,
             @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
@@ -61,10 +62,11 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
+    @Operation(summary = "Delete a comment by Id", description = "Delete a comment with the given Id")
     public ResponseEntity<Void> delete(
             @PathVariable Integer commentId) {
         try {
-            commentService.findById(commentId); // Verificar si existe
+            commentService.findById(commentId); // Check if comment exists
             commentService.delete(commentId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (NoSuchElementException e) {
@@ -73,6 +75,7 @@ public class CommentController {
     }
 
     @GetMapping(value = "/post/{postId}", params = {"page", "pageSize"})
+    @Operation(summary = "Get comments by post Id", description = "Get comments by post Id")
     public ResponseEntity<?> findByPostId(
             @PathVariable Integer postId,
             @RequestParam(required = false) Integer userId,
@@ -97,6 +100,7 @@ public class CommentController {
     }
 
     @GetMapping(value = "/user/{userId}", params = {"page", "pageSize"})
+    @Operation(summary = "Get comments by user Id", description = "Get comments by user Id")
     public ResponseEntity<?> findByUserId(
             @PathVariable Integer userId,
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
@@ -115,6 +119,7 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}")
+    @Operation(summary = "Update comment with Id", description = "Update a comment with the given Id")
     public ResponseEntity<?> update(
             @PathVariable Integer commentId,
             @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
