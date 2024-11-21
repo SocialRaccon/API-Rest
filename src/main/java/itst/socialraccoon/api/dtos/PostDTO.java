@@ -1,5 +1,6 @@
 package itst.socialraccoon.api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import itst.socialraccoon.api.models.ImagePostModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ public class PostDTO {
     @NotNull(message = "El ID del post no puede ser nulo")
     private Integer post;
 
+    @JsonIgnore
     @NotNull(message = "La fecha de creación no puede ser nula")
     private String dateCreated;
 

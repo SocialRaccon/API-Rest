@@ -16,7 +16,6 @@ import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.PostService;
 import itst.socialraccoon.api.services.UserService;
-import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
 import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,10 +136,10 @@ public class PostController {
             description = "Create a new post without an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
-            @RequestParam(value = "postDescription", required = false) String postDescription,
+            @RequestParam(value = "postDescription") String postDescription,
             @PathVariable Integer userId) {
         PostRequestDTO postRequestDTO = new PostRequestDTO();
-        postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
+        postRequestDTO.setPostDescription(postDescription);
         postRequestDTO.setIdUser(userId);
         PostModel postModel = convertPostRequestToEntity(postRequestDTO);
         PostModel savedPost = postService.save(postModel);

@@ -1,6 +1,7 @@
 package itst.socialraccoon.api.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.sql.Timestamp;
@@ -21,6 +22,7 @@ public class ReactionDTO {
     private Integer idPost;
     @Schema(description = "Date of the post or reaction", example = "2023-11-08T12:30:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonIgnore
     private LocalDateTime date = LocalDateTime.now().withNano(0);
     @NotNull(message = "The reaction type ID must not be null")
     private Integer idReactionType;

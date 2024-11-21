@@ -26,6 +26,7 @@ public class CommentDTO {
     private String comment;
     @Schema(description = "Date when the comment was made", example = "2021-10-10 10:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonIgnore
     private LocalDateTime date = LocalDateTime.now().withNano(0);
     public CommentDTO() {
     }

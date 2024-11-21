@@ -1,6 +1,7 @@
 package itst.socialraccoon.api.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import itst.socialraccoon.api.models.PostDescriptionModel;
 import itst.socialraccoon.api.models.PostModel;
@@ -33,6 +34,7 @@ public class PostRequestDTO {
     private Integer idUser;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
+    @JsonIgnore
     private LocalDateTime dateCreated = LocalDateTime.now().withNano(0);
 
     public PostRequestDTO() {
