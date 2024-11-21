@@ -137,11 +137,11 @@ INSERT INTO career (name, acronym)
 VALUES ('Ingeniería en Sistemas Computacionales', 'ISC'),
        ('Ingeniería en Gestión Empresarial', 'IGE'),
        ('Ingeniería en Mecatrónica', 'IME');
-
+-- 1 = "12tT3456", 2 = "12fF3456", 3 = "123Yy456"
 INSERT INTO authentication (email, password)
-VALUES ('juan@teziutlan.tecnm.mx', '12tT3456'),
-       ('maria@teziutlan.tecnm.mx', '12fF3456'),
-       ('pedro@teziutlan.tecnm.mx', '123Yy456');
+VALUES ('juan@teziutlan.tecnm.mx', '$2a$10$pEDFUFZFTrdGofrqAIyPv.kCAf2UMkHzNsqNULs15vRtT8tCv5V/y'),
+       ('maria@teziutlan.tecnm.mx', '$2a$10$lfmkXFroXuiwi8PoW/vvR.5FlPZLJhfxcs3rbDW5ny8bjQ1mKh8Ba'),
+       ('pedro@teziutlan.tecnm.mx', '$2a$10$GADKBTWalgRyhMPRkooPmeVoVSGigpDM/OrJfYiA0x2nl/Owkc31C');
 
 INSERT INTO user (name, lastName, secondLastName, controlNumber, idCareer, idAuthentication)
 VALUES ('Juan', 'Pérez', 'Gómez', '21TE0121', 1, 1),

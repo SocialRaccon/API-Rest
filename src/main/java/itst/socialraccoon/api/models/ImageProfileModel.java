@@ -34,16 +34,12 @@ public class ImageProfileModel {
     @Column(name = "imageUrl", nullable = false, length = 500)
     @Size(max = 500, message = "The URL of the image must not exceed 500 characters")
     @NotBlank(message = "The URL of the image must not be empty and must contain at least one character that is not a whitespace")
-    @Pattern(regexp = "^(http|https)://firebasestorage\\.googleapis\\.com/v0/b/[^/]+/o/[^?]+\\.(jpg|jpeg|png)\\?alt=media$",
-            message = "The URL of the image must be a valid Firebase Storage URL ending in JPG, JPEG, or PNG")
     private String imageUrl = "https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1";
 
     @Schema(description = "Thumbnail of the image", example = "https://www.example.com/image.jpg")
     @Column(name = "imageThumbnailUrl", nullable = false, length = 500)
     @Size(max = 500, message = "The URL of the image thumbnail must not exceed 500 characters")
     @NotBlank(message = "The URL of the image thumbnail must not be empty and must contain at least one character that is not a whitespace")
-    @Pattern(regexp = "^(http|https)://firebasestorage\\.googleapis\\.com/v0/b/[^/]+/o/[^?]+\\.(jpg|jpeg|png)\\?alt=media$",
-            message = "The URL of the image must be a valid Firebase Storage URL ending in JPEG, or PNG")
     private String imageThumbnailUrl = "https://firebasestorage.googleapis.com/v0/b/socialraccoon-990a3.appspot.com/o/user.png?alt=media&token=c303a942-13e8-4758-a578-e5b6e70400a1";
 
     public ImageProfileModel(Integer idImageProfile, ProfileModel profile, String imageUrl, String imageThumbnailUrl) {

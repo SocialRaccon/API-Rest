@@ -22,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("users")
@@ -48,6 +50,9 @@ public class UserController {
 
     @Autowired
     private FileValidator fileValidator;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping()
     @Operation(
@@ -119,9 +124,12 @@ public class UserController {
     public UserModel convertToEntity(UserRequestDTO userRequestDTO) {
         UserModel user = modelMapper.map(userRequestDTO, UserModel.class);
         CareerModel careerModel = careerService.findById(userRequestDTO.getCareer());
+        if (careerModel == null){
+            throw new NoSuchElementException("Career not found");
+        }
         AuthenticationModel authenticationModel = new AuthenticationModel();
         authenticationModel.setEmail(userRequestDTO.getEmail());
-        authenticationModel.setPassword(userRequestDTO.getPassword());
+        authenticationModel.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
         ProfileModel profileModel = new ProfileModel();
         profileModel.setDescription("");
         profileModel.setIdUser(user);
