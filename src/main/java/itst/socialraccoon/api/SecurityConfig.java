@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -25,10 +26,11 @@ public class SecurityConfig {
                     .csrf(csrf -> csrf.disable()) // Disable CSRF protection (optional, but often needed for API)
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/authentications/recover", "/authentications/change", "/signin", "/sigup").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/**").authenticated()
-                            .requestMatchers(HttpMethod.POST, "/**").authenticated()
-                            .requestMatchers(HttpMethod.PUT, "/**").authenticated()
-                            .requestMatchers(HttpMethod.DELETE, "/**").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/careers", "/careers/").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/").authenticated()
+                            .requestMatchers(HttpMethod.POST, "/").authenticated()
+                            .requestMatchers(HttpMethod.PUT, "/").authenticated()
+                            .requestMatchers(HttpMethod.DELETE, "/").authenticated()
                             .anyRequest().authenticated())
                     .httpBasic(Customizer.withDefaults()) // Use HTTP Basic authentication
                     .formLogin(withDefaults())
