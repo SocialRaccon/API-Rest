@@ -136,7 +136,7 @@ CREATE TABLE reaction
 INSERT INTO career (name, acronym)
 VALUES ('Ingeniería en Sistemas Computacionales', 'ISC'),
        ('Ingeniería en Gestión Empresarial', 'IGE'),
-       ('Ingeniería en Mecatrónica', 'IME');
+       ('Ingeniería en Mecatrónica', 'IMT');
 -- 1 = "12tT3456", 2 = "12fF3456", 3 = "123Yy456"
 INSERT INTO authentication (email, password)
 VALUES ('juan@teziutlan.tecnm.mx', '$2a$10$pEDFUFZFTrdGofrqAIyPv.kCAf2UMkHzNsqNULs15vRtT8tCv5V/y'),
@@ -151,7 +151,7 @@ VALUES ('Juan', 'Pérez', 'Gómez', '21TE0121', 1, 1),
 INSERT INTO profile (description, idUser)
 VALUES ('Estudiante de ISC', 1),
        ('Estudiante de IGE', 2),
-       ('Estudiante de IME', 3);
+       ('Estudiante de IMT', 3);
 
 INSERT INTO relationship (idUser, idFollower)
 VALUES (1, 2),
