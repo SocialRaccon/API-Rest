@@ -29,7 +29,7 @@ public class AuthenticationModel {
     @Column(nullable = false, length = 60)
     @Size(min = 8, max = 60, message = "The password must be at least 8 characters long")
     @NotNull(message = "password must not be null and must not be empty")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
             message = "The password must contain at least one lowercase letter, one uppercase letter, one digit, and must be at least 8 characters long")
     private String password;
 

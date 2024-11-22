@@ -31,8 +31,8 @@ public class AuthenticationService {
         return authenticationRepository.findByEmail(email);
     }
 
-    public void update(AuthenticationModel career) {
-        authenticationRepository.save(career);
+    public void update(AuthenticationModel authentication) {
+        authenticationRepository.save(authentication);
     }
 
     public void delete(Integer id) {

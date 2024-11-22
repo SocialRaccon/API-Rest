@@ -27,7 +27,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     @Operation(
             summary = "Login",
             description = "Login user",
@@ -61,7 +61,7 @@ public class AuthenticationController {
         } else {
             return ResponseEntity.badRequest().body("Email not found");
         }
-    }
+    }*/
 
     @PostMapping("/recover")
     @Operation(

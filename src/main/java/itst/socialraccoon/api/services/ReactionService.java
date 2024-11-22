@@ -72,12 +72,15 @@ public class ReactionService {
     }
 
     public boolean deleteReaction(Integer postId, Integer userId) {
+        if (postService.findById(postId) == null || userService.findById(userId) == null) {
+            throw new NoSuchElementException("Post or user not found");
+        }
         ReactionModel reaction = reactionRepository.getReactionByPostIdAndUserId(postId, userId);
         if (reaction != null) {
             reactionRepository.delete(reaction);
             return true;
         }
-        return false;
+        throw new NoSuchElementException("Reaction not found");
     }
 
     public ReactionModel getById(ReactionPK reactionPK) {

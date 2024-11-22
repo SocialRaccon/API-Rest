@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.services.CommentService;
 import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.models.CommentModel;
@@ -18,7 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -27,8 +25,6 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("comments")
-@Validated
-@GlobalApiResponses
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @Tag(name = "Comments", description = "Provides methods to manage comments")
 public class CommentController {
@@ -55,7 +51,6 @@ public class CommentController {
                                     name = "Comment",
                                     value = "{\n" +
                                             "  \"comment\": \"This is a comment\",\n" +
-                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\",\n" +
                                             "  \"user\": {\n" +
                                             "    \"idUser\": 1\n" +
                                             "  }\n" +
@@ -77,7 +72,6 @@ public class CommentController {
                                             "  \"idUser\": 1,\n" +
                                             "  \"idPost\": 1,\n" +
                                             "  \"comment\": \"This is a comment\",\n" +
-                                            "  \"date\": \"2021-10-03T05:00:00.000+00:00\"\n" +
                                             "}"
                             )
                     )
@@ -160,7 +154,6 @@ public class CommentController {
                                     name = "Comment",
                                     value = "{\n" +
                                             "  \"comment\": \"This is an updated comment\",\n" +
-                                            "  \"date\": \"2021-10-04T05:00:00.000+00:00\"\n" +
                                             "}"
                             )
                     )
@@ -179,7 +172,6 @@ public class CommentController {
                                             "  \"idUser\": 1,\n" +
                                             "  \"idPost\": 1,\n" +
                                             "  \"comment\": \"This is an updated comment\",\n" +
-                                            "  \"date\": \"2021-10-04T05:00:00.000+00:00\"\n" +
                                             "}"
                             )
                     )

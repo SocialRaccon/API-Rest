@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("careers")
@@ -29,26 +28,29 @@ public class CareerController {
     @Operation(summary = "Get all careers", description = "Get all careers from the database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Careers found"),
-            @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = String.class))),
             @ApiResponse(responseCode = "404", description = "No careers found")
     })
-    public ResponseEntity<List<CareerModel>> findAll() {
+    public ResponseEntity<?> findAll() {
         List<CareerModel> careers = careerService.findAll();
-        return new ResponseEntity<>(careers, HttpStatus.OK);
+        if (careers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No careers found in the database");
+        }
+        return ResponseEntity.ok(careers);
     }
 
     @GetMapping("acronym/{acronym}")
     @Operation(summary = "Get career by acronym", description = "Get a career by its acronym")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Career found"),
-            @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = String.class))),
             @ApiResponse(responseCode = "404", description = "Career not found")
     })
-    public ResponseEntity<CareerModel> findByAcronym(@PathVariable String acronym) {
+    public ResponseEntity<?> findByAcronym(@PathVariable String acronym) {
         CareerModel career = careerService.findByAcronym(acronym);
         if (career == null) {
-            throw new NoSuchElementException();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Career with acronym '" + acronym + "' not found");
         }
-        return new ResponseEntity<>(career, HttpStatus.OK);
+        return ResponseEntity.ok(career);
     }
 }

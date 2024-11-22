@@ -35,7 +35,7 @@ public class UserRequestDTO {
     @Schema(description = "Password of the user", example = "s3cureP@ssw0rd")
     @NotBlank(message = "password must not be null and must not be empty")
     @Size(min = 8, max = 60, message = "The password must be at least 8 characters long and at most 60 characters long")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
             message = "The password must contain at least one lowercase letter, one uppercase letter, one digit, and must be at least 8 characters long")
     private String password;
     @Schema(description = "Career of the user", example = "Ingenieria en Sistemas Computacionales")
