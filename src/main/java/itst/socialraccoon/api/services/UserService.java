@@ -72,7 +72,7 @@ public class UserService {
 
     @Transactional
     public UserModel save(UserModel user, MultipartFile image) {
-        try{
+        try {
             ProfileModel profile = user.getProfile();
             if (profile == null) {
                 throw new IllegalArgumentException("Profile not found");
@@ -115,6 +115,10 @@ public class UserService {
         imageProfile.setImageThumbnailUrl(defaultProfileImageUrl);
         imageProfileService.update(imageProfile);
         return true;
+    }
+
+    public UserModel findByEmail(String email) {
+        return userRepository.findByAuthentication_Email(email);
     }
 
 
