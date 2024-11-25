@@ -27,6 +27,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/authentications/recover", "/authentications/change", "/signin", "/sigup").permitAll()
                             .requestMatchers(HttpMethod.GET, "/careers", "/careers/").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/users/withImage",  "/users").permitAll()
                             .requestMatchers(HttpMethod.GET, "/").authenticated()
                             .requestMatchers(HttpMethod.POST, "/").authenticated()
                             .requestMatchers(HttpMethod.PUT, "/").authenticated()

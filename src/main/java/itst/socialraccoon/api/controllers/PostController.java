@@ -17,6 +17,8 @@ import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.PostService;
 import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -215,7 +217,7 @@ public class PostController {
             description = "Update the description of a post by its ID")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @RequestParam("postDescription") String postDescription) {
+    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @RequestParam("postDescription") String postDescription) {
         PostModel updatedPost = postService.update(postId, postDescription);
         return ResponseEntity.ok(convertToDTO(updatedPost));
     }
