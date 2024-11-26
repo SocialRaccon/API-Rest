@@ -1,8 +1,12 @@
 package itst.socialraccoon.api.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import itst.socialraccoon.api.models.ImageProfileModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
+import java.util.Set;
 
 @Schema(description = "Data Transfer Object representing basic information of a follower")
 public class RelationshipInfoDTO {
@@ -13,12 +17,24 @@ public class RelationshipInfoDTO {
     @Size(max = 60, message = "The user name must be at most 60 characters")
     private String userName;
 
+    @Schema(description = "Profile images")
+    private Set<ImageProfileModel> images;
+
     public RelationshipInfoDTO() {
     }
 
-    public RelationshipInfoDTO(Integer idUser, String userName) {
+    public RelationshipInfoDTO(Integer idUser, String userName, Set<ImageProfileModel> images) {
         this.idUser = idUser;
         this.userName = userName;
+        this.images = images;
+    }
+
+    public Set<ImageProfileModel> getImages() {
+        return images;
+    }
+
+    public void setImages(Set<ImageProfileModel> images) {
+        this.images = images;
     }
 
     public Integer getIdUser() {

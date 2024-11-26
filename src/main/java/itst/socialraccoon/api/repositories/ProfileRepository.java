@@ -9,4 +9,6 @@ public interface ProfileRepository extends JpaRepository<ProfileModel, Integer> 
     // Find profile by user ID
     @Query(value = "SELECT * FROM profile WHERE idUser = :userId", nativeQuery = true)
     ProfileModel findByUserId(Integer userId);
+
+    ProfileModel findAllByIdUser_ControlNumber(String controlNumber);
 }

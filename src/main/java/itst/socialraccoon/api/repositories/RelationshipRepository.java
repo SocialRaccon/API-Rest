@@ -31,4 +31,12 @@ public interface RelationshipRepository extends JpaRepository<RelationshipModel,
     //Get followers of the user paginated
     @Query(value = "SELECT * FROM relationship WHERE idUser = :userId", nativeQuery = true)
     List<RelationshipModel> getFollowingByUserIdPaginated(@Param("userId") Integer userId, Pageable pageable);
+
+    //Get number of followers of the user
+    @Query(value = "SELECT COUNT(*) FROM relationship WHERE idFollower = :userId", nativeQuery = true)
+    Integer getNumberOfFollowersByUserId(@Param("userId") Integer userId);
+
+    //Get number of following of the user
+    @Query(value = "SELECT COUNT(*) FROM relationship WHERE idUser = :userId", nativeQuery = true)
+    Integer getNumberOfFollowingByUserId(@Param("userId") Integer userId);
 }
