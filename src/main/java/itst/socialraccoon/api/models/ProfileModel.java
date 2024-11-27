@@ -20,12 +20,12 @@ public class ProfileModel {
     @Schema(description = "Unique identifier of the profile", example = "1")
     private Integer idProfile;
 
-    @Size(max = 150, message = "La descripción debe tener como máximo 150 caracteres")
+    @Size(max = 150, message = "The description must not exceed 150 characters")
     @Column(name = "description", nullable = false, length = 150)
     @Schema(description = "Description of the profile", example = "This is a description")
     private String description = "";
 
-    @NotNull(message = "El usuario no puede ser nulo")
+    @NotNull(message = "The user must not be null")
     @OneToOne
     @JoinColumn(name = "idUser", referencedColumnName = "idUser", nullable = false)
     @JsonBackReference(value = "user-profile")
