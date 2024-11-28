@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import itst.socialraccoon.api.dtos.CommentRequestDTO;
 import itst.socialraccoon.api.services.CommentService;
 import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.models.CommentModel;
@@ -12,7 +13,9 @@ import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.PostService;
 import itst.socialraccoon.api.services.UserService;
+import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +40,8 @@ public class CommentController {
     private PostService postService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ContentModerationValidationStrategy contentModerationValidationStrategy;
 
     @PostMapping("/post/{postId}")
     @Operation(
@@ -51,9 +56,7 @@ public class CommentController {
                                     name = "Comment",
                                     value = "{\n" +
                                             "  \"comment\": \"This is a comment\",\n" +
-                                            "  \"user\": {\n" +
-                                            "    \"idUser\": 1\n" +
-                                            "  }\n" +
+                                            "  \"idUser\": 1\n" +
                                             "}"
                             )
                     )
@@ -84,20 +87,14 @@ public class CommentController {
     })
     public ResponseEntity<CommentDTO> create(
             @PathVariable Integer postId,
-            @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
-        if (comment.getUser() == null) {
-            throw new IllegalArgumentException("User must not be null");
-        }
-
-        UserModel user = userService.findById(comment.getUser().getIdUser());
+            @Valid @org.springframework.web.bind.annotation.RequestBody CommentRequestDTO comment) {
+        contentModerationValidationStrategy.isValid(comment.getComment());
+        UserModel user = userService.findById(comment.getIdUser());
         PostModel post = postService.findById(postId);
-
-        if (user == null || post == null) {
-            throw new EntityNotFoundException("User or Post not found");
-        }
-
-        comment.setPost(post);
-        CommentModel createdComment = commentService.save(comment);
+        CommentModel commentModel = modelMapper.map(comment, CommentModel.class);
+        commentModel.setUser(user);
+        commentModel.setPost(post);
+        CommentModel createdComment = commentService.save(commentModel);
         return new ResponseEntity<>(convertToDto(createdComment), HttpStatus.CREATED);
     }
 
@@ -185,6 +182,7 @@ public class CommentController {
     public ResponseEntity<CommentDTO> update(
             @PathVariable Integer commentId,
             @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
+        contentModerationValidationStrategy.isValid(comment.getComment());
         CommentModel commentToUpdate = commentService.findById(commentId);
         commentToUpdate.setComment(comment.getComment());
         commentToUpdate.setDate(comment.getDate());

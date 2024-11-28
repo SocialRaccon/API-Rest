@@ -11,7 +11,7 @@ import itst.socialraccoon.api.exceptions.InappropriateContentException;
 import java.util.List;
 
 @Component
-public class ContentModerationValidationStrategy implements FileValidationStrategy {
+public class ContentModerationValidationStrategy implements FileValidationStrategy, TextValidationStrategy {
 
     private final ImageFileValidationStrategy fileTypeValidator;
     private final AzureContentModeratorService moderatorService;
@@ -34,7 +34,7 @@ public class ContentModerationValidationStrategy implements FileValidationStrate
     private void validateFileType(MultipartFile file) {
         if (!fileTypeValidator.isValid(file)) {
             throw new InvalidFileTypeException(
-                    "El archivo debe ser de tipo: " + String.join(", ", fileTypeValidator.getAllowedTypes())
+                    "The file type is not allowed. Allowed types are: " + fileTypeValidator.getAllowedTypes()
             );
         }
     }
@@ -42,12 +42,26 @@ public class ContentModerationValidationStrategy implements FileValidationStrate
     private void validateContent(MultipartFile file) {
         if (!moderatorService.isImageSafe(file)) {
             throw new InappropriateContentException(
-                    "La imagen contiene contenido inapropiado y no puede ser procesada"
+                    "The image contains inappropriate content and cannot be processed"
             );
         }
     }
 
+    private boolean validateText(String text) {
+        if (!moderatorService.isTextSafe(text)) {
+            throw new InappropriateContentException(
+                    "The content contains inappropriate text and cannot be processed"
+            );
+        }
+        return true;
+    }
+
     public List<String> getAllowedTypes() {
         return fileTypeValidator.getAllowedTypes();
+    }
+
+    @Override
+    public boolean isValid(String text) {
+        return validateText(text);
     }
 }
