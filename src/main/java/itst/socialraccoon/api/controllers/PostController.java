@@ -154,8 +154,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @Operation(summary = "Delete a post by user ID and post ID",
-            description = "Deletes a post if it belongs to the specified user ID")
+    @Operation(summary = "Delete a post by post ID",
+            description = "Deletes a post")
     @ApiResponse(responseCode = "200", description = "Post deleted successfully")
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<String> delete(
@@ -222,7 +222,7 @@ public class PostController {
             description = "Update the description of a post by its ID")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @RequestParam("postDescription") String postDescription) {
+    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @ RequestParam("postDescription") String postDescription) {
         contentModerationValidationStrategy.isValid(postDescription);
         PostModel updatedPost = postService.update(postId, postDescription);
         return ResponseEntity.ok(convertToDTO(updatedPost));
