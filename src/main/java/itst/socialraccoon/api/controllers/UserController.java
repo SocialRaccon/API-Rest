@@ -14,6 +14,7 @@ import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.CareerService;
 import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.dtos.UserDTO;
+import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.FileValidator;
 import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
 import jakarta.validation.Valid;
@@ -54,6 +55,9 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ContentModerationValidationStrategy contentModerationValidationStrategy;
+
     @PostMapping()
     @Operation(
             summary = "Create a new user",
@@ -79,6 +83,7 @@ public class UserController {
     )
     public ResponseEntity<UserDTO> create(
             @Valid @RequestBody UserRequestDTO user) {
+        contentModerationValidationStrategy.isValid(user.getName() + " " + user.getLastName() + " " + user.getSecondLastName());
         UserModel userModel = userService.save(convertToEntity(user));
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
     }
@@ -96,6 +101,7 @@ public class UserController {
             throw new IllegalArgumentException("Image file must be " + imageFileValidationStrategy.getAllowedTypes());
         }
         UserRequestDTO user = new ObjectMapper().readValue(userJson, UserRequestDTO.class);
+        contentModerationValidationStrategy.isValid(user.getName() + " " + user.getLastName() + " " + user.getSecondLastName());
         UserModel userModel = userService.save(convertToEntity(user), file);
         return new ResponseEntity<>(convertToDTO(userModel), HttpStatus.CREATED);
     }
