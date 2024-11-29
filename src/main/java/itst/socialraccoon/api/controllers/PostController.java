@@ -117,22 +117,54 @@ public class PostController {
         return ResponseEntity.ok(postDTOPage);
     }
 
-    @PostMapping(value = "/withImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/images/multiple/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Add multiple images to a post",
+            description = "Add multiple images to an existing post")
+    @ApiResponse(responseCode = "200", description = "Images added successfully")
+    @ApiResponse(responseCode = "404", description = "Post not found")
+    public ResponseEntity<String> addMultipleImagesToPost(
+            @PathVariable Integer postId,
+            @RequestParam("images") List<MultipartFile> images) {
+        if (images.isEmpty()) {
+            throw new IllegalArgumentException("No images provided");
+        }
+        if (images.size() > 4) {
+            throw new IllegalArgumentException("Maximum of 4 images allowed");
+        }
+        images.forEach(image -> validator.validateImage(image));
+        postService.addMultipleImages(postId, images);
+        return ResponseEntity.ok("Images added successfully");
+    }
+
+    @PostMapping(value = "/withImages/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(
-            summary = "Create a post with an image",
-            description = "Create a new post with an image attached"
+            summary = "Create a post with multiple images",
+            description = "Create a new post with multiple images attached"
     )
-    public ResponseEntity<PostDTO> createPost(
+    public ResponseEntity<PostDTO> createPostWithMultipleImages(
             @RequestParam(value = "postDescription", required = false) String postDescription,
             @PathVariable Integer userId,
-            @RequestParam("image") MultipartFile image) {
-        validator.validateImage(image);
-        contentModerationValidationStrategy.isValid(postDescription);
+            @RequestParam("images") List<MultipartFile> images) {
+        if (images.isEmpty()) {
+            throw new IllegalArgumentException("No images provided");
+        }
+        if (images.size() > 4) {
+            throw new IllegalArgumentException("Maximum of 4 images allowed");
+        }
+        // Validar cada imagen
+        images.forEach(image -> validator.validateImage(image));
+
+        // Validar descripción si existe
+        if (postDescription != null) {
+            contentModerationValidationStrategy.isValid(postDescription);
+        }
+
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);
+
         PostModel postModel = convertPostRequestToEntity(postRequestDTO);
-        PostModel savedPost = postService.save(postModel, image);
+        PostModel savedPost = postService.saveWithMultipleImages(postModel, images);
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
     }
 
@@ -176,19 +208,6 @@ public class PostController {
         return ResponseEntity.ok("Image deleted successfully");
     }
 
-    @PostMapping(value = "/images/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "Add an image to a post",
-            description = "Add an image to a post if it belongs to the specified user ID")
-    @ApiResponse(responseCode = "200", description = "Image added successfully")
-    @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
-    public ResponseEntity<String> addImageToPost(
-            @PathVariable Integer postId,
-            @RequestParam("image") MultipartFile image) {
-        validator.validateImage(image);
-        postService.addImage(postId, image);
-        return ResponseEntity.ok("Image added successfully");
-    }
-
     @GetMapping("/images/{postId}")
     @Operation(summary = "Get images from a post",
             description = "Get all images from a post if it belongs to the specified user ID")
@@ -222,7 +241,7 @@ public class PostController {
             description = "Update the description of a post by its ID")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @ RequestParam("postDescription") String postDescription) {
+    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @RequestParam("postDescription") String postDescription) {
         contentModerationValidationStrategy.isValid(postDescription);
         PostModel updatedPost = postService.update(postId, postDescription);
         return ResponseEntity.ok(convertToDTO(updatedPost));
