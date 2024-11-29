@@ -99,6 +99,19 @@ public class PostController {
         Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
         return ResponseEntity.ok(postDTOPage);
     }
+    @GetMapping("/feed/career/{acronym}")
+    @Operation(summary = "Get random posts feed by career acronym",
+            description = "Retrieves a paginated random feed of posts for users in a specific career")
+    @ApiResponse(responseCode = "200", description = "Random feed successfully recovered")
+    public ResponseEntity<Page<PostDTO>> getRandomCareerFeed(
+            @PathVariable String acronym,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostModel> postPage = postService.getRandomCareerFeed(acronym, pageable);
+        Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
+        return ResponseEntity.ok(postDTOPage);
+    }
 
     @GetMapping("/feed/{userId}")
     @Operation(summary = "Get posts feed by user ID",
