@@ -73,6 +73,9 @@ public class PostService {
     public Page<PostModel> getFeed(Pageable pageable) {
         return postRepository.findAllByOrderByDateCreatedDesc(pageable);
     }
+    public Page<PostModel> getRandomCareerFeed(String acronym, Pageable pageable) {
+        return postRepository.findRandomPostsByCareerAcronym(acronym, pageable);
+    }
 
     @Transactional
     public void delete(Integer id) {
