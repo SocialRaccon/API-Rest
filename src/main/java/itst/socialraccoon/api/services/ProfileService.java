@@ -1,4 +1,5 @@
 package itst.socialraccoon.api.services;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -18,7 +19,7 @@ public class ProfileService {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private ImageStorageService imageStorageService;
+    private RelationshipService relations;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -54,15 +55,35 @@ public class ProfileService {
         profileRepository.deleteById(id);
     }
 
-    public ProfileDTO getProfileByUserId(Integer userId) {
+    public ProfileDTO getProfileByUserId(Integer userId) throws NoSuchElementException {
         ProfileModel profile = profileRepository.findByUserId(userId);
         if (profile == null) {
-            throw new NoSuchElementException("Profile not found for user with ID: " + userId);
+            throw new NoSuchElementException("Profile not found");
         }
-
-        // Convert ProfileModel to ProfileDTO using ModelMapper
         ProfileDTO profileDTO = modelMapper.map(profile, ProfileDTO.class);
+        String username = profile.getIdUser().getName() + " " + profile.getIdUser().getLastName() + " " + profile.getIdUser().getSecondLastName();
+        profileDTO.setUserName(username);
+        profileDTO.setControlNumber(profile.getIdUser().getControlNumber());
+        int followersCount = relations.countFollowers(userId);
+        int followingCount = relations.countFollowing(userId);
+        profileDTO.setFollowersCount(followersCount);
+        profileDTO.setFollowingCount(followingCount);
+        return profileDTO;
+    }
 
+    public ProfileDTO getProfileByControlNumber(String controlNumber) throws NoSuchElementException {
+        ProfileModel profile = profileRepository.findAllByIdUser_ControlNumber(controlNumber);
+        if (profile == null) {
+            throw new NoSuchElementException("Profile not found");
+        }
+        ProfileDTO profileDTO = modelMapper.map(profile, ProfileDTO.class);
+        String username = profile.getIdUser().getName() + " " + profile.getIdUser().getLastName() + " " + profile.getIdUser().getSecondLastName();
+        profileDTO.setUserName(username);
+        profileDTO.setControlNumber(profile.getIdUser().getControlNumber());
+        int followersCount = relations.countFollowers(profile.getIdUser().getIdUser());
+        int followingCount = relations.countFollowing(profile.getIdUser().getIdUser());
+        profileDTO.setFollowersCount(followersCount);
+        profileDTO.setFollowingCount(followingCount);
         return profileDTO;
     }
 

@@ -2,14 +2,13 @@ package itst.socialraccoon.api.services;
 
 import com.azure.ai.contentsafety.ContentSafetyClient;
 import com.azure.ai.contentsafety.ContentSafetyClientBuilder;
-import com.azure.ai.contentsafety.models.AnalyzeImageOptions;
-import com.azure.ai.contentsafety.models.AnalyzeImageResult;
-import com.azure.ai.contentsafety.models.ContentSafetyImageData;
+import com.azure.ai.contentsafety.models.*;
 import com.azure.core.credential.KeyCredential;
 import com.azure.core.util.BinaryData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class AzureContentModeratorService {
 
@@ -36,6 +35,27 @@ public class AzureContentModeratorService {
                     .noneMatch(result -> result.getSeverity() > 4);
         } catch (Exception e) {
             throw new RuntimeException("Failed to analyze image", e);
+        }
+    }
+
+    public boolean isTextSafe(String content) {
+        try {
+            System.out.printf("Analyzing text: %s%n", content);
+            AnalyzeTextResult response = contentSafetyClient.analyzeText(content);
+            System.out.printf("Text classification: %s%n", response.getCategoriesAnalysis());
+            String responseString = "";
+            for (TextCategoriesAnalysis categoriesAnalysis : response.getCategoriesAnalysis()) {
+                TextCategory category = categoriesAnalysis.getCategory();
+                Integer score = categoriesAnalysis.getSeverity();
+                if ((category == TextCategory.HATE || category == TextCategory.SELF_HARM || category == TextCategory.VIOLENCE) && score > 1) {
+                    return false;
+                } else if (category == TextCategory.SEXUAL && score > 1) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to analyze text", e);
         }
     }
 }

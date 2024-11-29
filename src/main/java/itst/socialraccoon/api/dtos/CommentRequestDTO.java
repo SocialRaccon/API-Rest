@@ -8,8 +8,10 @@ import jakarta.validation.constraints.Size;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+@Schema(description = "DTO representing a comment")
 public class CommentRequestDTO {
+
+    @Schema(description = "Unique identifier of the comment", example = "1")
     private Integer idComment;
     @NotNull(message = "The user must not be null")
     @Schema(description = "Unique identifier of the user", example = "1")
@@ -51,5 +53,4 @@ public class CommentRequestDTO {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
 }

@@ -16,6 +16,7 @@ import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.UserModel;
 import itst.socialraccoon.api.services.PostService;
 import itst.socialraccoon.api.services.UserService;
+import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -59,6 +60,8 @@ public class PostController {
     private UserService userService;
     @Autowired
     private ImageValidationHandler validator;
+    @Autowired
+    private ContentModerationValidationStrategy contentModerationValidationStrategy;
 
     @GetMapping("/{userId}")
     @Operation(summary = "Get posts by user ID with pagination",
@@ -124,6 +127,7 @@ public class PostController {
             @PathVariable Integer userId,
             @RequestParam("image") MultipartFile image) {
         validator.validateImage(image);
+        contentModerationValidationStrategy.isValid(postDescription);
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);
@@ -140,6 +144,7 @@ public class PostController {
     public ResponseEntity<PostDTO> createPost(
             @RequestParam(value = "postDescription") String postDescription,
             @PathVariable Integer userId) {
+        contentModerationValidationStrategy.isValid(postDescription);
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(postDescription);
         postRequestDTO.setIdUser(userId);
@@ -149,8 +154,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @Operation(summary = "Delete a post by user ID and post ID",
-            description = "Deletes a post if it belongs to the specified user ID")
+    @Operation(summary = "Delete a post by post ID",
+            description = "Deletes a post")
     @ApiResponse(responseCode = "200", description = "Post deleted successfully")
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<String> delete(
@@ -217,7 +222,8 @@ public class PostController {
             description = "Update the description of a post by its ID")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @RequestParam("postDescription") String postDescription) {
+    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @ RequestParam("postDescription") String postDescription) {
+        contentModerationValidationStrategy.isValid(postDescription);
         PostModel updatedPost = postService.update(postId, postDescription);
         return ResponseEntity.ok(convertToDTO(updatedPost));
     }
