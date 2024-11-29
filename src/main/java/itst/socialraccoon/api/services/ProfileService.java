@@ -55,10 +55,10 @@ public class ProfileService {
         profileRepository.deleteById(id);
     }
 
-    public ProfileDTO getProfileByUserId(Integer userId) {
+    public ProfileDTO getProfileByUserId(Integer userId) throws NoSuchElementException {
         ProfileModel profile = profileRepository.findByUserId(userId);
         if (profile == null) {
-            throw new NoSuchElementException("Profile not found for user with given ID");
+            throw new NoSuchElementException("Profile not found");
         }
         ProfileDTO profileDTO = modelMapper.map(profile, ProfileDTO.class);
         String username = profile.getIdUser().getName() + " " + profile.getIdUser().getLastName() + " " + profile.getIdUser().getSecondLastName();
@@ -71,10 +71,10 @@ public class ProfileService {
         return profileDTO;
     }
 
-    public ProfileDTO getProfileByControlNumber(String controlNumber) {
+    public ProfileDTO getProfileByControlNumber(String controlNumber) throws NoSuchElementException {
         ProfileModel profile = profileRepository.findAllByIdUser_ControlNumber(controlNumber);
         if (profile == null) {
-            throw new NoSuchElementException("Profile not found for user with given control number: ");
+            throw new NoSuchElementException("Profile not found");
         }
         ProfileDTO profileDTO = modelMapper.map(profile, ProfileDTO.class);
         String username = profile.getIdUser().getName() + " " + profile.getIdUser().getLastName() + " " + profile.getIdUser().getSecondLastName();
