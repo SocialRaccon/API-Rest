@@ -250,4 +250,8 @@ public class PostService {
 
         postRepository.save(post);
     }
+
+    public Page<PostModel> getRandomCareerFeed(String acronym, Pageable pageable) {
+        return postRepository.findRandomPostsByCareerAcronym(acronym, pageable);
+    }
 }
