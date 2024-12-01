@@ -47,8 +47,9 @@ public class RemoteImageStorageService implements ImageStorageService {
     }
 
     private String uploadFile(File file, String fileName) throws IOException {
+        String extension = getExtension(fileName).substring(1); // Remove the dot from the extension
         BlobId blobId = BlobId.of(BUCKET_NAME, fileName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + getExtension(fileName)).build();
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + extension).build();
         InputStream inputStream = RemoteImageStorageService.class.getClassLoader().getResourceAsStream("firebase-private-key.json");
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
