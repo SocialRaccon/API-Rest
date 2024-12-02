@@ -31,7 +31,7 @@ public class RelationshipController {
     @Autowired
     private RelationshipService relationshipService;
 
-    @PostMapping
+    @PostMapping("/{userId}")
     @Operation(summary = "Follow a user", description = "Create a following relationship between two users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User followed", content = @Content),
@@ -39,7 +39,7 @@ public class RelationshipController {
             @ApiResponse(responseCode = "409", description = "User already followed", content = @Content)
     })
     public ResponseEntity<String> followUser(
-            @RequestParam @NotNull @Positive Integer userId,
+            @PathVariable @NotNull @Positive Integer userId,
             @RequestParam @NotNull @Positive Integer followerId) {
         relationshipService.followUser(userId, followerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("User followed");
