@@ -31,5 +31,4 @@ build/
 /src/main/resources/firebase-private-key.json
 ### VS Code ###
 .vscode/
-src/main/resources/application.properties
 .fake
