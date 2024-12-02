@@ -101,7 +101,14 @@ public class RelationshipService {
         return followers.stream().map(relationshipModel -> {
             UserModel followedUser = relationshipModel.getUser();
             String username = followedUser.getName() + " " + followedUser.getLastName() + " " + followedUser.getSecondLastName();
-            return new RelationshipInfoDTO(followedUser.getIdUser(), username, followedUser.getProfile().getImages());
+            return new RelationshipInfoDTO(
+                    followedUser.getIdUser(),
+                    username,
+                    followedUser.getProfile().getImages(),
+                    followedUser.getCareer().getAcronym(),
+                    followedUser.getCareer().getName(),
+                    followedUser.getControlNumber()
+            );
         }).collect(Collectors.toList());
     }
 
@@ -111,7 +118,14 @@ public class RelationshipService {
         return following.stream().map(relationshipModel -> {
             UserModel followedUser = relationshipModel.getFollowerUser();
             String username = followedUser.getName() + " " + followedUser.getLastName() + " " + followedUser.getSecondLastName();
-            return new RelationshipInfoDTO(followedUser.getIdUser(), username, followedUser.getProfile().getImages());
+            return new RelationshipInfoDTO(
+                    followedUser.getIdUser(),
+                    username,
+                    followedUser.getProfile().getImages(),
+                    followedUser.getCareer().getAcronym(),
+                    followedUser.getCareer().getName(),
+                    followedUser.getControlNumber()
+            );
         }).collect(Collectors.toList());
     }
 
@@ -126,6 +140,13 @@ public class RelationshipService {
     private RelationshipInfoDTO convertToFollowerInfoDTO(RelationshipModel relationshipModel) {
         UserModel followerUser = relationshipModel.getFollowerUser();
         String username = followerUser.getName() + " " + followerUser.getLastName() + " " + followerUser.getSecondLastName();
-        return new RelationshipInfoDTO(followerUser.getIdUser(), username, followerUser.getProfile().getImages());
+        return new RelationshipInfoDTO(
+                followerUser.getIdUser(),
+                username,
+                followerUser.getProfile().getImages(),
+                followerUser.getCareer().getAcronym(),
+                followerUser.getCareer().getName(),
+                followerUser.getControlNumber()
+        );
     }
 }
