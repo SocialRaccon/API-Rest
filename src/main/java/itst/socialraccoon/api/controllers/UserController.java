@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -127,10 +129,18 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/current")
+    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        UserModel user = userService.findByEmail(email);
+        UserDTO userDTO = convertToDTO(user);
+        return ResponseEntity.ok(userDTO);
+    }
+
     public UserModel convertToEntity(UserRequestDTO userRequestDTO) {
         UserModel user = modelMapper.map(userRequestDTO, UserModel.class);
         CareerModel careerModel = careerService.findById(userRequestDTO.getCareer());
-        if (careerModel == null){
+        if (careerModel == null) {
             throw new NoSuchElementException("Career not found");
         }
         AuthenticationModel authenticationModel = new AuthenticationModel();
