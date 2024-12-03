@@ -3,6 +3,7 @@ package itst.socialraccoon.api.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import itst.socialraccoon.api.models.ImageProfileModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,25 +21,87 @@ public class CommentDTO {
     @NotNull(message = "The post must not be null")
     @Schema(description = "Unique identifier of the post", example = "1")
     private Integer idPost;
+    @Schema(description = "Username of the user", example = "user")
+    @NotBlank(message = "The username must not be null and must contain at least one non-whitespace character")
+    private String username;
+    @Schema(description = "Profile image of the user")
+    @NotNull(message = "The image profile must not be null")
+    private ImageProfileModel imageProfile;
     @NotBlank(message = "The comment must not be null and must contain at least one non-whitespace character")
     @Size(min = 1, max = 200, message = "The comment must be at most 200 characters, and has at least one character")
     @Schema(description = "Content of the comment", example = "This is a comment")
     private String comment;
     @Schema(description = "Date when the comment was made", example = "2021-10-10 10:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonIgnore
     private LocalDateTime date = LocalDateTime.now().withNano(0);
+
     public CommentDTO() {
     }
 
-    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String comment, LocalDateTime date) {
+    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String username, ImageProfileModel imageProfile, String comment, LocalDateTime date) {
         this.idComment = idComment;
         this.idUser = idUser;
         this.idPost = idPost;
+        this.username = username;
+        this.imageProfile = imageProfile;
         this.comment = comment;
         this.date = date;
     }
 
+    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String username, ImageProfileModel imageProfile, String comment) {
+        this.idComment = idComment;
+        this.idUser = idUser;
+        this.idPost = idPost;
+        this.username = username;
+        this.imageProfile = imageProfile;
+        this.comment = comment;
+    }
+
+    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String username, ImageProfileModel imageProfile, String comment, String date) {
+        this.idComment = idComment;
+        this.idUser = idUser;
+        this.idPost = idPost;
+        this.username = username;
+        this.imageProfile = imageProfile;
+        this.comment = comment;
+        this.date = LocalDateTime.parse(date);
+    }
+
+    public CommentDTO(Integer idUser, Integer idPost, String comment) {
+        this.idUser = idUser;
+        this.idPost = idPost;
+        this.comment = comment;
+    }
+
+    public CommentDTO(Integer idUser, Integer idPost, String comment, String date) {
+        this.idUser = idUser;
+        this.idPost = idPost;
+        this.comment = comment;
+        this.date = LocalDateTime.parse(date);
+    }
+
+    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String comment) {
+        this.idComment = idComment;
+        this.idUser = idUser;
+        this.idPost = idPost;
+        this.comment = comment;
+    }
+
+    public ImageProfileModel getImageProfile() {
+        return imageProfile;
+    }
+
+    public void setImageProfile(ImageProfileModel imageProfile) {
+        this.imageProfile = imageProfile;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public Integer getIdComment() {
         return idComment;
