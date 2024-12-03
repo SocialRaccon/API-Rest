@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
 import itst.socialraccoon.api.dtos.ReactionDTO;
 import itst.socialraccoon.api.models.ReactionModel;
+import itst.socialraccoon.api.models.ReactionTypeModel;
 import itst.socialraccoon.api.services.ReactionService;
+import itst.socialraccoon.api.services.ReactionTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,9 @@ public class ReactionController {
 
     @Autowired
     private ReactionService reactionService;
+
+    @Autowired
+    private ReactionTypeService reactionTypeService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -99,6 +104,21 @@ public class ReactionController {
         } else {
             throw new NoSuchElementException();
         }
+    }
+
+    //Get all reaction types with their names, icons, and ids
+    @Operation(summary = "Get all reaction types")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found reaction types"),
+            @ApiResponse(responseCode = "404", description = "Reaction types not found")
+    })
+    @GetMapping("/types")
+    public List<ReactionTypeModel> getReactionTypes() {
+        List<ReactionTypeModel> reactionTypes = reactionTypeService.getAll();
+        if (reactionTypes.isEmpty()) {
+            throw new NoSuchElementException("No reaction types found.");
+        }
+        return reactionTypes;
     }
 
     private ReactionDTO convertToDTO(ReactionModel reaction) {

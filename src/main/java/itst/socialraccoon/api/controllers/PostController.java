@@ -263,6 +263,7 @@ public class PostController {
 
     private PostDTO convertToDTO(PostModel post) {
         PostDTO dto = modelMapper.map(post, PostDTO.class);
+        dto.setImageProfile(post.getUser().getProfile().getImages().stream().findFirst().get());
         return dto;
     }
 

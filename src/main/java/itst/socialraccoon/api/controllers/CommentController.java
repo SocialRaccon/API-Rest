@@ -17,6 +17,7 @@ import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -143,36 +144,14 @@ public class CommentController {
     @PutMapping("/{commentId}")
     @Operation(
             summary = "Update comment",
-            description = "Update a comment by its id",
-            requestBody = @RequestBody(
-                    description = "Comment to be updated",
-                    required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = CommentModel.class),
-                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    name = "Comment",
-                                    value = "{\n" +
-                                            "  \"comment\": \"This is an updated comment\",\n" +
-                                            "}"
-                            )
-                    )
-            )
+            description = "Update a comment by its id"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
                     description = "Comment updated",
                     content = @Content(
-                            schema = @Schema(implementation = CommentDTO.class),
-                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    name = "Comment",
-                                    value = "{\n" +
-                                            "  \"idComment\": 1,\n" +
-                                            "  \"idUser\": 1,\n" +
-                                            "  \"idPost\": 1,\n" +
-                                            "  \"comment\": \"This is an updated comment\",\n" +
-                                            "}"
-                            )
+                            schema = @Schema(implementation = CommentDTO.class)
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -183,11 +162,10 @@ public class CommentController {
     })
     public ResponseEntity<CommentDTO> update(
             @PathVariable Integer commentId,
-            @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
-        contentModerationValidationStrategy.isValid(comment.getComment());
+            @NotBlank @RequestParam String comment) {
+        contentModerationValidationStrategy.isValid(comment);
         CommentModel commentToUpdate = commentService.findById(commentId);
-        commentToUpdate.setComment(comment.getComment());
-        commentToUpdate.setDate(comment.getDate());
+        commentToUpdate.setComment(comment);
         CommentModel updatedComment = commentService.save(commentToUpdate);
         return new ResponseEntity<>(convertToDto(updatedComment), HttpStatus.OK);
     }

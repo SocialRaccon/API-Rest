@@ -22,10 +22,8 @@ public class CommentDTO {
     @Schema(description = "Unique identifier of the post", example = "1")
     private Integer idPost;
     @Schema(description = "Username of the user", example = "user")
-    @NotBlank(message = "The username must not be null and must contain at least one non-whitespace character")
     private String username;
     @Schema(description = "Profile image of the user")
-    @NotNull(message = "The image profile must not be null")
     private ImageProfileModel imageProfile;
     @NotBlank(message = "The comment must not be null and must contain at least one non-whitespace character")
     @Size(min = 1, max = 200, message = "The comment must be at most 200 characters, and has at least one character")

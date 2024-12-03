@@ -3,6 +3,7 @@ package itst.socialraccoon.api.dtos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import itst.socialraccoon.api.models.ImagePostModel;
 import io.swagger.v3.oas.annotations.media.Schema;
+import itst.socialraccoon.api.models.ImageProfileModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -17,7 +18,6 @@ public class PostDTO {
     @NotNull(message = "El ID del post no puede ser nulo")
     private Integer post;
 
-    @JsonIgnore
     @NotNull(message = "La fecha de creación no puede ser nula")
     private String dateCreated;
 
@@ -40,6 +40,9 @@ public class PostDTO {
     @Size(min = 1, max = 50, message = "El número de control debe tener como máximo 50 caracteres y al menos un carácter")
     private String userControlNumber;
 
+    @Schema(description = "Profile image of the user")
+        private ImageProfileModel imageProfile;
+
     @Size(max = 500, message = "La descripción del post debe tener como máximo 500 caracteres")
     private String postDescription;
 
@@ -50,7 +53,7 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(Integer post, String dateCreated, Integer idUser, String userName, String userLastName, String userSecondLastName, String userControlNumber, String postDescription, List<CommentDTO> comments, List<ReactionDTO> reactions, List<ImagePostModel> images) {
+    public PostDTO(Integer post, String dateCreated, Integer idUser, String userName, String userLastName, String userSecondLastName, String userControlNumber, ImageProfileModel imageProfile, String postDescription, List<CommentDTO> comments, List<ReactionDTO> reactions, List<ImagePostModel> images) {
         this.post = post;
         this.dateCreated = dateCreated;
         this.idUser = idUser;
@@ -58,10 +61,20 @@ public class PostDTO {
         this.userLastName = userLastName;
         this.userSecondLastName = userSecondLastName;
         this.userControlNumber = userControlNumber;
+        this.imageProfile = imageProfile;
         this.postDescription = postDescription;
         this.comments = comments;
         this.reactions = reactions;
         this.images = images;
+    }
+
+
+    public ImageProfileModel getImageProfile() {
+        return imageProfile;
+    }
+
+    public void setImageProfile(ImageProfileModel imageProfile) {
+        this.imageProfile = imageProfile;
     }
 
     public Integer getPost() {
