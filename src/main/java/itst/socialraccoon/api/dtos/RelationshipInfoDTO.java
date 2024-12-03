@@ -16,17 +16,49 @@ public class RelationshipInfoDTO {
     @Schema(description = "Name of the user", example = "John Doe")
     @Size(max = 60, message = "The user name must be at most 60 characters")
     private String userName;
-
     @Schema(description = "Profile images")
     private Set<ImageProfileModel> images;
+    @Schema(description = "Career acronym")
+    private String careerAcronym;
+    @Schema(description = "Career name")
+    private String careerName;
+    @Schema(description = "Control number")
+    private String controlNumber;
 
     public RelationshipInfoDTO() {
     }
 
-    public RelationshipInfoDTO(Integer idUser, String userName, Set<ImageProfileModel> images) {
+    public RelationshipInfoDTO(Integer idUser, String userName, Set<ImageProfileModel> images, String careerAcronym, String careerName, String controlNumber) {
         this.idUser = idUser;
         this.userName = userName;
         this.images = images;
+        this.careerAcronym = careerAcronym;
+        this.careerName = careerName;
+        this.controlNumber = controlNumber;
+    }
+
+    public String getCareerAcronym() {
+        return careerAcronym;
+    }
+
+    public void setCareerAcronym(String careerAcronym) {
+        this.careerAcronym = careerAcronym;
+    }
+
+    public String getCareerName() {
+        return careerName;
+    }
+
+    public void setCareerName(String careerName) {
+        this.careerName = careerName;
+    }
+
+    public String getControlNumber() {
+        return controlNumber;
+    }
+
+    public void setControlNumber(String controlNumber) {
+        this.controlNumber = controlNumber;
     }
 
     public Set<ImageProfileModel> getImages() {

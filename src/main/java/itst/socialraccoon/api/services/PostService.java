@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -131,8 +132,7 @@ public class PostService {
 
 
     @Transactional
-    public List<ImagePostModel> getImages(Integer postId, int pageNumber, int pageSize)
-    {
+    public List<ImagePostModel> getImages(Integer postId, int pageNumber, int pageSize) {
         if (pageNumber < 0 || pageSize < 1) {
             throw new IllegalArgumentException("Invalid page number or size");
         }
@@ -203,5 +203,55 @@ public class PostService {
 
     public Page<PostModel> getFollowingFeed(Integer userId, Pageable pageable) {
         return postRepository.findRandomPostsByFollowedUsers(userId, pageable);
+    }
+
+    @Transactional
+    public PostModel saveWithMultipleImages(PostModel post, List<MultipartFile> files) {
+        try {
+            List<ImagePostModel> images = new ArrayList<>();
+
+            for (MultipartFile file : files) {
+                String imageUrl = imageStorageService.storeImage(file);
+                ImagePostModel imagePost = new ImagePostModel();
+                imagePost.setIdPost(post);
+                imagePost.setImageUrl(imageUrl);
+                imagePost.setImageThumbnailUrl(imageUrl);
+                images.add(imagePost);
+            }
+
+            post.setImages(images);
+            return postRepository.save(post);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error saving images: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void addMultipleImages(Integer postId, List<MultipartFile> images) {
+        if (!postRepository.existsById(postId)) {
+            throw new NoSuchElementException("Post not found");
+        }
+
+        PostModel post = postRepository.getReferenceById(postId);
+
+        for (MultipartFile image : images) {
+            try {
+                String imageUrl = imageStorageService.storeImage(image);
+                ImagePostModel imagePost = new ImagePostModel();
+                imagePost.setIdPost(post);
+                imagePost.setImageUrl(imageUrl);
+                imagePost.setImageThumbnailUrl(imageUrl);
+                post.getImages().add(imagePost);
+            } catch (IOException e) {
+                throw new RuntimeException("Error adding images: " + e.getMessage());
+            }
+        }
+
+        postRepository.save(post);
+    }
+
+    public Page<PostModel> getRandomCareerFeed(String acronym, Pageable pageable) {
+        return postRepository.findRandomPostsByCareerAcronym(acronym, pageable);
     }
 }

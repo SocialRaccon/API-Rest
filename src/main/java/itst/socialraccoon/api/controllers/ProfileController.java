@@ -11,6 +11,7 @@ import itst.socialraccoon.api.dtos.ProfileDTO;
 import itst.socialraccoon.api.models.ProfileModel;
 import itst.socialraccoon.api.services.ProfileService;
 import itst.socialraccoon.api.services.ImageProfileService;
+import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class ProfileController {
 
     @Autowired
     private ImageValidationHandler Validator;
+
+    @Autowired
+    private ContentModerationValidationStrategy contentModerationValidationStrategy;
 
     @PostMapping(value = "/images/{profileId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Add profile image", description = "Add a user's profile image by their ID")
@@ -91,6 +95,7 @@ public class ProfileController {
     public ResponseEntity<ProfileDTO> updateProfileByUserId(
             @PathVariable Integer userId,
             @NotBlank @RequestParam String description) {
+        contentModerationValidationStrategy.isValid(description);
         ProfileModel profileModel = profileService.findByUserId(userId);
         profileModel.setDescription(description);
         ProfileDTO updateProfile = profileService.updateWithDTO(profileModel);
