@@ -97,7 +97,12 @@ public class RelationshipService {
 
     public List<RelationshipInfoDTO> getFollowersByUserId(Integer userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         List<RelationshipModel> followers = relationshipRepository.getFollowersByUserIdPaginated(userId, pageable);
+        if (followers.isEmpty()) {
+            throw new NoSuchElementException("User with id " + userId + " has no followers");
+        }
         return followers.stream().map(relationshipModel -> {
             UserModel followedUser = relationshipModel.getUser();
             String username = followedUser.getName() + " " + followedUser.getLastName() + " " + followedUser.getSecondLastName();
@@ -114,7 +119,12 @@ public class RelationshipService {
 
     public List<RelationshipInfoDTO> getFollowingByUserId(Integer userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         List<RelationshipModel> following = relationshipRepository.getFollowingByUserIdPaginated(userId, pageable);
+        if (following.isEmpty()) {
+            throw new NoSuchElementException("User with id " + userId + " is not following anyone");
+        }
         return following.stream().map(relationshipModel -> {
             UserModel followedUser = relationshipModel.getFollowerUser();
             String username = followedUser.getName() + " " + followedUser.getLastName() + " " + followedUser.getSecondLastName();
