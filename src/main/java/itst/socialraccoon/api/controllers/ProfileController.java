@@ -64,7 +64,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "User profile not found", content = @Content)
     })
     public ResponseEntity<String> UpdateProfileImage(
-            @RequestParam(value = "imageId") @Positive Integer imageId,
+            @PathVariable(value = "imageId") @Positive Integer imageId,
             @NotNull @RequestParam(value = "image") MultipartFile image
     ) {
         Validator.validateImage(image);
@@ -79,13 +79,13 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "User profile not found", content = @Content)
     })
     public ResponseEntity<String> deleteProfileImage(
-            @RequestParam(value = "imageId") @Positive Integer imageId
+            @PathVariable(value = "imageId") @Positive Integer imageId
     ) {
         imageProfileService.delete(imageId);
         return new ResponseEntity<>("Profile image deleted successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}")
+    @PutMapping("/{userId}")
     @Operation(summary = "Update profile description by user ID", description = "Update a user's profile description by their ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User profile updated", content = {
