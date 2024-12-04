@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
+import itst.socialraccoon.api.dtos.CurrentUserDTO;
 import itst.socialraccoon.api.dtos.UserRequestDTO;
 import itst.socialraccoon.api.models.AuthenticationModel;
 import itst.socialraccoon.api.models.CareerModel;
@@ -130,10 +131,11 @@ public class UserController {
 
     @GetMapping("/current")
     @Operation(summary = "Get current user", description = "Get the current user logged in")
-    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CurrentUserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         UserModel user = userService.findByEmail(email);
-        UserDTO userDTO = convertToDTO(user);
+        CurrentUserDTO userDTO = modelMapper.map(user, CurrentUserDTO.class);
+        userDTO.setImageProfile(user.getProfile().getImages().stream().findFirst().orElse(null));
         return ResponseEntity.ok(userDTO);
     }
 

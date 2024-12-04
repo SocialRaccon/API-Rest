@@ -25,7 +25,8 @@ public interface PostRepository extends JpaRepository<PostModel, Integer> {
     @Query(value = "SELECT * FROM post WHERE idUser = :idUser", nativeQuery = true)
     Page<PostModel> findByUserAndPost(@Param("idUser") Integer idUser, Pageable pageable);
 
-    @Query
+    //Get all posts ordered by date created and randomly without repeating posts
+    @Query ("SELECT p FROM PostModel p ORDER BY RAND()")
     Page<PostModel> findAllByOrderByDateCreatedDesc(Pageable pageable);
 
     @Query("SELECT p FROM PostModel p WHERE p.user.idUser = :userId")

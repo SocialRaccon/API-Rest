@@ -130,7 +130,7 @@ public class PostController {
         return ResponseEntity.ok(postDTOPage);
     }
 
-    @PostMapping(value = "/withImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/withImages/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(
             summary = "Create a post with an image",
             description = "Create a new post with an image attached"
@@ -138,7 +138,7 @@ public class PostController {
     public ResponseEntity<PostDTO> createPost(
             @RequestParam(value = "postDescription", required = false) String postDescription,
             @PathVariable @Positive Integer userId,
-            @NotNull @RequestParam("image") List<MultipartFile> images) {
+            @NotNull @RequestParam("images") List<MultipartFile> images) {
         if (images.isEmpty()) {
             throw new IllegalArgumentException("No images provided");
         }
