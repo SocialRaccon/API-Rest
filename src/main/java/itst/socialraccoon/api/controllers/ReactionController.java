@@ -68,7 +68,7 @@ public class ReactionController {
     @Operation(summary = "Get reaction count by post  id and reaction type")
     public Integer getReactionCount(
             @PathVariable Integer postId,
-            @NotBlank @RequestParam(value = "reactionType") @Positive Integer reactionType) {
+            @RequestParam(value = "reactionType") @Positive Integer reactionType) {
         return reactionService.getReactionCountByPostIdAndReactionTypeId(postId, reactionType);
     }
 
@@ -80,8 +80,8 @@ public class ReactionController {
     @PostMapping("/{postId}")
     public ResponseEntity<ReactionDTO> reactOrUpdate(
             @PathVariable Integer postId,
-            @NotBlank @RequestParam @Positive Integer userId,
-            @NotBlank @RequestParam @Positive Integer reactionTypeId) {
+            @RequestParam @Positive Integer userId,
+            @RequestParam @Positive Integer reactionTypeId) {
         ReactionModel reaction = reactionService.reactOrUpdate(postId, userId, reactionTypeId);
         return new ResponseEntity<>(convertToDTO(reaction), HttpStatus.OK);
     }
@@ -94,7 +94,7 @@ public class ReactionController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Map<String, Boolean>> deleteReaction(
             @PathVariable Integer postId,
-            @NotBlank @RequestParam @Positive Integer userId) {
+            @RequestParam @Positive Integer userId) {
         boolean deleted = reactionService.deleteReaction(postId, userId);
         if (deleted) {
             return new ResponseEntity<>(Map.of("deleted", true), HttpStatus.OK);

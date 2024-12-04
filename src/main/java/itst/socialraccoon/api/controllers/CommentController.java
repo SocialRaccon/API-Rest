@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.dtos.CommentRequestDTO;
+import itst.socialraccoon.api.models.ImageProfileModel;
 import itst.socialraccoon.api.services.CommentService;
 import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.models.CommentModel;
@@ -27,6 +28,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @RestController
 @RequestMapping("comments")
@@ -192,6 +194,11 @@ public class CommentController {
     }
 
     public CommentDTO convertToDto(CommentModel comment) {
-        return modelMapper.map(comment, CommentDTO.class);
+        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+        commentDTO.setUsername(comment.getUser().getName() + " " + comment.getUser().getLastName() + " " + comment.getUser().getSecondLastName());
+        Set<ImageProfileModel> images = comment.getUser().getProfile().getImages();
+        commentDTO.setImageProfile(images.stream().findFirst().get());
+        commentDTO.setDate(comment.getDate());
+        return commentDTO;
     }
 }
