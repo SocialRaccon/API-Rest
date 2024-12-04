@@ -115,8 +115,8 @@ public class CommentController {
     public ResponseEntity<List<CommentDTO>> findByPostId(
             @PathVariable Integer postId,
             @Positive @RequestParam(required = false) Integer userId,
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments;
         if (userId != null) {
             comments = commentService.getCommentsByPostIdAndUserId(postId, userId, page, pageSize);
@@ -133,8 +133,8 @@ public class CommentController {
     @Operation(summary = "Get comments by user id with pagination", description = "Get all comments by user id with pagination")
     public ResponseEntity<List<CommentDTO>> findByUserId(
             @PathVariable Integer userId,
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments = commentService.getCommentsByUserId(userId, page, pageSize);
         if (comments.isEmpty()) {
             throw new NoSuchElementException("No comments found for the given user.");
