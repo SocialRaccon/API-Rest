@@ -64,7 +64,7 @@ public class ReactionController {
         return reactionService.getReactionCountByPostId(postId);
     }
 
-    @GetMapping("/countType/{postId}")
+    @GetMapping("/count/type/{postId}")
     @Operation(summary = "Get reaction count by post  id and reaction type")
     public Integer getReactionCount(
             @PathVariable Integer postId,
