@@ -31,7 +31,7 @@ public interface PostRepository extends JpaRepository<PostModel, Integer> {
     @Query("SELECT p FROM PostModel p WHERE p.user.idUser = :userId")
     Page<PostModel> findByUser_IdUser(@Param("userId") Integer userId, Pageable pageable);
 
-    @Query(value = "SELECT p.* FROM post p JOIN relationship r ON p.idUser = r.idUser WHERE r.idFollower = :userId ORDER BY RAND()", nativeQuery = true)
+    @Query(value = "SELECT p FROM PostModel p JOIN RelationshipModel r ON p.user.idUser = r.user.idUser WHERE r.followerUser.idUser = :userId ORDER BY RAND()")
     Page<PostModel> findRandomPostsByFollowedUsers(@Param("userId") Integer userId, Pageable pageable);
 
     @Query(value = "SELECT p.* FROM post p JOIN user u ON p.idUser = u.idUser JOIN career c ON u.idCareer = c.idCareer WHERE c.acronym = :acronym ORDER BY RAND()", nativeQuery = true)

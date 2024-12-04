@@ -41,7 +41,7 @@ public class PostDTO {
     private String userControlNumber;
 
     @Schema(description = "Profile image of the user")
-        private ImageProfileModel imageProfile;
+    private ImageProfileModel imageProfile;
 
     @Size(max = 500, message = "La descripción del post debe tener como máximo 500 caracteres")
     private String postDescription;
