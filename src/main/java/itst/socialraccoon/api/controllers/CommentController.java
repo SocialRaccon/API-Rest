@@ -36,7 +36,7 @@ import java.util.Set;
 @Tag(name = "Comments", description = "Provides methods to manage comments")
 public class CommentController {
 
-    @Autowired
+    /*@Autowired
     private CommentService commentService;
     @Autowired
     private UserService userService;
@@ -200,5 +200,5 @@ public class CommentController {
         commentDTO.setImageProfile(images.stream().findFirst().get());
         commentDTO.setDate(comment.getDate());
         return commentDTO;
-    }
+    }*/
 }

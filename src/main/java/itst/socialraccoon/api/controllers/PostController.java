@@ -51,6 +51,7 @@ import org.springframework.web.multipart.MultipartFile;
 @GlobalApiResponses
 public class PostController {
 
+/*
     @Autowired
     private PostService postService;
     @Autowired
@@ -282,5 +283,6 @@ public class PostController {
         postModel.setIdPostDescription(postDescriptionModel);
         return postModel;
     }
+*/
 
 }

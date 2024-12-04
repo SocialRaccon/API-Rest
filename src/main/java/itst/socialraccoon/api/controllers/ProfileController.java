@@ -72,7 +72,7 @@ public class ProfileController {
         return new ResponseEntity<>("Profile image updated successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/images/{imageId}")
+/*    @DeleteMapping("/images/{imageId}")
     @Operation(summary = "Delete profile image", description = "Delete a user's profile image by their ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Profile image deleted", content = @Content),
@@ -83,9 +83,9 @@ public class ProfileController {
     ) {
         imageProfileService.delete(imageId);
         return new ResponseEntity<>("Profile image deleted successfully", HttpStatus.OK);
-    }
+    }*/
 
-    @PutMapping("/{userId}")
+ /*   @PutMapping("/{userId}")
     @Operation(summary = "Update profile description by user ID", description = "Update a user's profile description by their ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User profile updated", content = {
@@ -102,9 +102,9 @@ public class ProfileController {
         profileModel.setDescription(description);
         ProfileDTO updateProfile = profileService.updateWithDTO(profileModel);
         return new ResponseEntity<>(updateProfile, HttpStatus.OK);
-    }
+    }*/
 
-    @GetMapping("/{userId}")
+/*    @GetMapping("/{userId}")
     @Operation(summary = "Get profile by user ID", description = "Get a user's profile by their ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User profile found", content = {
@@ -116,9 +116,9 @@ public class ProfileController {
             @PathVariable Integer userId) {
         ProfileDTO profile = profileService.getProfileByUserId(userId);
         return new ResponseEntity<>(profile, HttpStatus.OK);
-    }
+    }*/
 
-    @GetMapping("/controlNumber/{controlNumber}")
+/*    @GetMapping("/controlNumber/{controlNumber}")
     @Operation(summary = "Get profile by control number", description = "Get a user's profile by their control number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User profile found", content = {
@@ -130,5 +130,5 @@ public class ProfileController {
             @PathVariable String controlNumber) {
         ProfileDTO profile = profileService.getProfileByControlNumber(controlNumber);
         return new ResponseEntity<>(profile, HttpStatus.OK);
-    }
+    }*/
 }

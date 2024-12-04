@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @GlobalApiResponses
 public class ReactionController {
 
-    @Autowired
+    /*@Autowired
     private ReactionService reactionService;
 
     @Autowired
@@ -105,5 +105,5 @@ public class ReactionController {
 
     private ReactionDTO convertToDTO(ReactionModel reaction) {
         return modelMapper.map(reaction, ReactionDTO.class);
-    }
+    }*/
 }
