@@ -43,7 +43,7 @@ import java.util.NoSuchElementException;
 @GlobalApiResponses
 public class UserController {
 
-    @Autowired
+    /*@Autowired
     private UserService userService;
 
     @Autowired
@@ -160,5 +160,5 @@ public class UserController {
         userModel.setEmail(user.getAuthentication().getEmail());
         return userModel;
     }
-
+*/
 }

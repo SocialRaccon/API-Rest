@@ -28,7 +28,7 @@ import java.util.List;
 @GlobalApiResponses
 public class RelationshipController {
 
-    @Autowired
+    /*@Autowired
     private RelationshipService relationshipService;
 
     @PostMapping("/{userId}")
@@ -86,5 +86,5 @@ public class RelationshipController {
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
     ) {
         return new ResponseEntity<>(relationshipService.getFollowingByUserId(userId, page, size), HttpStatus.OK);
-    }
+    }*/
 }

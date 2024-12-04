@@ -63,7 +63,7 @@ public class AuthenticationController {
         }
     }*/
 
-    @PostMapping("/recover")
+    /*@PostMapping("/recover")
     @Operation(
             summary = "Recover password",
             description = "Recover user password",
@@ -105,6 +105,6 @@ public class AuthenticationController {
         } else {
             return ResponseEntity.badRequest().body("Email not found");
         }
-    }
+    }*/
 
 }

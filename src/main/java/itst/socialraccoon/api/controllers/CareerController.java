@@ -21,7 +21,7 @@ import java.util.List;
 @GlobalApiResponses
 public class CareerController {
 
-    @Autowired
+    /*@Autowired
     private CareerService careerService;
 
     @GetMapping()
@@ -52,5 +52,5 @@ public class CareerController {
                     .body("Career with acronym '" + acronym + "' not found");
         }
         return ResponseEntity.ok(career);
-    }
+    }*/
 }
