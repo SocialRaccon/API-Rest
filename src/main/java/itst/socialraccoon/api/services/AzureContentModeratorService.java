@@ -47,9 +47,9 @@ public class AzureContentModeratorService {
             for (TextCategoriesAnalysis categoriesAnalysis : response.getCategoriesAnalysis()) {
                 TextCategory category = categoriesAnalysis.getCategory();
                 Integer score = categoriesAnalysis.getSeverity();
-                if ((category == TextCategory.HATE || category == TextCategory.SELF_HARM || category == TextCategory.VIOLENCE) && score > 1) {
+                if ((category == TextCategory.HATE || category == TextCategory.SELF_HARM || category == TextCategory.VIOLENCE) && score > 3) {
                     return false;
-                } else if (category == TextCategory.SEXUAL && score > 1) {
+                } else if (category == TextCategory.SEXUAL && score > 3) {
                     return false;
                 }
             }

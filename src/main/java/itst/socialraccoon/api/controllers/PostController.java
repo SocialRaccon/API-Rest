@@ -8,18 +8,17 @@ import java.util.stream.Collectors;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
+import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.dtos.PostDTO;
 import itst.socialraccoon.api.dtos.PostRequestDTO;
-import itst.socialraccoon.api.models.ImagePostModel;
-import itst.socialraccoon.api.models.PostDescriptionModel;
-import itst.socialraccoon.api.models.PostModel;
-import itst.socialraccoon.api.models.UserModel;
+import itst.socialraccoon.api.models.*;
 import itst.socialraccoon.api.services.PostService;
 import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -117,22 +116,42 @@ public class PostController {
         return ResponseEntity.ok(postDTOPage);
     }
 
-    @PostMapping(value = "/withImage/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @GetMapping("/feed/career/{acronym}")
+    @Operation(summary = "Get random posts feed by career acronym",
+            description = "Retrieves a paginated random feed of posts for users in a specific career")
+    @ApiResponse(responseCode = "200", description = "Random feed successfully recovered")
+    public ResponseEntity<Page<PostDTO>> getRandomCareerFeed(
+            @PathVariable String acronym,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostModel> postPage = postService.getRandomCareerFeed(acronym, pageable);
+        Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
+        return ResponseEntity.ok(postDTOPage);
+    }
+
+    @PostMapping(value = "/withImages/{userId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(
             summary = "Create a post with an image",
             description = "Create a new post with an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
             @RequestParam(value = "postDescription", required = false) String postDescription,
-            @PathVariable Integer userId,
-            @RequestParam("image") MultipartFile image) {
-        validator.validateImage(image);
+            @PathVariable @Positive Integer userId,
+            @NotNull @RequestParam("images") List<MultipartFile> images) {
+        if (images.isEmpty()) {
+            throw new IllegalArgumentException("No images provided");
+        }
+        if (images.size() > 4) {
+            throw new IllegalArgumentException("Maximum of 4 images allowed");
+        }
+        images.forEach(image -> validator.validateImage(image));
         contentModerationValidationStrategy.isValid(postDescription);
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setPostDescription(Objects.requireNonNullElse(postDescription, ""));
         postRequestDTO.setIdUser(userId);
         PostModel postModel = convertPostRequestToEntity(postRequestDTO);
-        PostModel savedPost = postService.save(postModel, image);
+        PostModel savedPost = postService.saveWithMultipleImages(postModel, images);
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
     }
 
@@ -142,7 +161,7 @@ public class PostController {
             description = "Create a new post without an image attached"
     )
     public ResponseEntity<PostDTO> createPost(
-            @RequestParam(value = "postDescription") String postDescription,
+            @NotBlank @RequestParam(value = "postDescription") String postDescription,
             @PathVariable Integer userId) {
         contentModerationValidationStrategy.isValid(postDescription);
         PostRequestDTO postRequestDTO = new PostRequestDTO();
@@ -154,8 +173,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @Operation(summary = "Delete a post by post ID",
-            description = "Deletes a post")
+    @Operation(summary = "Delete a post by user ID and post ID",
+            description = "Deletes a post if it belongs to the specified user ID")
     @ApiResponse(responseCode = "200", description = "Post deleted successfully")
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<String> delete(
@@ -171,7 +190,7 @@ public class PostController {
     @ApiResponse(responseCode = "404", description = "Image or post not found or does not belong to the user")
     public ResponseEntity<String> deleteImageFromPost(
             @PathVariable Integer postId,
-            @RequestParam Integer imageId) {
+            @NotBlank @RequestParam Integer imageId) {
         postService.deleteImage(postId, imageId);
         return ResponseEntity.ok("Image deleted successfully");
     }
@@ -183,9 +202,15 @@ public class PostController {
     @ApiResponse(responseCode = "404", description = "Post not found or does not belong to the user")
     public ResponseEntity<String> addImageToPost(
             @PathVariable Integer postId,
-            @RequestParam("image") MultipartFile image) {
-        validator.validateImage(image);
-        postService.addImage(postId, image);
+            @NotNull @RequestParam("image") List<MultipartFile> images) {
+        if (images.isEmpty()) {
+            throw new IllegalArgumentException("No images provided");
+        }
+        if (images.size() > 4) {
+            throw new IllegalArgumentException("Maximum of 4 images allowed");
+        }
+        images.forEach(image -> validator.validateImage(image));
+        postService.addMultipleImages(postId, images);
         return ResponseEntity.ok("Image added successfully");
     }
 
@@ -210,8 +235,8 @@ public class PostController {
     @ApiResponse(responseCode = "404", description = "Image or post not found or does not belong to the user")
     public ResponseEntity<String> updateImageFromPost(
             @PathVariable Integer postId,
-            @RequestParam Integer imageId,
-            @RequestParam("image") MultipartFile image) {
+            @NotBlank @RequestParam Integer imageId,
+            @NotNull @RequestParam("image") MultipartFile image) {
         validator.validateImage(image);
         postService.update(postId, imageId, image);
         return ResponseEntity.ok("Image updated successfully");
@@ -222,7 +247,7 @@ public class PostController {
             description = "Update the description of a post by its ID")
     @ApiResponse(responseCode = "200", description = "Post updated successfully")
     @ApiResponse(responseCode = "404", description = "Post not found")
-    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @ RequestParam("postDescription") String postDescription) {
+    public ResponseEntity<PostDTO> update(@PathVariable Integer postId, @NotBlank @RequestParam("postDescription") String postDescription) {
         contentModerationValidationStrategy.isValid(postDescription);
         PostModel updatedPost = postService.update(postId, postDescription);
         return ResponseEntity.ok(convertToDTO(updatedPost));
@@ -230,6 +255,17 @@ public class PostController {
 
     private PostDTO convertToDTO(PostModel post) {
         PostDTO dto = modelMapper.map(post, PostDTO.class);
+        dto.setImageProfile(post.getUser().getProfile().getImages().stream().findFirst().orElse(null));
+        //Se coloca la imagen en cada comentario
+        List<CommentDTO> comments = post.getComments().stream()
+                .map(comment -> {
+                    CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+                    commentDTO.setUsername(comment.getUser().getName() + " " + comment.getUser().getLastName() + " " + comment.getUser().getSecondLastName());
+                    commentDTO.setImageProfile(comment.getUser().getProfile().getImages().stream().findFirst().orElse(null));
+                    return commentDTO;
+                })
+                .collect(Collectors.toList());
+        dto.setComments(comments);
         return dto;
     }
 

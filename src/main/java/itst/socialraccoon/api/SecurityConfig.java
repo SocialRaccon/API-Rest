@@ -14,8 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -27,15 +28,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         try {
             http
+                    .cors(withDefaults())
                     .csrf(csrf -> csrf.disable()) // Disable CSRF protection (optional, but often needed for API)
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/authentications/recover", "/authentications/change", "/signin", "/signup").permitAll()
+                            .requestMatchers("/authentications/recover", "/authentications/change", "/signin", "/sigup").permitAll()
                             .requestMatchers(HttpMethod.GET, "/careers", "/careers/").permitAll()
                             .requestMatchers(HttpMethod.POST, "/users/withImage",  "/users").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/").permitAll()
-                            .requestMatchers(HttpMethod.PUT, "/").permitAll()
-                            .requestMatchers(HttpMethod.DELETE, "/").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/").authenticated()
+                            .requestMatchers(HttpMethod.POST, "/").authenticated()
+                            .requestMatchers(HttpMethod.PUT, "/").authenticated()
+                            .requestMatchers(HttpMethod.DELETE, "/").authenticated()
                             .anyRequest().authenticated())
                     .httpBasic(Customizer.withDefaults()) // Use HTTP Basic authentication
                     .formLogin(withDefaults())
@@ -62,21 +64,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:4200"); // Reemplaza con la URL de tu frontend
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOriginPatterns("http://localhost:3000", "http://localhost:4200", "http://localhost:8080")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

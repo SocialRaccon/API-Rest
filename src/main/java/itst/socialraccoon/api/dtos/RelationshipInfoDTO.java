@@ -1,8 +1,12 @@
 package itst.socialraccoon.api.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import itst.socialraccoon.api.models.ImageProfileModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
+import java.util.Set;
 
 @Schema(description = "Data Transfer Object representing basic information of a follower")
 public class RelationshipInfoDTO {
@@ -12,13 +16,57 @@ public class RelationshipInfoDTO {
     @Schema(description = "Name of the user", example = "John Doe")
     @Size(max = 60, message = "The user name must be at most 60 characters")
     private String userName;
+    @Schema(description = "Profile images")
+    private Set<ImageProfileModel> images;
+    @Schema(description = "Career acronym")
+    private String careerAcronym;
+    @Schema(description = "Career name")
+    private String careerName;
+    @Schema(description = "Control number")
+    private String controlNumber;
 
     public RelationshipInfoDTO() {
     }
 
-    public RelationshipInfoDTO(Integer idUser, String userName) {
+    public RelationshipInfoDTO(Integer idUser, String userName, Set<ImageProfileModel> images, String careerAcronym, String careerName, String controlNumber) {
         this.idUser = idUser;
         this.userName = userName;
+        this.images = images;
+        this.careerAcronym = careerAcronym;
+        this.careerName = careerName;
+        this.controlNumber = controlNumber;
+    }
+
+    public String getCareerAcronym() {
+        return careerAcronym;
+    }
+
+    public void setCareerAcronym(String careerAcronym) {
+        this.careerAcronym = careerAcronym;
+    }
+
+    public String getCareerName() {
+        return careerName;
+    }
+
+    public void setCareerName(String careerName) {
+        this.careerName = careerName;
+    }
+
+    public String getControlNumber() {
+        return controlNumber;
+    }
+
+    public void setControlNumber(String controlNumber) {
+        this.controlNumber = controlNumber;
+    }
+
+    public Set<ImageProfileModel> getImages() {
+        return images;
+    }
+
+    public void setImages(Set<ImageProfileModel> images) {
+        this.images = images;
     }
 
     public Integer getIdUser() {

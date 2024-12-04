@@ -39,7 +39,9 @@ public class RelationshipService {
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         UserModel followerUser = userRepository.findById(followerId)
                 .orElseThrow(() -> new NoSuchElementException("Follower user with id " + followerId + " not found"));
-
+        if (userId.equals(followerId)) {
+            throw new IllegalArgumentException("User with id " + userId + " cannot follow themselves");
+        }
         // Create the composite key to check if the relationship already exists
         RelationshipPK relationshipPK = new RelationshipPK();
         relationshipPK.setUser(user);
@@ -84,7 +86,7 @@ public class RelationshipService {
         List<RelationshipModel> following = relationshipRepository.getFollowingByUserId(userId);
 
         if (followers.isEmpty() && following.isEmpty()) {
-            throw new NoSuchElementException("No followers or following found for the user with ID: " + userId);
+            throw new NoSuchElementException("User with id " + userId + " has no followers or is not following anyone");
         }
 
         RelationshipDTO relationshipDTO = new RelationshipDTO();
@@ -95,24 +97,66 @@ public class RelationshipService {
 
     public List<RelationshipInfoDTO> getFollowersByUserId(Integer userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         List<RelationshipModel> followers = relationshipRepository.getFollowersByUserIdPaginated(userId, pageable);
+        if (followers.isEmpty()) {
+            throw new NoSuchElementException("User with id " + userId + " has no followers");
+        }
         return followers.stream().map(relationshipModel -> {
             UserModel followedUser = relationshipModel.getUser();
-            return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
+            String username = followedUser.getName() + " " + followedUser.getLastName() + " " + followedUser.getSecondLastName();
+            return new RelationshipInfoDTO(
+                    followedUser.getIdUser(),
+                    username,
+                    followedUser.getProfile().getImages(),
+                    followedUser.getCareer().getAcronym(),
+                    followedUser.getCareer().getName(),
+                    followedUser.getControlNumber()
+            );
         }).collect(Collectors.toList());
     }
 
     public List<RelationshipInfoDTO> getFollowingByUserId(Integer userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         List<RelationshipModel> following = relationshipRepository.getFollowingByUserIdPaginated(userId, pageable);
+        if (following.isEmpty()) {
+            throw new NoSuchElementException("User with id " + userId + " is not following anyone");
+        }
         return following.stream().map(relationshipModel -> {
             UserModel followedUser = relationshipModel.getFollowerUser();
-            return new RelationshipInfoDTO(followedUser.getIdUser(), followedUser.getName());
+            String username = followedUser.getName() + " " + followedUser.getLastName() + " " + followedUser.getSecondLastName();
+            return new RelationshipInfoDTO(
+                    followedUser.getIdUser(),
+                    username,
+                    followedUser.getProfile().getImages(),
+                    followedUser.getCareer().getAcronym(),
+                    followedUser.getCareer().getName(),
+                    followedUser.getControlNumber()
+            );
         }).collect(Collectors.toList());
+    }
+
+    public int countFollowers(Integer userId) {
+        return relationshipRepository.getNumberOfFollowersByUserId(userId);
+    }
+
+    public int countFollowing(Integer userId) {
+        return relationshipRepository.getNumberOfFollowingByUserId(userId);
     }
 
     private RelationshipInfoDTO convertToFollowerInfoDTO(RelationshipModel relationshipModel) {
         UserModel followerUser = relationshipModel.getFollowerUser();
-        return new RelationshipInfoDTO(followerUser.getIdUser(), followerUser.getName());
+        String username = followerUser.getName() + " " + followerUser.getLastName() + " " + followerUser.getSecondLastName();
+        return new RelationshipInfoDTO(
+                followerUser.getIdUser(),
+                username,
+                followerUser.getProfile().getImages(),
+                followerUser.getCareer().getAcronym(),
+                followerUser.getCareer().getName(),
+                followerUser.getControlNumber()
+        );
     }
 }

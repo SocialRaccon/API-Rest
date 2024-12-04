@@ -135,4 +135,8 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public UserModel findByEmail(String email) {
+        return userRepository.findByAuthentication_Email(email);
+    }
 }

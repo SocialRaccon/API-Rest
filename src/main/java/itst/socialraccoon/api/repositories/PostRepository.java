@@ -25,12 +25,16 @@ public interface PostRepository extends JpaRepository<PostModel, Integer> {
     @Query(value = "SELECT * FROM post WHERE idUser = :idUser", nativeQuery = true)
     Page<PostModel> findByUserAndPost(@Param("idUser") Integer idUser, Pageable pageable);
 
-    @Query
+    //Get all posts ordered by date created and randomly without repeating posts
+    @Query ("SELECT p FROM PostModel p ORDER BY RAND()")
     Page<PostModel> findAllByOrderByDateCreatedDesc(Pageable pageable);
 
     @Query("SELECT p FROM PostModel p WHERE p.user.idUser = :userId")
     Page<PostModel> findByUser_IdUser(@Param("userId") Integer userId, Pageable pageable);
 
-    @Query(value = "SELECT p.* FROM post p JOIN relationship r ON p.idUser = r.idUser WHERE r.idFollower = :userId ORDER BY RAND()", nativeQuery = true)
+    @Query(value = "SELECT p FROM PostModel p JOIN RelationshipModel r ON p.user.idUser = r.user.idUser WHERE r.followerUser.idUser = :userId ORDER BY RAND()")
     Page<PostModel> findRandomPostsByFollowedUsers(@Param("userId") Integer userId, Pageable pageable);
+
+    @Query(value = "SELECT p.* FROM post p JOIN user u ON p.idUser = u.idUser JOIN career c ON u.idCareer = c.idCareer WHERE c.acronym = :acronym ORDER BY RAND()", nativeQuery = true)
+    Page<PostModel> findRandomPostsByCareerAcronym(@Param("acronym") String acronym, Pageable pageable);
 }

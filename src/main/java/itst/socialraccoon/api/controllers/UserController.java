@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
+import itst.socialraccoon.api.dtos.CurrentUserDTO;
 import itst.socialraccoon.api.dtos.UserRequestDTO;
 import itst.socialraccoon.api.models.AuthenticationModel;
 import itst.socialraccoon.api.models.CareerModel;
@@ -18,11 +19,14 @@ import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.FileValidator;
 import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -91,10 +95,8 @@ public class UserController {
     @PostMapping(value = "/withImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a new user with an image", description = "Creates a new user with profile image")
     public ResponseEntity<UserDTO> createWithImage(
-            @RequestPart("file")
-            @Schema(type = "string", format = "binary") MultipartFile file,
-            @RequestPart("user") @Parameter(schema = @Schema(implementation = UserRequestDTO.class))
-            String userJson) throws IOException {
+            @RequestPart("image") @Schema(type = "string", format = "binary") MultipartFile file,
+            @NotNull @RequestPart("user") @Parameter(schema = @Schema(implementation = UserRequestDTO.class)) String userJson) throws IOException {
         ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
         fileValidator.setStrategy(imageFileValidationStrategy);
         if (!fileValidator.validate(file)) {
@@ -127,10 +129,20 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/current")
+    @Operation(summary = "Get current user", description = "Get the current user logged in")
+    public ResponseEntity<CurrentUserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        UserModel user = userService.findByEmail(email);
+        CurrentUserDTO userDTO = modelMapper.map(user, CurrentUserDTO.class);
+        userDTO.setImageProfile(user.getProfile().getImages().stream().findFirst().orElse(null));
+        return ResponseEntity.ok(userDTO);
+    }
+
     public UserModel convertToEntity(UserRequestDTO userRequestDTO) {
         UserModel user = modelMapper.map(userRequestDTO, UserModel.class);
         CareerModel careerModel = careerService.findById(userRequestDTO.getCareer());
-        if (careerModel == null){
+        if (careerModel == null) {
             throw new NoSuchElementException("Career not found");
         }
         AuthenticationModel authenticationModel = new AuthenticationModel();

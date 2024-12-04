@@ -31,7 +31,7 @@ public class RelationshipController {
     @Autowired
     private RelationshipService relationshipService;
 
-    @PostMapping
+    @PostMapping("/{userId}")
     @Operation(summary = "Follow a user", description = "Create a following relationship between two users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User followed", content = @Content),
@@ -39,8 +39,8 @@ public class RelationshipController {
             @ApiResponse(responseCode = "409", description = "User already followed", content = @Content)
     })
     public ResponseEntity<String> followUser(
-            @RequestParam @NotNull @Positive Integer userId,
-            @RequestParam @NotNull @Positive Integer followerId) {
+            @PathVariable @NotNull @Positive(message = "User id must be positive") Integer userId,
+            @RequestParam @NotNull @Positive(message = "User id must be positive") Integer followerId) {
         relationshipService.followUser(userId, followerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("User followed");
     }
@@ -52,8 +52,8 @@ public class RelationshipController {
             @ApiResponse(responseCode = "404", description = "User or relationship not found", content = @Content)
     })
     public ResponseEntity<String> unfollowUser(
-            @PathVariable @NotNull @Positive Integer userId,
-            @RequestParam @NotNull @Positive Integer followerId) {
+            @PathVariable @NotNull @Positive(message = "User id must be positive") Integer userId,
+            @RequestParam @NotNull @Positive(message = "User id must be positive") Integer followerId) {
         relationshipService.unfollowUser(userId, followerId);
         return ResponseEntity.ok("User unfollowed");
     }
@@ -66,7 +66,7 @@ public class RelationshipController {
             @ApiResponse(responseCode = "404", description = "Followers not found", content = @Content)
     })
     public ResponseEntity<List<RelationshipInfoDTO>> getFollowers(
-            @PathVariable Integer userId,
+            @PathVariable @Positive(message = "User id must be positive") Integer userId,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
     ) {
@@ -81,7 +81,7 @@ public class RelationshipController {
             @ApiResponse(responseCode = "404", description = "Following not found", content = @Content)
     })
     public ResponseEntity<List<RelationshipInfoDTO>> getFollowing(
-            @PathVariable Integer userId,
+            @PathVariable @Positive(message = "User id must be positive") Integer userId,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
     ) {

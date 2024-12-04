@@ -14,6 +14,8 @@ import itst.socialraccoon.api.services.ImageProfileService;
 import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.handlers.ImageValidationHandler;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,7 +50,7 @@ public class ProfileController {
     })
     public ResponseEntity<String> addProfileImage(
             @PathVariable Integer profileId,
-            @RequestParam(value = "image") MultipartFile image
+            @NotNull @RequestParam(value = "image") MultipartFile image
     ) {
         Validator.validateImage(image);
         imageProfileService.addProfileImage(profileId, image);
@@ -62,8 +64,8 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "User profile not found", content = @Content)
     })
     public ResponseEntity<String> UpdateProfileImage(
-            @RequestParam(value = "imageId") Integer imageId,
-            @RequestParam(value = "image") MultipartFile image
+            @PathVariable(value = "imageId") @Positive Integer imageId,
+            @NotNull @RequestParam(value = "image") MultipartFile image
     ) {
         Validator.validateImage(image);
         imageProfileService.updateProfileImage(imageId, image);
@@ -77,13 +79,13 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "User profile not found", content = @Content)
     })
     public ResponseEntity<String> deleteProfileImage(
-            @RequestParam(value = "imageId") Integer imageId
+            @PathVariable(value = "imageId") @Positive Integer imageId
     ) {
         imageProfileService.delete(imageId);
         return new ResponseEntity<>("Profile image deleted successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}")
+    @PutMapping("/{userId}")
     @Operation(summary = "Update profile description by user ID", description = "Update a user's profile description by their ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User profile updated", content = {

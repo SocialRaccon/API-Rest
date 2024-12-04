@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import itst.socialraccoon.api.dtos.CommentRequestDTO;
+import itst.socialraccoon.api.models.ImageProfileModel;
 import itst.socialraccoon.api.services.CommentService;
 import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.models.CommentModel;
@@ -16,6 +17,8 @@ import itst.socialraccoon.api.services.UserService;
 import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @RestController
 @RequestMapping("comments")
@@ -110,9 +114,9 @@ public class CommentController {
     @Operation(summary = "Get comments by post id with pagination", description = "Get all comments by post id with optional user filter and pagination")
     public ResponseEntity<List<CommentDTO>> findByPostId(
             @PathVariable Integer postId,
-            @RequestParam(required = false) Integer userId,
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+            @Positive @RequestParam(required = false) Integer userId,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments;
         if (userId != null) {
             comments = commentService.getCommentsByPostIdAndUserId(postId, userId, page, pageSize);
@@ -129,8 +133,8 @@ public class CommentController {
     @Operation(summary = "Get comments by user id with pagination", description = "Get all comments by user id with pagination")
     public ResponseEntity<List<CommentDTO>> findByUserId(
             @PathVariable Integer userId,
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int pageSize) {
         List<CommentModel> comments = commentService.getCommentsByUserId(userId, page, pageSize);
         if (comments.isEmpty()) {
             throw new NoSuchElementException("No comments found for the given user.");
@@ -181,16 +185,20 @@ public class CommentController {
     })
     public ResponseEntity<CommentDTO> update(
             @PathVariable Integer commentId,
-            @org.springframework.web.bind.annotation.RequestBody CommentModel comment) {
-        contentModerationValidationStrategy.isValid(comment.getComment());
+            @NotBlank @RequestParam String comment) {
+        contentModerationValidationStrategy.isValid(comment);
         CommentModel commentToUpdate = commentService.findById(commentId);
-        commentToUpdate.setComment(comment.getComment());
-        commentToUpdate.setDate(comment.getDate());
+        commentToUpdate.setComment(comment);
         CommentModel updatedComment = commentService.save(commentToUpdate);
         return new ResponseEntity<>(convertToDto(updatedComment), HttpStatus.OK);
     }
 
     public CommentDTO convertToDto(CommentModel comment) {
-        return modelMapper.map(comment, CommentDTO.class);
+        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+        commentDTO.setUsername(comment.getUser().getName() + " " + comment.getUser().getLastName() + " " + comment.getUser().getSecondLastName());
+        Set<ImageProfileModel> images = comment.getUser().getProfile().getImages();
+        commentDTO.setImageProfile(images.stream().findFirst().get());
+        commentDTO.setDate(comment.getDate());
+        return commentDTO;
     }
 }

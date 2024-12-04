@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
@@ -208,6 +209,15 @@ public class ExceptionHandlerAdvice {
         errorDetails.put("error", "Invalid file type");
         errorDetails.put("message", e.getMessage());
         return new ResponseEntity<>(gson.toJson(errorDetails), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ResponseEntity<String> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("error", "Method not allowed");
+        errorDetails.put("message", "Request method '" + e.getMethod() + "' is not supported for this endpoint.");
+        return new ResponseEntity<>(gson.toJson(errorDetails), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
