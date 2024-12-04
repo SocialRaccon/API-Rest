@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import itst.socialraccoon.api.annotations.GlobalApiResponses;
+import itst.socialraccoon.api.dtos.CommentDTO;
 import itst.socialraccoon.api.dtos.PostDTO;
 import itst.socialraccoon.api.dtos.PostRequestDTO;
 import itst.socialraccoon.api.models.*;
@@ -111,6 +112,20 @@ public class PostController {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostModel> postPage = postService.getFollowingFeed(userId, pageable);
+        Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
+        return ResponseEntity.ok(postDTOPage);
+    }
+
+    @GetMapping("/feed/career/{acronym}")
+    @Operation(summary = "Get random posts feed by career acronym",
+            description = "Retrieves a paginated random feed of posts for users in a specific career")
+    @ApiResponse(responseCode = "200", description = "Random feed successfully recovered")
+    public ResponseEntity<Page<PostDTO>> getRandomCareerFeed(
+            @PathVariable String acronym,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostModel> postPage = postService.getRandomCareerFeed(acronym, pageable);
         Page<PostDTO> postDTOPage = postPage.map(this::convertToDTO);
         return ResponseEntity.ok(postDTOPage);
     }
@@ -241,6 +256,16 @@ public class PostController {
     private PostDTO convertToDTO(PostModel post) {
         PostDTO dto = modelMapper.map(post, PostDTO.class);
         dto.setImageProfile(post.getUser().getProfile().getImages().stream().findFirst().orElse(null));
+        //Se coloca la imagen en cada comentario
+        List<CommentDTO> comments = post.getComments().stream()
+                .map(comment -> {
+                    CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+                    commentDTO.setUsername(comment.getUser().getName() + " " + comment.getUser().getLastName() + " " + comment.getUser().getSecondLastName());
+                    commentDTO.setImageProfile(comment.getUser().getProfile().getImages().stream().findFirst().orElse(null));
+                    return commentDTO;
+                })
+                .collect(Collectors.toList());
+        dto.setComments(comments);
         return dto;
     }
 
