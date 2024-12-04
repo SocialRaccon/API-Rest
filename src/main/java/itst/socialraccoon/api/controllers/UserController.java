@@ -18,6 +18,7 @@ import itst.socialraccoon.api.validators.ContentModerationValidationStrategy;
 import itst.socialraccoon.api.validators.FileValidator;
 import itst.socialraccoon.api.validators.ImageFileValidationStrategy;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,10 +94,8 @@ public class UserController {
     @PostMapping(value = "/withImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a new user with an image", description = "Creates a new user with profile image")
     public ResponseEntity<UserDTO> createWithImage(
-            @RequestPart("file")
-            @Schema(type = "string", format = "binary") MultipartFile file,
-            @RequestPart("user") @Parameter(schema = @Schema(implementation = UserRequestDTO.class))
-            String userJson) throws IOException {
+            @RequestPart("image") @Schema(type = "string", format = "binary") MultipartFile file,
+            @NotNull @RequestPart("user") @Parameter(schema = @Schema(implementation = UserRequestDTO.class)) String userJson) throws IOException {
         ImageFileValidationStrategy imageFileValidationStrategy = new ImageFileValidationStrategy();
         fileValidator.setStrategy(imageFileValidationStrategy);
         if (!fileValidator.validate(file)) {
@@ -130,6 +129,7 @@ public class UserController {
     }
 
     @GetMapping("/current")
+    @Operation(summary = "Get current user", description = "Get the current user logged in")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         UserModel user = userService.findByEmail(email);
